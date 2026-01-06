@@ -1,7 +1,3 @@
-
-
-
-
 import json
 import subprocess
 import os, sys
@@ -25,17 +21,21 @@ JAVA = "/usr/lib/jvm/java-8-openjdk/jre/bin/java"
 
 
 def get_build_data_path() -> str:
-    DATA_PATH = join(get_storage_dir(), "spigot_build_data")
-    if not exists(DATA_PATH):
+    data_path = join(get_storage_dir(), "spigot_build_data")
+    inner_path = join(data_path, "BuildData")
+
+    if not exists(inner_path):
+        os.makedirs(data_path)
+
         check_call(
             [
                 "git",
                 "clone",
                 "https://hub.spigotmc.org/stash/scm/spigot/builddata.git",
-                DATA_PATH,
+                inner_path,
             ]
         )
-    return DATA_PATH
+    return inner_path
 
 
 SPECIAL_SOURCE = join(get_build_data_path(), "bin", "SpecialSource-2.jar")
@@ -81,27 +81,57 @@ def get_versions() -> list[tuple[str, str]]:
     ]
 
 
+# This function is EVIL. Theoretically this should be run in a container, but I don't really care
+def run_map_command(data_dir, cmd, *args):
+    assert cmd.startswith("java -jar BuildData/bin/SpecialSource-2.jar")
+
+    cmd = cmd.strip().replace("  ", " ").split(" ")
+    cmd = [seg if not seg[0] == "{" else args[int(seg[1])] for seg in cmd]
+
+    cmd[0] = JAVA
+    print("Running map command:", " ".join(cmd))
+
+
+    subprocess.check_call(cmd, cwd=dirname(data_dir))
+
+
 def spigot_map_jar(build_dir, info_json, input_jar) -> str:
     # TODO: ADD TEST FOR MOJMAP MAPPINGS
 
     # TODO: ADD TEST FOR COMMANDS
 
-
     # Until 1.13.2, you must map yourself
     if 84 > info_json.get("toolsVersion", 0):
         class_mapped = map_jar(
-            input_jar,
-            join(build_dir, "mappings", info_json["classMappings"])
+            input_jar, join(build_dir, "mappings", info_json["classMappings"])
         )
-        out = map_jar(
-            class_mapped,
-            join(build_dir, "mappings", info_json["memberMappings"])
+        member_mapped = map_jar(
+            class_mapped, join(build_dir, "mappings", info_json["memberMappings"])
         )
         os.remove(class_mapped)
-        return out
+        return member_mapped
+    else:  
+        class_mapped = mktemp(".jar")
+        run_map_command(
+            build_dir,
 
+            info_json["classMapCommand"],
+            input_jar,
+            join(build_dir, "mappings", info_json["classMappings"]),
+            class_mapped,
+        )
 
-    assert False
+        member_mapped = mktemp(".jar")
+        run_map_command(
+            build_dir,
+
+            info_json["memberMapCommand"],
+            class_mapped,
+            join(build_dir, "mappings", info_json["memberMappings"]),
+            member_mapped,
+        )
+        os.remove(class_mapped)
+        return member_mapped
 
 
 def spigot_generate_tiny(version_file, url):
@@ -161,9 +191,8 @@ if __name__ == "__main__":
 
     versions = sorted(versions, key=lambda version, *_: version)
     for version_int, version_file, url in versions:
-        if version_int >= version_dot_to_int("1.13.2"):
+        if version_int > version_dot_to_int("1.16.5"):
             break
 
         print(version_file)
         spigot_generate_tiny(version_file, url)
-
