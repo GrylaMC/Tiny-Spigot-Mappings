@@ -91,14 +91,160 @@ def run_map_command(data_dir, cmd, *args):
     cmd[0] = JAVA
     print("Running map command:", " ".join(cmd))
 
-
     subprocess.check_call(cmd, cwd=dirname(data_dir))
+
+
+# Intelligently renames the fields and methods.
+def tiny_renamer(tiny_file, ignore_conflicts: bool = False):
+    print(f"[*] Starting conflict resolution on {tiny_file}...")
+
+    entries = []
+    # Key: (ObfName, Descriptor) -> Set of Candidate Names
+    sig_candidates = {}
+
+    # --- Phase 1: Parse and Collect Candidates ---
+    with open(tiny_file, "r") as fin:
+        for line in fin:
+            clean_line = line.strip()
+            if not clean_line:
+                continue
+
+            segs = clean_line.split("\t")
+            entry = {"type": "OTHER", "segs": segs, "original": line}
+
+            if clean_line.startswith("FIELD"):
+                entry["type"] = "FIELD"
+
+            elif clean_line.startswith("METHOD"):
+                entry["type"] = "METHOD"
+                if len(segs) >= 5:
+                    obf, desc, mapped = segs[3], segs[2], segs[4]
+                    sig_key = (obf, desc)
+                    if sig_key not in sig_candidates:
+                        sig_candidates[sig_key] = set()
+                    sig_candidates[sig_key].add(mapped)
+
+            entries.append(entry)
+
+    # --- Phase 2: Unify Source Hierarchies ---
+    print("[*] Unifying source hierarchies...")
+    source_winners = {}  # (Obf, Desc) -> BestName
+
+    for sig, candidates in sig_candidates.items():
+        if not candidates:
+            continue
+
+        human_names = [n for n in candidates if not n.startswith("func_")]
+        if human_names:
+            winner = sorted(human_names)[0]
+        else:
+            winner = sorted(list(candidates))[0]
+
+        source_winners[sig] = winner
+
+    # --- Phase 3: Unify Target Names ---
+    print("[*] Checking for target collisions...")
+
+    # Map (TargetName, Descriptor) -> List[ObfName]
+    target_claims = {}
+
+    for (obf, desc), best_name in source_winners.items():
+        target_key = (best_name, desc)
+        if target_key not in target_claims:
+            target_claims[target_key] = []
+        target_claims[target_key].append(obf)
+
+    final_sig_map = {}
+
+    KNOWN_JAR_CONFLICTS = {
+        ("format", "(I)Ljava/lang/String;"),
+    }
+
+    for (t_name, desc), obf_list in target_claims.items():
+        is_jar_conflict = (t_name, desc) in KNOWN_JAR_CONFLICTS
+
+        if len(obf_list) > 1 or is_jar_conflict:
+            obf_list.sort()
+
+            if is_jar_conflict:
+                print(
+                    f"[WARN] JAR Conflict on {t_name}{desc}: "
+                    f"claimed by {obf_list}. Renaming all."
+                )
+                start_idx = 0
+            else:
+                winner = obf_list[0]
+                print(
+                    f"[WARN] Target Collision on {t_name}{desc}: "
+                    f"claimed by {obf_list}"
+                )
+                final_sig_map[(winner, desc)] = t_name
+                start_idx = 1
+
+            for loser in obf_list[start_idx:]:
+                new_name = f"{t_name}_{loser}"
+                final_sig_map[(loser, desc)] = new_name
+                print(f"       -> Renaming {loser} to {new_name}")
+        else:
+            final_sig_map[(obf_list[0], desc)] = t_name
+
+    # --- Phase 4: Apply & Write ---
+    final_lines = []
+    lines_to_check = []
+
+    print("[*] Applying resolved mappings...")
+
+    for entry in entries:
+        if entry["type"] == "OTHER":
+            final_lines.append(entry["original"])
+            continue
+
+        segs = entry["segs"]
+
+        if entry["type"] == "METHOD":
+            obf, desc = segs[3], segs[2]
+
+            if (obf, desc) in final_sig_map:
+                segs[4] = final_sig_map[(obf, desc)]
+
+            if ignore_conflicts:
+                entry["dedup_key"] = f"{segs[1]}@{desc}:{segs[4]}"
+                lines_to_check.append(entry)
+            else:
+                final_lines.append("\t".join(segs) + "\n")
+
+        elif entry["type"] == "FIELD":
+            if ignore_conflicts:
+                entry["dedup_key"] = f"{segs[1]}@{segs[4]}"
+                lines_to_check.append(entry)
+            else:
+                final_lines.append("\t".join(segs) + "\n")
+
+    # --- Phase 5: Local Class Collision Repair ---
+    if ignore_conflicts:
+        seen_keys = set()
+
+        for entry in lines_to_check:
+            k = entry["dedup_key"]
+            if k in seen_keys:
+                entry["is_dupe"] = True
+            else:
+                seen_keys.add(k)
+
+        for entry in lines_to_check:
+            segs = entry["segs"]
+            if entry.get("is_dupe"):
+                segs[4] = f"{segs[4]}_{segs[3]}"
+            final_lines.append("\t".join(segs) + "\n")
+
+    with open(tiny_file, "w") as fout:
+        fout.writelines(final_lines)
+
+    print("[*] Finished renaming operations")
 
 
 def spigot_map_jar(build_dir, info_json, input_jar) -> str:
     # TODO: ADD TEST FOR MOJMAP MAPPINGS
-
-    # TODO: ADD TEST FOR COMMANDS
 
     # Until 1.13.2, you must map yourself
     if 84 > info_json.get("toolsVersion", 0):
@@ -110,11 +256,10 @@ def spigot_map_jar(build_dir, info_json, input_jar) -> str:
         )
         os.remove(class_mapped)
         return member_mapped
-    else:  
+    else:
         class_mapped = mktemp(".jar")
         run_map_command(
             build_dir,
-
             info_json["classMapCommand"],
             input_jar,
             join(build_dir, "mappings", info_json["classMappings"]),
@@ -124,7 +269,6 @@ def spigot_map_jar(build_dir, info_json, input_jar) -> str:
         member_mapped = mktemp(".jar")
         run_map_command(
             build_dir,
-
             info_json["memberMapCommand"],
             class_mapped,
             join(build_dir, "mappings", info_json["memberMappings"]),
@@ -134,7 +278,7 @@ def spigot_map_jar(build_dir, info_json, input_jar) -> str:
         return member_mapped
 
 
-def spigot_generate_tiny(version_file, url):
+def spigot_generate_tiny(version_file, url, use_renamer=False):
     out_path = join("tiny_v1s", splitext(version_file)[0] + ".tiny")
 
     if exists(out_path):
@@ -162,6 +306,9 @@ def spigot_generate_tiny(version_file, url):
     mapped_jar = spigot_map_jar(build_data_path, info_json, tainted_jar)
 
     generate_tiny(mapped_jar, out_path, remove_identical_members=True)
+    if use_renamer:
+        tiny_renamer(out_path)
+
     os.remove(mapped_jar)
     os.remove(tainted_jar)
 
@@ -195,4 +342,6 @@ if __name__ == "__main__":
             break
 
         print(version_file)
-        spigot_generate_tiny(version_file, url)
+        spigot_generate_tiny(
+            version_file, url, use_renamer=version_int >= version_dot_to_int("1.9")
+        )

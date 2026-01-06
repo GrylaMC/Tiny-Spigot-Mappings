@@ -60,10 +60,10 @@ CLASS	abh	ResourceManager
 FIELD	abh	Lorg/apache/logging/log4j/Logger;	a	LOGGER
 CLASS	abi	Resource
 CLASS	abk	ExpirableListEntry
-METHOD	abk	()Ljava/lang/String;	b	getSource
+METHOD	abk	()Ljava/lang/String;	b	getName
 METHOD	abk	()Ljava/util/Date;	c	getExpires
-METHOD	abk	()Ljava/lang/String;	d	getReason
-METHOD	abk	()Z	f	hasExpired
+METHOD	abk	()Ljava/lang/String;	d	getId
+METHOD	abk	()Z	f	canBreed
 CLASS	abl$1	UserCache$1
 CLASS	abl$2	UserCache$2
 CLASS	abl$a	UserCache$UserCacheEntry
@@ -97,13 +97,13 @@ FIELD	abp	I	f	maxPlayers
 FIELD	abp	I	t	viewDistance
 METHOD	abp	(Lux;Lze;)V	a	sendScoreboard
 METHOD	abp	(Lzd;)V	a	setPlayerFileData
-METHOD	abp	(Lze;)V	b	savePlayerFile
-METHOD	abp	(Lze;)V	c	disconnect
+METHOD	abp	(Lze;)V	b	addPlayerPortal
+METHOD	abp	(Lze;)V	c	addPlayerJoin
 METHOD	abp	(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lmr;	a	attemptLogin
 METHOD	abp	(Lcom/mojang/authlib/GameProfile;)Lze;	g	processLogin
 METHOD	abp	(Lze;Z)Lze;	a	moveToWorld
-METHOD	abp	()V	d	tick
-METHOD	abp	(Lni;)V	a	sendAll
+METHOD	abp	()V	d	clearMessages
+METHOD	abp	(Lni;)V	a	broadcast
 METHOD	abp	()Labu;	f	getProfileBans
 METHOD	abp	()Labm;	g	getIPBans
 METHOD	abp	(Lcom/mojang/authlib/GameProfile;)V	a	addOp
@@ -112,19 +112,19 @@ METHOD	abp	(Lcom/mojang/authlib/GameProfile;)Z	e	isWhitelisted
 METHOD	abp	(Lcom/mojang/authlib/GameProfile;)Z	h	isOp
 METHOD	abp	(Ljava/lang/String;)Lze;	a	getPlayer
 METHOD	abp	(Lbec;DDDDLug;Lni;)V	a	sendPacketNearby
-METHOD	abp	()V	h	savePlayers
+METHOD	abp	()V	h	exitCombat
 METHOD	abp	()Labw;	i	getWhitelist
 METHOD	abp	()[Ljava/lang/String;	j	getWhitelisted
 METHOD	abp	()Labq;	k	getOPs
-METHOD	abp	()V	a	reloadWhitelist
-METHOD	abp	(Lze;)V	e	updateClient
-METHOD	abp	()I	m	getPlayerCount
+METHOD	abp	()V	a	incrementScore
+METHOD	abp	(Lze;)V	e	removePlayer
+METHOD	abp	()I	m	getBadOmenLevel
 METHOD	abp	()I	n	getMaxPlayers
 METHOD	abp	()Z	o	getHasWhitelist
-METHOD	abp	(Z)V	a	setHasWhitelist
-METHOD	abp	()I	p	getViewDistance
+METHOD	abp	(Z)V	a	safeShutdown
+METHOD	abp	()I	p	getRotation
 METHOD	abp	()Lnet/minecraft/server/MinecraftServer;	c	getServer
-METHOD	abp	()Lle;	q	save
+METHOD	abp	()Lle;	q	save_q
 METHOD	abp	()V	r	shutdown
 METHOD	abp	(Lmr;Lmo;Ljava/util/UUID;)V	a	sendMessage
 METHOD	abp	(Lbec;)Lacq;	a	getStatisticManager
@@ -136,22 +136,22 @@ METHOD	abq	()[Ljava/lang/String;	a	getEntries
 CLASS	abr	OpListEntry
 CLASS	abs	JsonListEntry
 METHOD	abs	()Ljava/lang/Object;	g	getKey
-METHOD	abs	()Z	f	hasExpired
+METHOD	abs	()Z	f	canBreed
 CLASS	abt	JsonList
 FIELD	abt	Lorg/apache/logging/log4j/Logger;	a	LOGGER
 METHOD	abt	(Labs;)V	a	add
 METHOD	abt	(Ljava/lang/Object;)Labs;	b	get
 METHOD	abt	(Ljava/lang/Object;)V	c	remove
 METHOD	abt	()[Ljava/lang/String;	a	getEntries
-METHOD	abt	()Z	c	isEmpty
-METHOD	abt	()V	e	save
-METHOD	abt	()V	f	load
+METHOD	abt	()Z	c	isConvertable
+METHOD	abt	()V	e	clearBlocks
+METHOD	abt	()V	f	bind
 CLASS	abu	GameProfileBanList
 METHOD	abu	(Lcom/mojang/authlib/GameProfile;)Z	a	isBanned
 METHOD	abu	()[Ljava/lang/String;	a	getEntries
 CLASS	abv	GameProfileBanEntry
 CLASS	abw	WhiteList
-METHOD	abw	(Lcom/mojang/authlib/GameProfile;)Z	a	isWhitelisted
+METHOD	abw	(Lcom/mojang/authlib/GameProfile;)Z	a	isBanned
 METHOD	abw	()[Ljava/lang/String;	a	getEntries
 CLASS	abx	WhiteListEntry
 CLASS	abz	RemoteStatusReply
@@ -165,8 +165,8 @@ METHOD	acb	()V	d	clearMessages
 METHOD	acb	()Ljava/lang/String;	e	getMessages
 METHOD	acb	()Lcz;	f	getWrapper
 METHOD	acb	(Lmr;Ljava/util/UUID;)V	a	sendMessage
-METHOD	acb	()Z	a	shouldSendSuccess
-METHOD	acb	()Z	b	shouldSendFailure
+METHOD	acb	()Z	a	isDone
+METHOD	acb	()Z	b	hasSaddle_b
 METHOD	acb	()Z	S_	shouldBroadcastCommands
 CLASS	acd	RemoteConnectionThread
 FIELD	acd	Lorg/apache/logging/log4j/Logger;	d	LOGGER
@@ -1183,10 +1183,10 @@ FIELD	acm	Lacm;	j	VOICE
 CLASS	aco	RecipeBook
 CLASS	acp	RecipeBookServer
 FIELD	acp	Lorg/apache/logging/log4j/Logger;	k	LOGGER
-METHOD	acp	()Lle;	i	save
+METHOD	acp	()Lle;	i	save_i
 CLASS	acq	ServerStatisticManager
 FIELD	acq	Lorg/apache/logging/log4j/Logger;	b	LOGGER
-METHOD	acq	()V	a	save
+METHOD	acq	()V	a	incrementScore
 METHOD	acq	(Lbec;Lacr;I)V	a	setStatistic
 CLASS	acr	Statistic
 METHOD	acr	()Lact;	a	getWrapper
@@ -1433,11 +1433,11 @@ FIELD	ada	Ladf$e;	ab	FURNACE_MATERIALS
 CLASS	adb	TagsInstance
 CLASS	adc	TagSet
 METHOD	adc	(Ljava/lang/Object;)Z	a	isTagged
-METHOD	adc	()Ljava/util/List;	b	getTagged
+METHOD	adc	()Ljava/util/List;	b	getSiblings
 CLASS	add$1	TagUtil$1
 CLASS	add$a	TagUtil$a
 METHOD	add$a	(Ljava/lang/Object;)Z	a	isTagged
-METHOD	add$a	()Ljava/util/List;	b	getTagged
+METHOD	add$a	()Ljava/util/List;	b	getSiblings
 CLASS	add	TagUtil
 CLASS	ade	TagsServer
 CLASS	adf$1	Tag$1
@@ -1868,17 +1868,17 @@ CLASS	amw	BossBattle
 FIELD	amw	Lmr;	a	title
 FIELD	amw	Lamw$a;	c	color
 FIELD	amw	Lamw$b;	d	style
-METHOD	amw	()F	k	getProgress
-METHOD	amw	()Z	n	isDarkenSky
-METHOD	amw	()Z	o	isPlayMusic
-METHOD	amw	()Z	p	isCreateFog
+METHOD	amw	()F	k	getDamage
+METHOD	amw	()Z	n	hasTag
+METHOD	amw	()Z	o	getHasWhitelist
+METHOD	amw	()Z	p	hasBasePlate
 CLASS	amx	Clearable
 CLASS	amy	InventoryLargeChest
 FIELD	amy	Lamz;	a	left
 FIELD	amy	Lamz;	b	right
 METHOD	amy	()I	ab_	getSize
-METHOD	amy	()Z	c	isEmpty
-METHOD	amy	(I)Lbki;	a	getItem
+METHOD	amy	()Z	c	isConvertable
+METHOD	amy	(I)Lbki;	a	cloneAndSubtract
 METHOD	amy	(II)Lbki;	a	splitStack
 METHOD	amy	(I)Lbki;	b	splitWithoutUpdate
 METHOD	amy	(ILbki;)V	a	setItem
@@ -1925,21 +1925,21 @@ FIELD	ani	Ljava/lang/String;	b	key
 CLASS	anj	ITileInventory
 CLASS	ank	INamableTileEntity
 METHOD	ank	()Z	Q	hasCustomName
-METHOD	ank	()Lmr;	d	getScoreboardDisplayName
+METHOD	ank	()Lmr;	d	getDisplayName_d
 METHOD	ank	()Lmr;	R	getCustomName
 CLASS	anl	ShulkerUtil
 CLASS	anm	InventorySubcontainer
 FIELD	anm	Lgi;	b	items
-METHOD	anm	(I)Lbki;	a	getItem
+METHOD	anm	(I)Lbki;	a	cloneAndSubtract
 METHOD	anm	(II)Lbki;	a	splitStack
 METHOD	anm	(I)Lbki;	b	splitWithoutUpdate
 METHOD	anm	(ILbki;)V	a	setItem
 METHOD	anm	()I	ab_	getSize
-METHOD	anm	()Z	c	isEmpty
+METHOD	anm	()Z	c	isConvertable
 METHOD	anm	()V	Z_	update
 METHOD	anm	()V	aa_	clear
 CLASS	ann	TileInventory
-METHOD	ann	()Lmr;	d	getScoreboardDisplayName
+METHOD	ann	()Lmr;	d	getDisplayName_d
 CLASS	ano	MojangStatisticsGenerator
 CLASS	anp	IMojangStatistics
 CLASS	anq	IWorldInventory
@@ -1980,27 +1980,27 @@ METHOD	anw	(Lbeg;Laom;)Lanw;	a	arrow
 METHOD	anw	(Lbem;Laom;)Lanw;	a	fireball
 METHOD	anw	(Laom;Laom;)Lanw;	b	projectile
 METHOD	anw	(Lbpt;)Lanw;	a	explosion
-METHOD	anw	()Z	d	isExplosion
+METHOD	anw	()Z	d	hasSkyLight
 METHOD	anw	()Lanw;	e	setExplosion
-METHOD	anw	()Z	f	ignoresArmor
+METHOD	anw	()Z	f	canBreed
 METHOD	anw	()F	g	getExhaustionCost
-METHOD	anw	()Z	h	ignoresInvulnerability
-METHOD	anw	()Z	i	isStarvation
-METHOD	anw	()Laom;	k	getEntity
+METHOD	anw	()Z	h	allowFriendlyFire
+METHOD	anw	()Z	i	canSeeFriendlyInvisibles
+METHOD	anw	()Laom;	k	getEntity_k
 METHOD	anw	()Lanw;	l	setIgnoreArmor
 METHOD	anw	()Lanw;	m	setIgnoresInvulnerability
 METHOD	anw	()Lanw;	n	setStarvation
 METHOD	anw	()Lanw;	o	setFire
 METHOD	anw	(Laoy;)Lmr;	a	getLocalizedDeathMessage
-METHOD	anw	()Z	p	isFire
-METHOD	anw	()Z	t	isMagic
+METHOD	anw	()Z	p	hasBasePlate
+METHOD	anw	()Z	t	hasName
 METHOD	anw	()Lanw;	u	setMagic
 CLASS	anx	EntityDamageSource
-METHOD	anx	()Laom;	k	getEntity
+METHOD	anx	()Laom;	k	getEntity_k
 METHOD	anx	(Laoy;)Lmr;	a	getLocalizedDeathMessage
 CLASS	any	EntityDamageSourceIndirect
 FIELD	any	Laom;	x	owner
-METHOD	any	()Laom;	k	getEntity
+METHOD	any	()Laom;	k	getEntity_k
 METHOD	any	(Laoy;)Lmr;	a	getLocalizedDeathMessage
 CLASS	ao$a	CriterionTriggerChangedDimension$a
 CLASS	ao	CriterionTriggerChangedDimension
@@ -2008,14 +2008,14 @@ CLASS	aoa	MobEffectAbsorption
 CLASS	aob	MobEffectAttackDamage
 CLASS	aoc	MobEffectHealthBoost
 CLASS	aod	InstantMobEffect
-METHOD	aod	()Z	a	isInstant
+METHOD	aod	()Z	a	isDone
 CLASS	aoe	MobEffectList
 METHOD	aoe	(I)Laoe;	a	fromId
 METHOD	aoe	(Laoe;)I	a	getId
 METHOD	aoe	(Laoy;I)V	a	tick
 METHOD	aoe	(Laom;Laom;Laoy;ID)V	a	applyInstantEffect
-METHOD	aoe	()Z	a	isInstant
-METHOD	aoe	()I	f	getColor
+METHOD	aoe	()Z	a	isDone
+METHOD	aoe	()I	f	asInt
 CLASS	aof	MobEffectInfo
 FIELD	aof	Laof;	a	BENEFICIAL
 FIELD	aof	Laof;	b	HARMFUL
@@ -2030,11 +2030,11 @@ FIELD	aog	Z	h	showParticles
 FIELD	aog	Z	i	showIcon
 FIELD	aog	Laog;	j	hiddenEffect
 METHOD	aog	()Laoe;	a	getMobEffect
-METHOD	aog	()I	b	getDuration
+METHOD	aog	()I	b	get
 METHOD	aog	()I	c	getAmplifier
-METHOD	aog	()Z	d	isAmbient
-METHOD	aog	()Z	e	isShowParticles
-METHOD	aog	()Z	f	isShowIcon
+METHOD	aog	()Z	d	hasSkyLight
+METHOD	aog	()Z	e	hasCeiling
+METHOD	aog	()Z	f	canBreed
 METHOD	aog	(Laoy;Ljava/lang/Runnable;)Z	a	tick
 CLASS	aoh	MobEffectUtil
 CLASS	aoi$1	MobEffects$1
@@ -2075,15 +2075,15 @@ FIELD	aoi	Laoe;	F	HERO_OF_THE_VILLAGE
 CLASS	aok$a	EntityAgeable$a
 CLASS	aok	EntityAgeable
 METHOD	aok	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
-METHOD	aok	()V	e	initDatawatcher
+METHOD	aok	()V	e	clearBlocks
 METHOD	aok	()Z	f	canBreed
-METHOD	aok	()I	i	getAge
+METHOD	aok	()I	i	getAdjacentX
 METHOD	aok	(IZ)V	a	setAge
-METHOD	aok	(I)V	a	setAge
+METHOD	aok	(I)V	a	addScore
 METHOD	aok	(I)V	c_	setAgeRaw
 METHOD	aok	(Lle;)V	b	saveData
-METHOD	aok	(Lle;)V	a	loadData
-METHOD	aok	()V	k	movementTick
+METHOD	aok	(Lle;)V	a	load
+METHOD	aok	()V	k	dropContents
 METHOD	aok	()Z	x_	isBaby
 CLASS	aol	EntityAreaEffectCloud
 FIELD	aol	Lorg/apache/logging/log4j/Logger;	b	LOGGER
@@ -2098,26 +2098,26 @@ FIELD	aol	Z	as	hasColor
 FIELD	aol	I	at	durationOnUse
 FIELD	aol	F	au	radiusOnUse
 FIELD	aol	F	av	radiusPerTick
-METHOD	aol	()V	e	initDatawatcher
-METHOD	aol	(F)V	a	setRadius
+METHOD	aol	()V	e	clearBlocks
+METHOD	aol	(F)V	a	setDamage
 METHOD	aol	()V	y_	updateSize
-METHOD	aol	()F	g	getRadius
+METHOD	aol	()F	g	getExhaustionCost
 METHOD	aol	(Laog;)V	a	addEffect
 METHOD	aol	()I	h	getColor
-METHOD	aol	(I)V	a	setColor
+METHOD	aol	(I)V	a	addScore
 METHOD	aol	()Lhf;	i	getParticle
 METHOD	aol	(Lhf;)V	a	setParticle
-METHOD	aol	()I	m	getDuration
-METHOD	aol	(I)V	b	setDuration
-METHOD	aol	()V	j	tick
-METHOD	aol	(F)V	b	setRadiusOnUse
-METHOD	aol	(F)V	c	setRadiusPerTick
-METHOD	aol	(I)V	d	setWaitTime
-METHOD	aol	(Laoy;)V	a	setSource
-METHOD	aol	()Laoy;	t	getSource
-METHOD	aol	(Lle;)V	a	loadData
+METHOD	aol	()I	m	getBadOmenLevel
+METHOD	aol	(I)V	b	setDamage
+METHOD	aol	()V	j	applyEffects
+METHOD	aol	(F)V	b	heal
+METHOD	aol	(F)V	c	setHealth
+METHOD	aol	(I)V	d	giveExp
+METHOD	aol	(Laoy;)V	a	setAuthor
+METHOD	aol	()Laoy;	t	getSource_t
+METHOD	aol	(Lle;)V	a	load
 METHOD	aol	(Lle;)V	b	saveData
-METHOD	aol	()Lcxf;	z_	getPushReaction
+METHOD	aol	()Lcxf;	z_	getPushReaction_z_
 CLASS	aom$1	Entity$1
 CLASS	aom$a	Entity$a
 CLASS	aom	Entity
@@ -2182,14 +2182,14 @@ METHOD	aom	(Lapj;)V	b	setPose
 METHOD	aom	()Lapj;	ab	getPose
 METHOD	aom	(FF)V	a	setYawPitch
 METHOD	aom	(DDD)V	d	setPosition
-METHOD	aom	()V	j	tick
+METHOD	aom	()V	j	applyEffects
 METHOD	aom	()V	ad	entityBaseTick
 METHOD	aom	()V	af	burnFromLava
-METHOD	aom	(I)V	f	setOnFire
+METHOD	aom	(I)V	f	add
 METHOD	aom	(I)V	g	setFireTicks
 METHOD	aom	()I	ag	getFireTicks
 METHOD	aom	()V	ah	extinguish
-METHOD	aom	()Z	aj	isOnGround
+METHOD	aom	()Z	aj	getForceGamemode
 METHOD	aom	(Lapd;Ldem;)V	a	move
 METHOD	aom	()F	al	getBlockJumpFactor
 METHOD	aom	()F	am	getBlockSpeedFactor
@@ -2200,13 +2200,13 @@ METHOD	aom	()Lack;	as	getSoundSplashHighSpeed
 METHOD	aom	()V	at	checkBlockCollisions
 METHOD	aom	(Lack;FF)V	a	playSound
 METHOD	aom	()Z	av	isSilent
-METHOD	aom	(Z)V	d	setSilent
+METHOD	aom	(Z)V	d	setOnlineMode
 METHOD	aom	()Z	aw	isNoGravity
 METHOD	aom	(Z)V	e	setNoGravity
 METHOD	aom	()Z	ax	playStepSound
 METHOD	aom	()Z	az	isFireProof
 METHOD	aom	()Z	aA	isInWater
-METHOD	aom	()Z	i	isInRain
+METHOD	aom	()Z	i	canSeeFriendlyInvisibles
 METHOD	aom	()Z	aB	isInWaterOrRain
 METHOD	aom	(Lbqb;)V	a_	spawnIn
 METHOD	aom	(DDDFF)V	a	setLocation
@@ -2219,15 +2219,15 @@ METHOD	aom	()V	aP	velocityChanged
 METHOD	aom	(Lanw;F)Z	a	damageEntity
 METHOD	aom	()Z	aQ	isInteractable
 METHOD	aom	()Z	aR	isCollidable
-METHOD	aom	(Lle;)Lle;	e	save
-METHOD	aom	(Lle;)V	f	load
+METHOD	aom	(Lle;)Lle;	e	save_e
+METHOD	aom	(Lle;)V	f	load_f
 METHOD	aom	()Ljava/lang/String;	aT	getSaveID
 METHOD	aom	()Z	aU	isAlive
 METHOD	aom	()Z	aV	inBlock
 METHOD	aom	()V	aW	passengerTick
 METHOD	aom	(Laom;)Z	m	startRiding
 METHOD	aom	()V	ba	ejectPassengers
-METHOD	aom	()V	l	stopRiding
+METHOD	aom	()V	l	handleDisconnection
 METHOD	aom	(Laom;)V	o	addPassenger
 METHOD	aom	(Laom;)V	p	removePassenger
 METHOD	aom	()Ldem;	bd	getLookDirection
@@ -2238,15 +2238,15 @@ METHOD	aom	(Laor;Lbki;)V	a	setEquipment
 METHOD	aom	()Z	bm	isBurning
 METHOD	aom	()Z	bn	isPassenger
 METHOD	aom	()Z	bo	isVehicle
-METHOD	aom	(Z)V	f	setSneaking
+METHOD	aom	(Z)V	f	setPVP
 METHOD	aom	()Z	bq	isSneaking
 METHOD	aom	()Z	bw	isSprinting
-METHOD	aom	(Z)V	g	setSprinting
+METHOD	aom	(Z)V	g	setAllowFlight
 METHOD	aom	()Z	bx	isSwimming
-METHOD	aom	(Z)V	h	setSwimming
+METHOD	aom	(Z)V	h	setForceGamemode
 METHOD	aom	()Z	bB	isInvisible
 METHOD	aom	()Ldfo;	bC	getScoreboardTeam
-METHOD	aom	(Z)V	j	setInvisible
+METHOD	aom	(Z)V	j	setHasWhitelist
 METHOD	aom	(I)Z	i	getFlag
 METHOD	aom	(IZ)V	b	setFlag
 METHOD	aom	()I	bE	getAirTicks
@@ -2265,9 +2265,9 @@ METHOD	aom	()Z	bP	isIgnoreBlockTrigger
 METHOD	aom	(Lk;)V	a	appendEntityCrashDetails
 METHOD	aom	()Ljava/util/UUID;	bR	getUniqueID
 METHOD	aom	()Ljava/lang/String;	bS	getUniqueIDString
-METHOD	aom	()Ljava/lang/String;	bT	getName
-METHOD	aom	()Lmr;	d	getScoreboardDisplayName
-METHOD	aom	(Lmr;)V	a	setCustomName
+METHOD	aom	()Ljava/lang/String;	bT	getName_bT
+METHOD	aom	()Lmr;	d	getDisplayName_d
+METHOD	aom	(Lmr;)V	a	close
 METHOD	aom	()Lmr;	R	getCustomName
 METHOD	aom	()Z	Q	hasCustomName
 METHOD	aom	(Z)V	n	setCustomNameVisible
@@ -2275,9 +2275,9 @@ METHOD	aom	()Z	bW	getCustomNameVisible
 METHOD	aom	(DDD)V	l	enderTeleportAndLoad
 METHOD	aom	(DDD)V	a	enderTeleportTo
 METHOD	aom	()V	y_	updateSize
-METHOD	aom	()Lfz;	bY	getDirection
+METHOD	aom	()Lfz;	bY	getDirection_bY
 METHOD	aom	()Lfz;	bZ	getAdjustedDirection
-METHOD	aom	()Ldeg;	cb	getBoundingBox
+METHOD	aom	()Ldeg;	cb	getBoundingBox_cb
 METHOD	aom	(Lapj;Laon;)F	a	getHeadHeight
 METHOD	aom	()F	cd	getHeadHeight
 METHOD	aom	(Lmr;Ljava/util/UUID;)V	a	sendMessage
@@ -2290,12 +2290,12 @@ METHOD	aom	()Z	cp	hasSinglePlayerPassenger
 METHOD	aom	()Laom;	cq	getRootVehicle
 METHOD	aom	(Laom;)Z	x	isSameVehicle
 METHOD	aom	()Laom;	cs	getVehicle
-METHOD	aom	()Lcxf;	z_	getPushReaction
+METHOD	aom	()Lcxf;	z_	getPushReaction_z_
 METHOD	aom	()Lacm;	ct	getSoundCategory
 METHOD	aom	()I	cu	getMaxFireTicks
 METHOD	aom	()Lcz;	cv	getCommandListener
-METHOD	aom	()Z	a	shouldSendSuccess
-METHOD	aom	()Z	b	shouldSendFailure
+METHOD	aom	()Z	a	isDone
+METHOD	aom	()Z	b	hasSaddle_b
 METHOD	aom	()Z	S_	shouldBroadcastCommands
 METHOD	aom	()F	cx	getWidth
 METHOD	aom	()F	cy	getHeight
@@ -2432,9 +2432,9 @@ METHOD	aoq	(Laoq;)Luh;	a	getName
 METHOD	aoq	(Lbqb;Lbki;Lbec;Lfu;Lapb;ZZ)Laom;	a	spawnCreature
 METHOD	aoq	(Lbqb;Lle;Lmr;Lbec;Lfu;Lapb;ZZ)Laom;	a	spawnCreature
 METHOD	aoq	(Lbqb;Lle;Lmr;Lbec;Lfu;Lapb;ZZ)Laom;	b	createCreature
-METHOD	aoq	()I	m	getChunkRange
-METHOD	aoq	()I	n	getUpdateInterval
-METHOD	aoq	()Z	o	isDeltaTracking
+METHOD	aoq	()I	m	getBadOmenLevel
+METHOD	aoq	()I	n	getMaxPlayers
+METHOD	aoq	()Z	o	getHasWhitelist
 CLASS	aor$a	EnumItemSlot$Function
 FIELD	aor$a	Laor$a;	a	HAND
 FIELD	aor$a	Laor$a;	b	ARMOR
@@ -2445,18 +2445,18 @@ FIELD	aor	Laor;	c	FEET
 FIELD	aor	Laor;	d	LEGS
 FIELD	aor	Laor;	e	CHEST
 FIELD	aor	Laor;	f	HEAD
-METHOD	aor	()Ljava/lang/String;	d	getSlotName
+METHOD	aor	()Ljava/lang/String;	d	getId
 METHOD	aor	(Ljava/lang/String;)Laor;	a	fromName
 CLASS	aos	EntityExperienceOrb
 FIELD	aos	I	f	value
 FIELD	aos	Lbec;	g	targetPlayer
 FIELD	aos	I	an	targetTime
 METHOD	aos	()Z	ax	playStepSound
-METHOD	aos	()V	e	initDatawatcher
-METHOD	aos	()V	j	tick
+METHOD	aos	()V	e	clearBlocks
+METHOD	aos	()V	j	applyEffects
 METHOD	aos	(Lanw;F)Z	a	damageEntity
 METHOD	aos	(Lle;)V	b	saveData
-METHOD	aos	(Lle;)V	a	loadData
+METHOD	aos	(Lle;)V	a	load
 METHOD	aos	(Lbec;)V	a_	pickup
 METHOD	aos	(I)I	a	getOrbValue
 CLASS	aot	EntityFlying
@@ -2465,17 +2465,17 @@ CLASS	aou	EnumMainHand
 FIELD	aou	Laou;	a	LEFT
 FIELD	aou	Laou;	b	RIGHT
 CLASS	aov	SaddleStorage
-METHOD	aov	(Z)V	a	setSaddle
-METHOD	aov	()Z	b	hasSaddle
+METHOD	aov	(Z)V	a	safeShutdown
+METHOD	aov	()Z	b	hasSaddle_b
 CLASS	aow	ISteerable
 CLASS	aox	EntityLightning
 FIELD	aox	I	c	lifeTicks
 FIELD	aox	Z	e	isEffect
-METHOD	aox	(Z)V	a	setEffect
+METHOD	aox	(Z)V	a	safeShutdown
 METHOD	aox	()Lacm;	ct	getSoundCategory
-METHOD	aox	()V	j	tick
-METHOD	aox	()V	e	initDatawatcher
-METHOD	aox	(Lle;)V	a	loadData
+METHOD	aox	()V	j	applyEffects
+METHOD	aox	()V	e	clearBlocks
+METHOD	aox	(Lle;)V	a	load
 METHOD	aox	(Lle;)V	b	saveData
 CLASS	aoy$1	EntityLiving$1
 CLASS	aoy	EntityLiving
@@ -2500,7 +2500,7 @@ FIELD	aoy	I	bC	jumpTicks
 FIELD	aoy	Lbki;	bj	activeItem
 METHOD	aoy	()Lapr;	cI	getBehaviorController
 METHOD	aoy	()V	X	killEntity
-METHOD	aoy	()V	e	initDatawatcher
+METHOD	aoy	()V	e	clearBlocks
 METHOD	aoy	()V	ad	entityBaseTick
 METHOD	aoy	()F	am	getBlockSpeedFactor
 METHOD	aoy	()Z	x_	isBaby
@@ -2509,9 +2509,9 @@ METHOD	aoy	(Lbec;)I	d	getExpValue
 METHOD	aoy	()Z	cW	alwaysGivesExp
 METHOD	aoy	()Ljava/util/Random;	cX	getRandom
 METHOD	aoy	()Laoy;	cY	getLastDamager
-METHOD	aoy	(Laoy;)V	a	setLastDamager
+METHOD	aoy	(Laoy;)V	a	setAuthor
 METHOD	aoy	(Lle;)V	b	saveData
-METHOD	aoy	(Lle;)V	a	loadData
+METHOD	aoy	(Lle;)V	a	load
 METHOD	aoy	()V	dd	tickPotionEffects
 METHOD	aoy	()Z	df	removeAllEffects
 METHOD	aoy	()Ljava/util/Collection;	dg	getEffects
@@ -2554,20 +2554,20 @@ METHOD	aoy	()Lapu;	dA	getAttributeMap
 METHOD	aoy	()Lapc;	dB	getMonsterType
 METHOD	aoy	()Lbki;	dC	getItemInMainHand
 METHOD	aoy	()Lbki;	dD	getItemInOffHand
-METHOD	aoy	(Z)V	g	setSprinting
+METHOD	aoy	(Z)V	g	setAllowFlight
 METHOD	aoy	()F	dF	getSoundVolume
 METHOD	aoy	()Z	dH	isFrozen
 METHOD	aoy	(Laom;)V	i	collide
 METHOD	aoy	()V	dJ	jump
 METHOD	aoy	(Laom;)Z	B	attackEntity
-METHOD	aoy	()V	j	tick
-METHOD	aoy	()V	k	movementTick
-METHOD	aoy	()V	dO	doTick
+METHOD	aoy	()V	j	applyEffects
+METHOD	aoy	()V	k	dropContents
+METHOD	aoy	()V	dO	doTick_dO
 METHOD	aoy	()V	dP	collideNearby
 METHOD	aoy	()Z	dQ	isRiptiding
-METHOD	aoy	()V	l	stopRiding
+METHOD	aoy	()V	l	handleDisconnection
 METHOD	aoy	()V	aW	passengerTick
-METHOD	aoy	(Z)V	o	setJumping
+METHOD	aoy	(Z)V	o	setEnabled
 METHOD	aoy	(Laom;I)V	a	receive
 METHOD	aoy	(Laom;)Z	D	hasLineOfSight
 METHOD	aoy	()Z	dR	doAITick
@@ -2619,39 +2619,39 @@ METHOD	aoz	()Laxm;	z	getEntitySenses
 METHOD	aoz	()Laoy;	A	getGoalTarget
 METHOD	aoz	(Laoy;)V	i	setGoalTarget
 METHOD	aoz	()V	B	blockEaten
-METHOD	aoz	()V	e	initDatawatcher
+METHOD	aoz	()V	e	clearBlocks
 METHOD	aoz	()V	ad	entityBaseTick
 METHOD	aoz	(Lbec;)I	d	getExpValue
 METHOD	aoz	()V	G	doSpawnEffect
-METHOD	aoz	()V	j	tick
+METHOD	aoz	()V	j	applyEffects
 METHOD	aoz	()Lack;	I	getSoundAmbient
 METHOD	aoz	(Lle;)V	b	saveData
-METHOD	aoz	(Lle;)V	a	loadData
+METHOD	aoz	(Lle;)V	a	load
 METHOD	aoz	()Luh;	do	do_
 METHOD	aoz	()Luh;	J	getDefaultLootTable
-METHOD	aoz	()V	k	movementTick
+METHOD	aoz	()V	k	dropContents
 METHOD	aoz	(Lbki;)Z	h	canPickup
 METHOD	aoz	(D)Z	h	isTypeNotPersistent
-METHOD	aoz	()Z	K	isSpecialPersistence
+METHOD	aoz	()Z	K	isNight
 METHOD	aoz	()V	cH	checkDespawn
-METHOD	aoz	()V	dO	doTick
+METHOD	aoz	()V	dO	doTick_dO
 METHOD	aoz	()V	N	mobTick
 METHOD	aoz	()I	er	getMaxSpawnGroup
 METHOD	aoz	()Ljava/lang/Iterable;	bk	getArmorItems
 METHOD	aoz	(Laor;)Lbki;	b	getEquipment
-METHOD	aoz	(Laor;Lbki;)V	a	setSlot
+METHOD	aoz	(Laor;Lbki;)V	a	setEquipment
 METHOD	aoz	(Lanw;IZ)V	a	dropDeathLoot
 METHOD	aoz	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	aoz	()V	et	setPersistent
 METHOD	aoz	()Z	eu	canPickupLoot
-METHOD	aoz	(Z)V	p	setCanPickupLoot
+METHOD	aoz	(Z)V	p	setArms
 METHOD	aoz	()Z	ev	isPersistent
-METHOD	aoz	(ZZ)V	a	unleash
+METHOD	aoz	(ZZ)V	a	doMobSpawning
 METHOD	aoz	()Z	eC	isLeashed
 METHOD	aoz	()Laom;	eD	getLeashHolder
 METHOD	aoz	(Laom;Z)V	b	setLeashHolder
 METHOD	aoz	()Z	dR	doAITick
-METHOD	aoz	(Z)V	q	setNoAI
+METHOD	aoz	(Z)V	q	setBasePlate
 METHOD	aoz	(Z)V	r	setLeftHanded
 METHOD	aoz	(Z)V	s	setAggressive
 METHOD	aoz	()Z	eE	isNoAI
@@ -2668,7 +2668,7 @@ FIELD	apa	Lapa;	c	AMBIENT
 FIELD	apa	Lapa;	d	WATER_CREATURE
 FIELD	apa	Lapa;	e	WATER_AMBIENT
 FIELD	apa	Lapa;	f	MISC
-METHOD	apa	()Ljava/lang/String;	a	getName
+METHOD	apa	()Ljava/lang/String;	a	getKey
 CLASS	apb	EnumMobSpawn
 FIELD	apb	Lapb;	a	NATURAL
 FIELD	apb	Lapb;	b	CHUNK_GENERATION
@@ -2724,21 +2724,21 @@ FIELD	app$c	Lapp$c;	d	IN_LAVA
 CLASS	app	EntityPositionTypes
 CLASS	apq	EntityTameableAnimal
 FIELD	apq	Z	bx	willSit
-METHOD	apq	()V	e	initDatawatcher
+METHOD	apq	()V	e	clearBlocks
 METHOD	apq	(Lle;)V	b	saveData
-METHOD	apq	(Lle;)V	a	loadData
-METHOD	apq	()Z	eL	isTamed
-METHOD	apq	(Z)V	u	setTamed
-METHOD	apq	()Z	eN	isSitting
-METHOD	apq	(Z)V	v	setSitting
+METHOD	apq	(Lle;)V	a	load
+METHOD	apq	()Z	eL	gotFish
+METHOD	apq	(Z)V	u	setHasStung
+METHOD	apq	()Z	eN	isCarryingChest
+METHOD	apq	(Z)V	v	setCrouching
 METHOD	apq	()Ljava/util/UUID;	B_	getOwnerUUID
-METHOD	apq	(Ljava/util/UUID;)V	b	setOwnerUUID
-METHOD	apq	(Lbec;)V	f	tame
+METHOD	apq	(Ljava/util/UUID;)V	b	setOwner
+METHOD	apq	(Lbec;)V	f	setTradingPlayer
 METHOD	apq	()Laoy;	eO	getOwner
 METHOD	apq	()Ldfo;	bC	getScoreboardTeam
 METHOD	apq	(Lanw;)V	a	die
 METHOD	apq	()Z	eP	isWillSit
-METHOD	apq	(Z)V	w	setWillSit
+METHOD	apq	(Z)V	w	setCanJoinRaid
 CLASS	apr$1	BehaviorController$1
 CLASS	apr$a	BehaviorController$a
 CLASS	apr$b	BehaviorController$b
@@ -2755,12 +2755,12 @@ METHOD	apr	(Lawp;)Ljava/util/Optional;	c	getMemory
 METHOD	apr	()Lbfn;	b	getSchedule
 METHOD	apr	(Lbfn;)V	a	setSchedule
 CLASS	aps	AttributeBase
-METHOD	aps	()D	a	getDefault
-METHOD	aps	()Ljava/lang/String;	c	getName
+METHOD	aps	()D	a	getCenterX
+METHOD	aps	()Ljava/lang/String;	c	getName_c
 CLASS	apt	AttributeModifiable
 METHOD	apt	()Laps;	a	getAttribute
 METHOD	apt	()D	b	getBaseValue
-METHOD	apt	(D)V	a	setValue
+METHOD	apt	(D)V	a	setSize
 METHOD	apt	()Ljava/util/Set;	c	getModifiers
 METHOD	apt	(Lapv;)V	c	addModifier
 METHOD	apt	(Lapv;)V	d	removeModifier
@@ -2778,7 +2778,7 @@ METHOD	apv	()Ljava/util/UUID;	a	getUniqueId
 METHOD	apv	()Ljava/lang/String;	b	getName
 METHOD	apv	()Lapv$a;	c	getOperation
 METHOD	apv	()D	d	getAmount
-METHOD	apv	()Lle;	e	save
+METHOD	apv	()Lle;	e	save_e
 CLASS	apw$a	AttributeProvider$Builder
 CLASS	apw	AttributeProvider
 CLASS	apx	GenericAttributes
@@ -2915,7 +2915,7 @@ CLASS	atg	EntityAIBodyControl
 CLASS	ati	ControllerLookDolphin
 CLASS	atj	ControllerMoveFlying
 CLASS	atk	ControllerJump
-METHOD	atk	()V	a	jump
+METHOD	atk	()V	a	incrementScore
 CLASS	atl	ControllerLook
 CLASS	atm$a	ControllerMove$Operation
 FIELD	atm$a	Latm$a;	a	WAIT
@@ -2983,7 +2983,7 @@ CLASS	avb	PathfinderGoalPanic
 CLASS	avc	PathfinderGoalRaid
 CLASS	ave	PathfinderGoalRandomLookaround
 CLASS	avf	PathfinderGoalRandomStroll
-METHOD	avf	(I)V	a	setTimeBetweenMovement
+METHOD	avf	(I)V	a	addScore
 CLASS	avg	PathfinderGoalRandomSwim
 CLASS	avh	PathfinderGoalArrowAttack
 CLASS	avi	PathfinderGoalBowShoot
@@ -3146,7 +3146,7 @@ FIELD	ayb	Lorg/apache/logging/log4j/Logger;	a	LOGGER
 CLASS	ayc	VillagePlaceType
 CLASS	aye	EntityAmbient
 CLASS	ayf	EntityBat
-METHOD	ayf	()V	e	initDatawatcher
+METHOD	ayf	()V	e	clearBlocks
 METHOD	ayf	()F	dF	getSoundVolume
 METHOD	ayf	()Lack;	I	getSoundAmbient
 METHOD	ayf	(Lanw;)Lack;	e	getSoundHurt
@@ -3155,27 +3155,27 @@ METHOD	ayf	()Z	aR	isCollidable
 METHOD	ayf	()V	dP	collideNearby
 METHOD	ayf	()Z	eJ	isAsleep
 METHOD	ayf	(Z)V	t	setAsleep
-METHOD	ayf	()V	j	tick
+METHOD	ayf	()V	j	applyEffects
 METHOD	ayf	()V	N	mobTick
 METHOD	ayf	()Z	ax	playStepSound
 METHOD	ayf	()Z	bP	isIgnoreBlockTrigger
 METHOD	ayf	(Lanw;F)Z	a	damageEntity
-METHOD	ayf	(Lle;)V	a	loadData
+METHOD	ayf	(Lle;)V	a	load
 METHOD	ayf	(Lle;)V	b	saveData
 CLASS	ayh$a	EntityFish$a
 CLASS	ayh$b	EntityFish$b
 CLASS	ayh	EntityFish
 FIELD	ayh	Ltq;	b	FROM_BUCKET
-METHOD	ayh	()Z	K	isSpecialPersistence
+METHOD	ayh	()Z	K	isNight
 METHOD	ayh	(D)Z	h	isTypeNotPersistent
 METHOD	ayh	()I	er	getMaxSpawnGroup
-METHOD	ayh	()V	e	initDatawatcher
-METHOD	ayh	()Z	eO	isFromBucket
-METHOD	ayh	(Z)V	t	setFromBucket
+METHOD	ayh	()V	e	clearBlocks
+METHOD	ayh	()Z	eO	canCauseHeadDrop
+METHOD	ayh	(Z)V	t	setAsleep
 METHOD	ayh	(Lle;)V	b	saveData
-METHOD	ayh	(Lle;)V	a	loadData
+METHOD	ayh	(Lle;)V	a	load
 METHOD	ayh	()V	o	initPathfinder
-METHOD	ayh	()V	k	movementTick
+METHOD	ayh	()V	k	dropContents
 METHOD	ayh	()Lack;	aq	getSoundSwim
 CLASS	ayi	EntityGolem
 METHOD	ayi	()Lack;	I	getSoundAmbient
@@ -3186,19 +3186,19 @@ CLASS	ayj$a	EntityFishSchool$a
 CLASS	ayj	EntityFishSchool
 METHOD	ayj	()V	o	initPathfinder
 METHOD	ayj	()I	er	getMaxSpawnGroup
-METHOD	ayj	()V	j	tick
+METHOD	ayj	()V	j	applyEffects
 METHOD	ayj	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 CLASS	ayk	EntityAnimal
 FIELD	ayk	I	bv	loveTicks
 FIELD	ayk	Ljava/util/UUID;	bw	breedCause
 METHOD	ayk	()V	N	mobTick
-METHOD	ayk	()V	k	movementTick
+METHOD	ayk	()V	k	dropContents
 METHOD	ayk	(Lanw;F)Z	a	damageEntity
 METHOD	ayk	(Lle;)V	b	saveData
-METHOD	ayk	(Lle;)V	a	loadData
+METHOD	ayk	(Lle;)V	a	load
 METHOD	ayk	(D)Z	h	isTypeNotPersistent
 METHOD	ayk	(Lbec;)I	d	getExpValue
-METHOD	ayk	(I)V	s	setLoveTicks
+METHOD	ayk	(I)V	s	setInvul
 METHOD	ayk	()Lze;	eS	getBreedCause
 METHOD	ayk	()Z	eT	isInLove
 METHOD	ayk	()V	eU	resetLove
@@ -3222,17 +3222,17 @@ FIELD	ayl	I	bD	cannotEnterHiveTicks
 FIELD	ayl	I	bE	numCropsGrownSincePollination
 FIELD	ayl	Lfu;	bH	flowerPos
 FIELD	ayl	Lfu;	bI	hivePos
-METHOD	ayl	()V	e	initDatawatcher
+METHOD	ayl	()V	e	clearBlocks
 METHOD	ayl	()V	o	initPathfinder
 METHOD	ayl	(Lle;)V	b	saveData
-METHOD	ayl	(Lle;)V	a	loadData
+METHOD	ayl	(Lle;)V	a	load
 METHOD	ayl	(Laom;)Z	B	attackEntity
-METHOD	ayl	()V	j	tick
+METHOD	ayl	()V	j	applyEffects
 METHOD	ayl	()Lfu;	eL	getFlowerPos
 METHOD	ayl	()Z	eM	hasFlowerPos
 METHOD	ayl	(Lfu;)V	g	setFlowerPos
 METHOD	ayl	()Z	fd	canPollinate
-METHOD	ayl	(I)V	t	setCannotEnterHiveTicks
+METHOD	ayl	(I)V	t	addScore_t
 METHOD	ayl	()V	N	mobTick
 METHOD	ayl	()I	F_	getAnger
 METHOD	ayl	(I)V	a_	setAnger
@@ -3242,9 +3242,9 @@ METHOD	ayl	()V	H_	anger
 METHOD	ayl	()Z	eV	hasHivePos
 METHOD	ayl	()Lfu;	eW	getHivePos
 METHOD	ayl	()I	fh	getNumCropsGrownSincePollination
-METHOD	ayl	()V	k	movementTick
+METHOD	ayl	()V	k	dropContents
 METHOD	ayl	()Z	eY	hasNectar
-METHOD	ayl	(Z)V	t	setHasNectar
+METHOD	ayl	(Z)V	t	setAsleep
 METHOD	ayl	()Z	eZ	hasStung
 METHOD	ayl	(Z)V	u	setHasStung
 METHOD	ayl	()Lack;	I	getSoundAmbient
@@ -3261,18 +3261,18 @@ FIELD	aym$c	Lbec;	c	chosenTarget
 CLASS	aym	EntityCat
 METHOD	aym	()V	o	initPathfinder
 METHOD	aym	()I	eW	getCatType
-METHOD	aym	(I)V	t	setCatType
-METHOD	aym	()Lbje;	eZ	getCollarColor
+METHOD	aym	(I)V	t	addScore_t
+METHOD	aym	()Lbje;	eZ	getCollarColor_eZ
 METHOD	aym	(Lbje;)V	a	setCollarColor
-METHOD	aym	()V	e	initDatawatcher
+METHOD	aym	()V	e	clearBlocks
 METHOD	aym	(Lle;)V	b	saveData
-METHOD	aym	(Lle;)V	a	loadData
+METHOD	aym	(Lle;)V	a	load
 METHOD	aym	()V	N	mobTick
 METHOD	aym	()Lack;	I	getSoundAmbient
 METHOD	aym	(Lanw;)Lack;	e	getSoundHurt
 METHOD	aym	()Lack;	dp	getSoundDeath
 METHOD	aym	(Laom;)Z	B	attackEntity
-METHOD	aym	()V	j	tick
+METHOD	aym	()V	j	applyEffects
 METHOD	aym	(Layk;)Z	a	mate
 METHOD	aym	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	aym	(D)Z	h	isTypeNotPersistent
@@ -3281,22 +3281,22 @@ CLASS	ayn	EntityChicken
 FIELD	ayn	I	bA	eggLayTime
 FIELD	ayn	Z	bB	chickenJockey
 METHOD	ayn	()V	o	initPathfinder
-METHOD	ayn	()V	k	movementTick
+METHOD	ayn	()V	k	dropContents
 METHOD	ayn	()Lack;	I	getSoundAmbient
 METHOD	ayn	(Lanw;)Lack;	e	getSoundHurt
 METHOD	ayn	()Lack;	dp	getSoundDeath
 METHOD	ayn	(Lbec;)I	d	getExpValue
-METHOD	ayn	(Lle;)V	a	loadData
+METHOD	ayn	(Lle;)V	a	load
 METHOD	ayn	(Lle;)V	b	saveData
 METHOD	ayn	(D)Z	h	isTypeNotPersistent
-METHOD	ayn	()Z	eM	isChickenJockey
-METHOD	ayn	(Z)V	t	setChickenJockey
+METHOD	ayn	()Z	eM	hasFlowerPos
+METHOD	ayn	(Z)V	t	setAsleep
 METHOD	ayn	(Laok;)Laok;	a	createChild
 CLASS	ayo	EntityCod
 METHOD	ayo	()Lack;	I	getSoundAmbient
 METHOD	ayo	()Lack;	dp	getSoundDeath
 METHOD	ayo	(Lanw;)Lack;	e	getSoundHurt
-METHOD	ayo	()Lack;	eN	getSoundFlop
+METHOD	ayo	()Lack;	eN	getSoundCastSpell
 CLASS	ayp	EntityCow
 METHOD	ayp	()V	o	initPathfinder
 METHOD	ayp	()Lack;	I	getSoundAmbient
@@ -3311,18 +3311,18 @@ CLASS	ayq$c	EntityDolphin$c
 CLASS	ayq$d	EntityDolphin$d
 CLASS	ayq	EntityDolphin
 METHOD	ayq	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
-METHOD	ayq	(Lfu;)V	g	setTreasurePos
+METHOD	ayq	(Lfu;)V	g	setFlowerPos
 METHOD	ayq	()Lfu;	m	getTreasurePos
 METHOD	ayq	()Z	eL	gotFish
-METHOD	ayq	(Z)V	t	setGotFish
-METHOD	ayq	()I	eM	getMoistness
-METHOD	ayq	(I)V	b	setMoistness
-METHOD	ayq	()V	e	initDatawatcher
+METHOD	ayq	(Z)V	t	setAsleep
+METHOD	ayq	()I	eM	getExperience
+METHOD	ayq	(I)V	b	setDamage
+METHOD	ayq	()V	e	clearBlocks
 METHOD	ayq	(Lle;)V	b	saveData
-METHOD	ayq	(Lle;)V	a	loadData
+METHOD	ayq	(Lle;)V	a	load
 METHOD	ayq	()V	o	initPathfinder
 METHOD	ayq	(Laom;)Z	B	attackEntity
-METHOD	ayq	()V	j	tick
+METHOD	ayq	()V	j	applyEffects
 METHOD	ayq	(Lanw;)Lack;	e	getSoundHurt
 METHOD	ayq	()Lack;	dp	getSoundDeath
 METHOD	ayq	()Lack;	I	getSoundAmbient
@@ -3357,22 +3357,22 @@ FIELD	ays$v	Lays$v;	b	SNOW
 CLASS	ays	EntityFox
 FIELD	ays	Ltq;	bx	FIRST_TRUSTED_PLAYER
 FIELD	ays	Ltq;	by	SECOND_TRUSTED_PLAYER
-METHOD	ays	()V	e	initDatawatcher
+METHOD	ays	()V	e	clearBlocks
 METHOD	ays	()V	o	initPathfinder
-METHOD	ays	()V	k	movementTick
+METHOD	ays	()V	k	dropContents
 METHOD	ays	()Z	dH	isFrozen
 METHOD	ays	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	ays	()V	fa	initializePathFinderGoals
 METHOD	ays	()Lays$v;	eM	getFoxType
 METHOD	ays	(Lays$v;)V	a	setFoxType
 METHOD	ays	(Lle;)V	b	saveData
-METHOD	ays	(Lle;)V	a	loadData
-METHOD	ays	()Z	eN	isSitting
-METHOD	ays	(Z)V	t	setSitting
+METHOD	ays	(Lle;)V	a	load
+METHOD	ays	()Z	eN	isCarryingChest
+METHOD	ays	(Z)V	t	setAsleep
 METHOD	ays	()Z	el	isSleeping
 METHOD	ays	(Z)V	z	setSleeping
 METHOD	ays	(Lbki;)Z	h	canPickup
-METHOD	ays	()V	j	tick
+METHOD	ays	()V	j	applyEffects
 METHOD	ays	(Z)V	v	setCrouching
 METHOD	ays	()Z	bv	isCrouching
 METHOD	ays	(Laoy;)V	i	setGoalTarget
@@ -3387,10 +3387,10 @@ FIELD	ayt$a	Layt$a;	c	MEDIUM
 FIELD	ayt$a	Layt$a;	d	HIGH
 CLASS	ayt	EntityIronGolem
 METHOD	ayt	()V	o	initPathfinder
-METHOD	ayt	()V	e	initDatawatcher
-METHOD	ayt	()V	k	movementTick
+METHOD	ayt	()V	e	clearBlocks
+METHOD	ayt	()V	k	dropContents
 METHOD	ayt	(Lle;)V	b	saveData
-METHOD	ayt	(Lle;)V	a	loadData
+METHOD	ayt	(Lle;)V	a	load
 METHOD	ayt	()V	H_	anger
 METHOD	ayt	(I)V	a_	setAnger
 METHOD	ayt	()I	F_	getAnger
@@ -3400,30 +3400,30 @@ METHOD	ayt	(Laom;)Z	B	attackEntity
 METHOD	ayt	(Lanw;F)Z	a	damageEntity
 METHOD	ayt	(Lanw;)Lack;	e	getSoundHurt
 METHOD	ayt	()Lack;	dp	getSoundDeath
-METHOD	ayt	()Z	eO	isPlayerCreated
-METHOD	ayt	(Z)V	u	setPlayerCreated
+METHOD	ayt	()Z	eO	canCauseHeadDrop
+METHOD	ayt	(Z)V	u	setHasStung
 METHOD	ayt	(Lanw;)V	a	die
 CLASS	ayu$a	EntityMushroomCow$Type
 FIELD	ayu$a	Layu$a;	a	RED
 FIELD	ayu$a	Layu$a;	b	BROWN
 CLASS	ayu	EntityMushroomCow
 METHOD	ayu	(Laox;)V	a	onLightningStrike
-METHOD	ayu	()V	e	initDatawatcher
-METHOD	ayu	(Lacm;)V	a	shear
+METHOD	ayu	()V	e	clearBlocks
+METHOD	ayu	(Lacm;)V	a	saddle
 METHOD	ayu	()Z	L_	canShear
 METHOD	ayu	(Lle;)V	b	saveData
-METHOD	ayu	(Lle;)V	a	loadData
+METHOD	ayu	(Lle;)V	a	load
 METHOD	ayu	(Layu$a;)V	a	setVariant
 METHOD	ayu	()Layu$a;	eM	getVariant
 METHOD	ayu	(Laok;)Laok;	a	createChild
 CLASS	ayv$a	EntityOcelot$a
 CLASS	ayv$b	EntityOcelot$b
 CLASS	ayv	EntityOcelot
-METHOD	ayv	()Z	eN	isTrusting
-METHOD	ayv	(Z)V	t	setTrusting
+METHOD	ayv	()Z	eN	isCarryingChest
+METHOD	ayv	(Z)V	t	setAsleep
 METHOD	ayv	(Lle;)V	b	saveData
-METHOD	ayv	(Lle;)V	a	loadData
-METHOD	ayv	()V	e	initDatawatcher
+METHOD	ayv	(Lle;)V	a	load
+METHOD	ayv	()V	e	clearBlocks
 METHOD	ayv	()V	o	initPathfinder
 METHOD	ayv	()V	N	mobTick
 METHOD	ayv	(D)Z	h	isTypeNotPersistent
@@ -3442,7 +3442,7 @@ FIELD	ayw$a	Layw$a;	d	PLAYFUL
 FIELD	ayw$a	Layw$a;	e	BROWN
 FIELD	ayw$a	Layw$a;	f	WEAK
 FIELD	ayw$a	Layw$a;	g	AGGRESSIVE
-METHOD	ayw$a	()Z	c	isRecessive
+METHOD	ayw$a	()Z	c	isConvertable
 CLASS	ayw$b	EntityPanda$b
 CLASS	ayw$c	EntityPanda$c
 CLASS	ayw$d	EntityPanda$d
@@ -3460,19 +3460,19 @@ METHOD	ayw	()Layw$a;	eW	getMainGene
 METHOD	ayw	(Layw$a;)V	a	setMainGene
 METHOD	ayw	()Layw$a;	eX	getHiddenGene
 METHOD	ayw	(Layw$a;)V	b	setHiddenGene
-METHOD	ayw	()V	e	initDatawatcher
+METHOD	ayw	()V	e	clearBlocks
 METHOD	ayw	(Lle;)V	b	saveData
-METHOD	ayw	(Lle;)V	a	loadData
+METHOD	ayw	(Lle;)V	a	load
 METHOD	ayw	(Laok;)Laok;	a	createChild
 METHOD	ayw	()V	o	initPathfinder
 METHOD	ayw	()Layw$a;	fa	getActiveGene
 METHOD	ayw	()Z	fb	isLazy
-METHOD	ayw	()Z	fc	isWorried
-METHOD	ayw	()Z	fd	isPlayful
+METHOD	ayw	()Z	fc	hasReproduced
+METHOD	ayw	()Z	fd	canPollinate
 METHOD	ayw	()Z	ff	isWeak
 METHOD	ayw	()Z	eG	isAggressive
 METHOD	ayw	(Laom;)Z	B	attackEntity
-METHOD	ayw	()V	j	tick
+METHOD	ayw	()V	j	applyEffects
 METHOD	ayw	(Lanw;F)Z	a	damageEntity
 METHOD	ayw	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	ayw	()Lack;	I	getSoundAmbient
@@ -3483,7 +3483,7 @@ CLASS	ayx	EntityParrot
 METHOD	ayx	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	ayx	()Z	x_	isBaby
 METHOD	ayx	()V	o	initPathfinder
-METHOD	ayx	()V	k	movementTick
+METHOD	ayx	()V	k	dropContents
 METHOD	ayx	(Layk;)Z	a	mate
 METHOD	ayx	(Laok;)Laok;	a	createChild
 METHOD	ayx	(Laom;)Z	B	attackEntity
@@ -3493,18 +3493,18 @@ METHOD	ayx	()Lack;	dp	getSoundDeath
 METHOD	ayx	()Lacm;	ct	getSoundCategory
 METHOD	ayx	()Z	aR	isCollidable
 METHOD	ayx	(Lanw;F)Z	a	damageEntity
-METHOD	ayx	()I	eX	getVariant
-METHOD	ayx	(I)V	t	setVariant
-METHOD	ayx	()V	e	initDatawatcher
+METHOD	ayx	()I	eX	getVariant_eX
+METHOD	ayx	(I)V	t	addScore_t
+METHOD	ayx	()V	e	clearBlocks
 METHOD	ayx	(Lle;)V	b	saveData
-METHOD	ayx	(Lle;)V	a	loadData
+METHOD	ayx	(Lle;)V	a	load
 CLASS	ayy	EntityPig
 FIELD	ayy	Laov;	by	saddleStorage
 METHOD	ayy	()V	o	initPathfinder
 METHOD	ayy	()Laom;	cl	getRidingPassenger
-METHOD	ayy	()V	e	initDatawatcher
+METHOD	ayy	()V	e	clearBlocks
 METHOD	ayy	(Lle;)V	b	saveData
-METHOD	ayy	(Lle;)V	a	loadData
+METHOD	ayy	(Lle;)V	a	load
 METHOD	ayy	()Lack;	I	getSoundAmbient
 METHOD	ayy	(Lanw;)Lack;	e	getSoundHurt
 METHOD	ayy	()Lack;	dp	getSoundDeath
@@ -3521,7 +3521,7 @@ CLASS	ayz$d	EntityPolarBear$d
 CLASS	ayz	EntityPolarBear
 METHOD	ayz	(Laok;)Laok;	a	createChild
 METHOD	ayz	()V	o	initPathfinder
-METHOD	ayz	(Lle;)V	a	loadData
+METHOD	ayz	(Lle;)V	a	load
 METHOD	ayz	(Lle;)V	b	saveData
 METHOD	ayz	()V	H_	anger
 METHOD	ayz	(I)V	a_	setAnger
@@ -3531,26 +3531,26 @@ METHOD	ayz	()Ljava/util/UUID;	G_	getAngerTarget
 METHOD	ayz	()Lack;	I	getSoundAmbient
 METHOD	ayz	(Lanw;)Lack;	e	getSoundHurt
 METHOD	ayz	()Lack;	dp	getSoundDeath
-METHOD	ayz	()V	e	initDatawatcher
-METHOD	ayz	()V	j	tick
+METHOD	ayz	()V	e	clearBlocks
+METHOD	ayz	()V	j	applyEffects
 METHOD	ayz	(Laom;)Z	B	attackEntity
 METHOD	ayz	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 CLASS	az	CriterionConditionEnchantments
 CLASS	aza$a	EntityPufferFish$a
 CLASS	aza	EntityPufferFish
-METHOD	aza	()V	e	initDatawatcher
-METHOD	aza	()I	eO	getPuffState
-METHOD	aza	(I)V	b	setPuffState
+METHOD	aza	()V	e	clearBlocks
+METHOD	aza	()I	eO	getChestSlots
+METHOD	aza	(I)V	b	setDamage
 METHOD	aza	(Lle;)V	b	saveData
-METHOD	aza	(Lle;)V	a	loadData
+METHOD	aza	(Lle;)V	a	load
 METHOD	aza	()V	o	initPathfinder
-METHOD	aza	()V	j	tick
-METHOD	aza	()V	k	movementTick
+METHOD	aza	()V	j	applyEffects
+METHOD	aza	()V	k	dropContents
 METHOD	aza	(Lbec;)V	a_	pickup
 METHOD	aza	()Lack;	I	getSoundAmbient
 METHOD	aza	()Lack;	dp	getSoundDeath
 METHOD	aza	(Lanw;)Lack;	e	getSoundHurt
-METHOD	aza	()Lack;	eN	getSoundFlop
+METHOD	aza	()Lack;	eN	getSoundCastSpell
 CLASS	azb$a	EntityRabbit$PathfinderGoalKillerRabbitMeleeAttack
 CLASS	azb$b	EntityRabbit$PathfinderGoalRabbitAvoidTarget
 CLASS	azb$c	EntityRabbit$GroupDataRabbit
@@ -3562,63 +3562,63 @@ FIELD	azb$g	Lazb;	g	entity
 CLASS	azb	EntityRabbit
 METHOD	azb	()V	o	initPathfinder
 METHOD	azb	()V	dJ	jump
-METHOD	azb	(Z)V	o	setJumping
-METHOD	azb	()V	e	initDatawatcher
+METHOD	azb	(Z)V	o	setEnabled
+METHOD	azb	()V	e	clearBlocks
 METHOD	azb	()V	N	mobTick
-METHOD	azb	()V	k	movementTick
+METHOD	azb	()V	k	dropContents
 METHOD	azb	(Lle;)V	b	saveData
-METHOD	azb	(Lle;)V	a	loadData
-METHOD	azb	()Lack;	eN	getSoundJump
+METHOD	azb	(Lle;)V	a	load
+METHOD	azb	()Lack;	eN	getSoundCastSpell
 METHOD	azb	()Lack;	I	getSoundAmbient
 METHOD	azb	(Lanw;)Lack;	e	getSoundHurt
 METHOD	azb	()Lack;	dp	getSoundDeath
 METHOD	azb	(Laom;)Z	B	attackEntity
 METHOD	azb	()Lacm;	ct	getSoundCategory
 METHOD	azb	(Lanw;F)Z	a	damageEntity
-METHOD	azb	()I	eO	getRabbitType
-METHOD	azb	(I)V	t	setRabbitType
+METHOD	azb	()I	eO	getChestSlots
+METHOD	azb	(I)V	t	addScore_t
 METHOD	azb	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	azb	(Laok;)Laok;	a	createChild
 CLASS	azc	EntitySalmon
 METHOD	azc	()Lack;	I	getSoundAmbient
 METHOD	azc	()Lack;	dp	getSoundDeath
 METHOD	azc	(Lanw;)Lack;	e	getSoundHurt
-METHOD	azc	()Lack;	eN	getSoundFlop
+METHOD	azc	()Lack;	eN	getSoundCastSpell
 CLASS	azd$1	EntitySheep$1
 METHOD	azd$1	(Lbec;)Z	a	canUse
 CLASS	azd$2	EntitySheep$2
 CLASS	azd	EntitySheep
 METHOD	azd	()V	o	initPathfinder
 METHOD	azd	()V	N	mobTick
-METHOD	azd	()V	k	movementTick
-METHOD	azd	()V	e	initDatawatcher
+METHOD	azd	()V	k	dropContents
+METHOD	azd	()V	e	clearBlocks
 METHOD	azd	()Luh;	J	getDefaultLootTable
-METHOD	azd	(Lacm;)V	a	shear
+METHOD	azd	(Lacm;)V	a	saddle
 METHOD	azd	()Z	L_	canShear
 METHOD	azd	(Lle;)V	b	saveData
-METHOD	azd	(Lle;)V	a	loadData
+METHOD	azd	(Lle;)V	a	load
 METHOD	azd	()Lack;	I	getSoundAmbient
 METHOD	azd	(Lanw;)Lack;	e	getSoundHurt
 METHOD	azd	()Lack;	dp	getSoundDeath
-METHOD	azd	()Lbje;	eM	getColor
+METHOD	azd	()Lbje;	eM	getColor_eM
 METHOD	azd	(Lbje;)V	b	setColor
-METHOD	azd	()Z	eN	isSheared
-METHOD	azd	(Z)V	t	setSheared
+METHOD	azd	()Z	eN	isCarryingChest
+METHOD	azd	(Z)V	t	setAsleep
 METHOD	azd	()V	B	blockEaten
 METHOD	azd	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	azd	(Laok;)Laok;	a	createChild
 CLASS	aze	EntityPerchable
-METHOD	aze	()V	j	tick
+METHOD	aze	()V	j	applyEffects
 CLASS	azf	EntitySnowman
 METHOD	azf	()V	o	initPathfinder
-METHOD	azf	()V	e	initDatawatcher
+METHOD	azf	()V	e	clearBlocks
 METHOD	azf	(Lle;)V	b	saveData
-METHOD	azf	(Lle;)V	a	loadData
-METHOD	azf	()V	k	movementTick
-METHOD	azf	(Lacm;)V	a	shear
+METHOD	azf	(Lle;)V	a	load
+METHOD	azf	()V	k	dropContents
+METHOD	azf	(Lacm;)V	a	saddle
 METHOD	azf	()Z	L_	canShear
-METHOD	azf	()Z	eL	hasPumpkin
-METHOD	azf	(Z)V	t	setHasPumpkin
+METHOD	azf	()Z	eL	gotFish
+METHOD	azf	(Z)V	t	setAsleep
 METHOD	azf	()Lack;	I	getSoundAmbient
 METHOD	azf	(Lanw;)Lack;	e	getSoundHurt
 METHOD	azf	()Lack;	dp	getSoundDeath
@@ -3632,7 +3632,7 @@ METHOD	azg	(Lanw;)Lack;	e	getSoundHurt
 METHOD	azg	()Lack;	dp	getSoundDeath
 METHOD	azg	()F	dF	getSoundVolume
 METHOD	azg	()Z	ax	playStepSound
-METHOD	azg	()V	k	movementTick
+METHOD	azg	()V	k	dropContents
 METHOD	azg	(Lanw;F)Z	a	damageEntity
 CLASS	azh$1	EntityTropicalFish$1
 CLASS	azh$a	EntityTropicalFish$Variant
@@ -3650,15 +3650,15 @@ FIELD	azh$a	Lazh$a;	k	BETTY
 FIELD	azh$a	Lazh$a;	l	CLAYFISH
 CLASS	azh$b	EntityTropicalFish$b
 CLASS	azh	EntityTropicalFish
-METHOD	azh	()V	e	initDatawatcher
+METHOD	azh	()V	e	clearBlocks
 METHOD	azh	(Lle;)V	b	saveData
-METHOD	azh	(Lle;)V	a	loadData
+METHOD	azh	(Lle;)V	a	load
 METHOD	azh	(I)V	v	setVariant
 METHOD	azh	()I	eV	getVariant
 METHOD	azh	()Lack;	I	getSoundAmbient
 METHOD	azh	()Lack;	dp	getSoundDeath
 METHOD	azh	(Lanw;)Lack;	e	getSoundHurt
-METHOD	azh	()Lack;	eN	getSoundFlop
+METHOD	azh	()Lack;	eN	getSoundCastSpell
 METHOD	azh	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 CLASS	azi$1	EntityTurtle$1
 CLASS	azi$a	EntityTurtle$a
@@ -3672,15 +3672,15 @@ CLASS	azi$h	EntityTurtle$h
 CLASS	azi$i	EntityTurtle$i
 CLASS	azi$j	EntityTurtle$j
 CLASS	azi	EntityTurtle
-METHOD	azi	(Lfu;)V	g	setHomePos
+METHOD	azi	(Lfu;)V	g	setFlowerPos
 METHOD	azi	()Lfu;	eO	getHomePos
 METHOD	azi	(Lfu;)V	h	setTravelPos
-METHOD	azi	()Lfu;	eP	getTravelPos
-METHOD	azi	()Z	eL	hasEgg
-METHOD	azi	(Z)V	t	setHasEgg
-METHOD	azi	()V	e	initDatawatcher
+METHOD	azi	()Lfu;	eP	getPatrolTarget
+METHOD	azi	()Z	eL	gotFish
+METHOD	azi	(Z)V	t	setAsleep
+METHOD	azi	()V	e	clearBlocks
 METHOD	azi	(Lle;)V	b	saveData
-METHOD	azi	(Lle;)V	a	loadData
+METHOD	azi	(Lle;)V	a	load
 METHOD	azi	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	azi	()V	o	initPathfinder
 METHOD	azi	()Lapc;	dB	getMonsterType
@@ -3689,7 +3689,7 @@ METHOD	azi	()Lack;	aq	getSoundSwim
 METHOD	azi	(Lanw;)Lack;	e	getSoundHurt
 METHOD	azi	()Lack;	dp	getSoundDeath
 METHOD	azi	(Laok;)Laok;	a	createChild
-METHOD	azi	()V	k	movementTick
+METHOD	azi	()V	k	dropContents
 METHOD	azi	(Laox;)V	a	onLightningStrike
 CLASS	azj	EntityWaterAnimal
 METHOD	azj	()Lapc;	dB	getMonsterType
@@ -3698,19 +3698,19 @@ METHOD	azj	()V	ad	entityBaseTick
 CLASS	azk$a	EntityWolf$a
 CLASS	azk	EntityWolf
 METHOD	azk	()V	o	initPathfinder
-METHOD	azk	()V	e	initDatawatcher
+METHOD	azk	()V	e	clearBlocks
 METHOD	azk	(Lle;)V	b	saveData
-METHOD	azk	(Lle;)V	a	loadData
+METHOD	azk	(Lle;)V	a	load
 METHOD	azk	()Lack;	I	getSoundAmbient
 METHOD	azk	(Lanw;)Lack;	e	getSoundHurt
 METHOD	azk	()Lack;	dp	getSoundDeath
 METHOD	azk	()F	dF	getSoundVolume
-METHOD	azk	()V	k	movementTick
-METHOD	azk	()V	j	tick
+METHOD	azk	()V	k	dropContents
+METHOD	azk	()V	j	applyEffects
 METHOD	azk	(Lanw;)V	a	die
 METHOD	azk	(Lanw;F)Z	a	damageEntity
 METHOD	azk	(Laom;)Z	B	attackEntity
-METHOD	azk	(Z)V	u	setTamed
+METHOD	azk	(Z)V	u	setHasStung
 METHOD	azk	()I	er	getMaxSpawnGroup
 METHOD	azk	()I	F_	getAnger
 METHOD	azk	(I)V	a_	setAnger
@@ -3722,29 +3722,29 @@ METHOD	azk	(Lbje;)V	a	setCollarColor
 METHOD	azk	(Layk;)Z	a	mate
 METHOD	azk	(Laok;)Laok;	a	createChild
 CLASS	azl	EntityHorseChestedAbstract
-METHOD	azl	()V	e	initDatawatcher
+METHOD	azl	()V	e	clearBlocks
 METHOD	azl	()Z	eN	isCarryingChest
-METHOD	azl	(Z)V	t	setCarryingChest
+METHOD	azl	(Z)V	t	setAsleep
 METHOD	azl	()I	eO	getChestSlots
 METHOD	azl	()V	dm	dropInventory
 METHOD	azl	(Lle;)V	b	saveData
-METHOD	azl	(Lle;)V	a	loadData
+METHOD	azl	(Lle;)V	a	load
 CLASS	azm	EntityHorseAbstract
 FIELD	azm	Lanm;	by	inventoryChest
 FIELD	azm	F	bA	jumpPower
 FIELD	azm	Z	bL	canSlide
 METHOD	azm	()V	o	initPathfinder
-METHOD	azm	()V	e	initDatawatcher
-METHOD	azm	()Z	eX	isTamed
-METHOD	azm	()Ljava/util/UUID;	eY	getOwnerUUID
-METHOD	azm	(Ljava/util/UUID;)V	b	setOwnerUUID
-METHOD	azm	(Z)V	u	setTamed
+METHOD	azm	()V	e	clearBlocks
+METHOD	azm	()Z	eX	canPvP
+METHOD	azm	()Ljava/util/UUID;	eY	getOwnerUUID_eY
+METHOD	azm	(Ljava/util/UUID;)V	b	setOwner
+METHOD	azm	(Z)V	u	setHasStung
 METHOD	azm	()Z	fc	hasReproduced
 METHOD	azm	()Z	M_	canSaddle
 METHOD	azm	(Lacm;)V	a	saddle
 METHOD	azm	()Z	N_	hasSaddle
 METHOD	azm	()I	fd	getTemper
-METHOD	azm	(I)V	u	setTemper
+METHOD	azm	(I)V	u	setExperience
 METHOD	azm	()Z	aR	isCollidable
 METHOD	azm	()I	eO	getChestSlots
 METHOD	azm	()V	fe	loadChest
@@ -3758,11 +3758,11 @@ METHOD	azm	()I	fk	getMaxDomestication
 METHOD	azm	()F	dF	getSoundVolume
 METHOD	azm	()Z	dH	isFrozen
 METHOD	azm	()V	dm	dropInventory
-METHOD	azm	()V	k	movementTick
-METHOD	azm	()V	j	tick
+METHOD	azm	()V	k	dropContents
+METHOD	azm	()V	j	applyEffects
 METHOD	azm	(Z)V	y	setStanding
 METHOD	azm	(Lle;)V	b	saveData
-METHOD	azm	(Lle;)V	a	loadData
+METHOD	azm	(Lle;)V	a	load
 METHOD	azm	(Layk;)Z	a	mate
 METHOD	azm	(Laok;)Laok;	a	createChild
 METHOD	azm	()Z	c_	isClimbing
@@ -3777,11 +3777,11 @@ METHOD	azn	(Layk;)Z	a	mate
 METHOD	azn	(Laok;)Laok;	a	createChild
 CLASS	azo$a	EntityHorse$a
 CLASS	azo	EntityHorse
-METHOD	azo	()V	e	initDatawatcher
+METHOD	azo	()V	e	clearBlocks
 METHOD	azo	(Lle;)V	b	saveData
-METHOD	azo	(Lle;)V	a	loadData
-METHOD	azo	(I)V	w	setVariantRaw
-METHOD	azo	()I	eV	getVariantRaw
+METHOD	azo	(Lle;)V	a	load
+METHOD	azo	(I)V	w	setVariant_w
+METHOD	azo	()I	eV	getVariant
 METHOD	azo	(Lazv;Lazq;)V	a	setVariant
 METHOD	azo	()Lazv;	eN	getColor
 METHOD	azo	()Lazq;	eP	getStyle
@@ -3800,11 +3800,11 @@ CLASS	azp	EntityLlama
 METHOD	azp	(I)V	x	setStrength
 METHOD	azp	()I	fw	getStrength
 METHOD	azp	(Lle;)V	b	saveData
-METHOD	azp	(Lle;)V	a	loadData
+METHOD	azp	(Lle;)V	a	load
 METHOD	azp	()V	o	initPathfinder
-METHOD	azp	()V	e	initDatawatcher
-METHOD	azp	()I	fy	getVariant
-METHOD	azp	(I)V	w	setVariant
+METHOD	azp	()V	e	clearBlocks
+METHOD	azp	()I	fy	getVariant_fy
+METHOD	azp	(I)V	w	setVariant_w
 METHOD	azp	()I	eO	getChestSlots
 METHOD	azp	()Z	dH	isFrozen
 METHOD	azp	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
@@ -3834,17 +3834,17 @@ METHOD	azs	()Lack;	dp	getSoundDeath
 METHOD	azs	(Lanw;)Lack;	e	getSoundHurt
 METHOD	azs	()Lack;	aq	getSoundSwim
 METHOD	azs	()Lapc;	dB	getMonsterType
-METHOD	azs	()V	k	movementTick
+METHOD	azs	()V	k	dropContents
 METHOD	azs	(Lle;)V	b	saveData
-METHOD	azs	(Lle;)V	a	loadData
+METHOD	azs	(Lle;)V	a	load
 METHOD	azs	(Laok;)Laok;	a	createChild
 CLASS	azt	PathfinderGoalHorseTrap
 CLASS	azu$a	EntityLlamaTrader$a
 CLASS	azu	EntityLlamaTrader
 METHOD	azu	(Lle;)V	b	saveData
-METHOD	azu	(Lle;)V	a	loadData
+METHOD	azu	(Lle;)V	a	load
 METHOD	azu	()V	o	initPathfinder
-METHOD	azu	()V	k	movementTick
+METHOD	azu	()V	k	dropContents
 METHOD	azu	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 CLASS	azv	HorseColor
 FIELD	azv	Lazv;	a	WHITE
@@ -3865,37 +3865,37 @@ CLASS	ba$a	CriterionTriggerEnterBlock$a
 CLASS	ba	CriterionTriggerEnterBlock
 CLASS	baa	EntityComplexPart
 FIELD	baa	Lbac;	b	owner
-METHOD	baa	()V	e	initDatawatcher
-METHOD	baa	(Lle;)V	a	loadData
+METHOD	baa	()V	e	clearBlocks
+METHOD	baa	(Lle;)V	a	load
 METHOD	baa	(Lle;)V	b	saveData
 METHOD	baa	()Z	aQ	isInteractable
 METHOD	baa	(Lanw;F)Z	a	damageEntity
 CLASS	bab	EntityEnderCrystal
 METHOD	bab	()Z	ax	playStepSound
-METHOD	bab	()V	e	initDatawatcher
-METHOD	bab	()V	j	tick
+METHOD	bab	()V	e	clearBlocks
+METHOD	bab	()V	j	applyEffects
 METHOD	bab	(Lle;)V	b	saveData
-METHOD	bab	(Lle;)V	a	loadData
+METHOD	bab	(Lle;)V	a	load
 METHOD	bab	()Z	aQ	isInteractable
 METHOD	bab	(Lanw;F)Z	a	damageEntity
 METHOD	bab	()V	X	killEntity
 METHOD	bab	(Lfu;)V	a	setBeamTarget
-METHOD	bab	()Lfu;	g	getBeamTarget
-METHOD	bab	(Z)V	a	setShowingBottom
-METHOD	bab	()Z	h	isShowingBottom
+METHOD	bab	()Lfu;	g	east
+METHOD	bab	(Z)V	a	safeShutdown
+METHOD	bab	()Z	h	allowFriendlyFire
 CLASS	bac	EntityEnderDragon
 FIELD	bac	Lorg/apache/logging/log4j/Logger;	bC	LOGGER
 FIELD	bac	Ltq;	b	PHASE
 FIELD	bac	[Lbaa;	bE	children
 FIELD	bac	I	bz	deathAnimationTicks
 FIELD	bac	Lbab;	bB	currentEnderCrystal
-METHOD	bac	()V	e	initDatawatcher
-METHOD	bac	()V	k	movementTick
+METHOD	bac	()V	e	clearBlocks
+METHOD	bac	()V	k	dropContents
 METHOD	bac	(Lanw;F)Z	a	damageEntity
 METHOD	bac	(Lanw;F)Z	f	dealDamage
 METHOD	bac	()V	X	killEntity
 METHOD	bac	(Lle;)V	b	saveData
-METHOD	bac	(Lle;)V	a	loadData
+METHOD	bac	(Lle;)V	a	load
 METHOD	bac	()V	cH	checkDespawn
 METHOD	bac	()Z	aQ	isInteractable
 METHOD	bac	()Lacm;	ct	getSoundCategory
@@ -3956,24 +3956,24 @@ CLASS	baw$a	EntityWither$a
 CLASS	baw	EntityWither
 FIELD	baw	Lza;	bE	bossBattle
 METHOD	baw	()V	o	initPathfinder
-METHOD	baw	()V	e	initDatawatcher
+METHOD	baw	()V	e	clearBlocks
 METHOD	baw	(Lle;)V	b	saveData
-METHOD	baw	(Lle;)V	a	loadData
-METHOD	baw	(Lmr;)V	a	setCustomName
+METHOD	baw	(Lle;)V	a	load
+METHOD	baw	(Lmr;)V	a	close
 METHOD	baw	()Lack;	I	getSoundAmbient
 METHOD	baw	(Lanw;)Lack;	e	getSoundHurt
 METHOD	baw	()Lack;	dp	getSoundDeath
-METHOD	baw	()V	k	movementTick
+METHOD	baw	()V	k	dropContents
 METHOD	baw	()V	N	mobTick
 METHOD	baw	()V	m	beginSpawnSequence
 METHOD	baw	(Lanw;F)Z	a	damageEntity
 METHOD	baw	(Lanw;IZ)V	a	dropDeathLoot
 METHOD	baw	()V	cH	checkDespawn
 METHOD	baw	(Laog;)Z	c	addEffect
-METHOD	baw	()I	eM	getInvul
+METHOD	baw	()I	eM	getExperience
 METHOD	baw	(I)V	s	setInvul
 METHOD	baw	(I)I	t	getHeadTarget
-METHOD	baw	(II)V	a	setHeadTarget
+METHOD	baw	(II)V	a	flagDirty
 METHOD	baw	()Lapc;	dB	getMonsterType
 METHOD	baw	()Z	bK	canPortal
 CLASS	bay$1	EntityArmorStand$1
@@ -3989,29 +3989,29 @@ FIELD	bay	Lgn;	bF	leftLegPose
 FIELD	bay	Lgn;	bG	rightLegPose
 METHOD	bay	()V	y_	updateSize
 METHOD	bay	()Z	dR	doAITick
-METHOD	bay	()V	e	initDatawatcher
+METHOD	bay	()V	e	clearBlocks
 METHOD	bay	()Ljava/lang/Iterable;	bk	getArmorItems
 METHOD	bay	(Laor;)Lbki;	b	getEquipment
-METHOD	bay	(Laor;Lbki;)V	a	setSlot
+METHOD	bay	(Laor;Lbki;)V	a	setEquipment
 METHOD	bay	(Lle;)V	b	saveData
-METHOD	bay	(Lle;)V	a	loadData
+METHOD	bay	(Lle;)V	a	load
 METHOD	bay	()Z	aR	isCollidable
 METHOD	bay	()V	dP	collideNearby
 METHOD	bay	(Lanw;F)Z	a	damageEntity
 METHOD	bay	(F)V	k	setHeadRotation
-METHOD	bay	()V	j	tick
-METHOD	bay	(Z)V	j	setInvisible
+METHOD	bay	()V	j	applyEffects
+METHOD	bay	(Z)V	j	setHasWhitelist
 METHOD	bay	()Z	x_	isBaby
 METHOD	bay	()V	X	killEntity
-METHOD	bay	()Lcxf;	z_	getPushReaction
-METHOD	bay	(Z)V	a	setSmall
-METHOD	bay	()Z	m	isSmall
+METHOD	bay	()Lcxf;	z_	getPushReaction_z_
+METHOD	bay	(Z)V	a	safeShutdown
+METHOD	bay	()Z	m	isHardcore
 METHOD	bay	(Z)V	p	setArms
-METHOD	bay	()Z	o	hasArms
+METHOD	bay	()Z	o	getHasWhitelist
 METHOD	bay	(Z)V	q	setBasePlate
 METHOD	bay	()Z	p	hasBasePlate
-METHOD	bay	(Z)V	r	setMarker
-METHOD	bay	()Z	q	isMarker
+METHOD	bay	(Z)V	r	setLeftHanded
+METHOD	bay	()Z	q	isAlwaysDestroyable
 METHOD	bay	(Lgn;)V	a	setHeadPose
 METHOD	bay	(Lgn;)V	b	setBodyPose
 METHOD	bay	(Lgn;)V	c	setLeftArmPose
@@ -4028,19 +4028,19 @@ CLASS	baz$1	EntityHanging$1
 CLASS	baz	EntityHanging
 FIELD	baz	Lfu;	c	blockPosition
 FIELD	baz	Lfz;	d	direction
-METHOD	baz	()V	e	initDatawatcher
+METHOD	baz	()V	e	clearBlocks
 METHOD	baz	(Lfz;)V	a	setDirection
-METHOD	baz	()V	g	updateBoundingBox
-METHOD	baz	()V	j	tick
-METHOD	baz	()Z	h	survives
+METHOD	baz	()V	g	enterCombat
+METHOD	baz	()V	j	applyEffects
+METHOD	baz	()Z	h	allowFriendlyFire
 METHOD	baz	()Z	aQ	isInteractable
-METHOD	baz	()Lfz;	bY	getDirection
+METHOD	baz	()Lfz;	bY	getDirection_bY
 METHOD	baz	(Lanw;F)Z	a	damageEntity
 METHOD	baz	(Lapd;Ldem;)V	a	move
 METHOD	baz	(Lle;)V	b	saveData
-METHOD	baz	(Lle;)V	a	loadData
+METHOD	baz	(Lle;)V	a	load
 METHOD	baz	(DDD)V	d	setPosition
-METHOD	baz	()Lfu;	n	getBlockPosition
+METHOD	baz	()Lfu;	n	getBlockPosition_n
 METHOD	baz	(Laox;)V	a	onLightningStrike
 METHOD	baz	()V	y_	updateSize
 CLASS	bb$a	CriterionConditionEntityEquipment$a
@@ -4050,45 +4050,45 @@ CLASS	bba	EntityItemFrame
 FIELD	bba	Lorg/apache/logging/log4j/Logger;	e	LOGGER
 FIELD	bba	Ltq;	f	ITEM
 METHOD	bba	(Lapj;Laon;)F	a	getHeadHeight
-METHOD	bba	()V	e	initDatawatcher
+METHOD	bba	()V	e	clearBlocks
 METHOD	bba	(Lfz;)V	a	setDirection
-METHOD	bba	()V	g	updateBoundingBox
-METHOD	bba	()Z	h	survives
+METHOD	bba	()V	g	enterCombat
+METHOD	bba	()Z	h	allowFriendlyFire
 METHOD	bba	(Lapd;Ldem;)V	a	move
 METHOD	bba	()V	X	killEntity
 METHOD	bba	(Lanw;F)Z	a	damageEntity
-METHOD	bba	()I	i	getHangingWidth
-METHOD	bba	()I	k	getHangingHeight
-METHOD	bba	()V	m	playPlaceSound
-METHOD	bba	()Lbki;	o	getItem
+METHOD	bba	()I	i	getAdjacentX
+METHOD	bba	()I	k	getAdjacentZ
+METHOD	bba	()V	m	beginSpawnSequence
+METHOD	bba	()Lbki;	o	getItem_o
 METHOD	bba	(Lbki;)V	b	setItem
 METHOD	bba	(Lbki;Z)V	a	setItem
 METHOD	bba	()I	p	getRotation
-METHOD	bba	(I)V	a	setRotation
-METHOD	bba	(IZ)V	a	setRotation
+METHOD	bba	(I)V	a	addScore
+METHOD	bba	(IZ)V	a	setAge
 METHOD	bba	(Lle;)V	b	saveData
-METHOD	bba	(Lle;)V	a	loadData
+METHOD	bba	(Lle;)V	a	load
 CLASS	bbb	EntityLeash
 METHOD	bbb	(DDD)V	d	setPosition
-METHOD	bbb	()V	g	updateBoundingBox
+METHOD	bbb	()V	g	enterCombat
 METHOD	bbb	(Lfz;)V	a	setDirection
-METHOD	bbb	()I	i	getHangingWidth
-METHOD	bbb	()I	k	getHangingHeight
+METHOD	bbb	()I	i	getAdjacentX
+METHOD	bbb	()I	k	getAdjacentZ
 METHOD	bbb	(Lapj;Laon;)F	a	getHeadHeight
 METHOD	bbb	(Lle;)V	b	saveData
-METHOD	bbb	(Lle;)V	a	loadData
-METHOD	bbb	()Z	h	survives
-METHOD	bbb	()V	m	playPlaceSound
+METHOD	bbb	(Lle;)V	a	load
+METHOD	bbb	()Z	h	allowFriendlyFire
+METHOD	bbb	()V	m	beginSpawnSequence
 CLASS	bbc	Paintings
-METHOD	bbc	()I	a	getWidth
-METHOD	bbc	()I	b	getHeight
+METHOD	bbc	()I	a	getFoodLevel
+METHOD	bbc	()I	b	get
 CLASS	bbd	EntityPainting
 FIELD	bbd	Lbbc;	e	art
 METHOD	bbd	(Lle;)V	b	saveData
-METHOD	bbd	(Lle;)V	a	loadData
-METHOD	bbd	()I	i	getHangingWidth
-METHOD	bbd	()I	k	getHangingHeight
-METHOD	bbd	()V	m	playPlaceSound
+METHOD	bbd	(Lle;)V	a	load
+METHOD	bbd	()I	i	getAdjacentX
+METHOD	bbd	()I	k	getAdjacentZ
+METHOD	bbd	()V	m	beginSpawnSequence
 METHOD	bbd	(DDDFF)V	b	setPositionRotation
 CLASS	bbf	EntityFallingBlock
 FIELD	bbf	Lcfj;	f	block
@@ -4099,11 +4099,11 @@ FIELD	bbf	I	ao	fallHurtMax
 FIELD	bbf	F	ap	fallHurtAmount
 FIELD	bbf	Lle;	d	tileEntityData
 METHOD	bbf	()Z	ax	playStepSound
-METHOD	bbf	()V	e	initDatawatcher
+METHOD	bbf	()V	e	clearBlocks
 METHOD	bbf	()Z	aQ	isInteractable
-METHOD	bbf	()V	j	tick
+METHOD	bbf	()V	j	applyEffects
 METHOD	bbf	(Lle;)V	b	saveData
-METHOD	bbf	(Lle;)V	a	loadData
+METHOD	bbf	(Lle;)V	a	load
 METHOD	bbf	(Lk;)V	a	appendEntityCrashDetails
 METHOD	bbf	()Lcfj;	i	getBlock
 CLASS	bbg	EntityItem
@@ -4113,38 +4113,38 @@ FIELD	bbg	I	e	pickupDelay
 FIELD	bbg	Ljava/util/UUID;	g	thrower
 FIELD	bbg	Ljava/util/UUID;	an	owner
 METHOD	bbg	()Z	ax	playStepSound
-METHOD	bbg	()V	e	initDatawatcher
-METHOD	bbg	()V	j	tick
+METHOD	bbg	()V	e	clearBlocks
+METHOD	bbg	()V	j	applyEffects
 METHOD	bbg	()V	x	mergeNearby
 METHOD	bbg	()Z	az	isFireProof
 METHOD	bbg	(Lanw;F)Z	a	damageEntity
 METHOD	bbg	(Lle;)V	b	saveData
-METHOD	bbg	(Lle;)V	a	loadData
+METHOD	bbg	(Lle;)V	a	load
 METHOD	bbg	(Lbec;)V	a_	pickup
 METHOD	bbg	()Lmr;	P	getDisplayName
 METHOD	bbg	()Lbki;	g	getItemStack
-METHOD	bbg	(Lbki;)V	b	setItemStack
+METHOD	bbg	(Lbki;)V	b	setItem
 METHOD	bbg	()Ljava/util/UUID;	h	getOwner
 METHOD	bbg	(Ljava/util/UUID;)V	b	setOwner
 METHOD	bbg	()Ljava/util/UUID;	i	getThrower
 METHOD	bbg	(Ljava/util/UUID;)V	c	setThrower
-METHOD	bbg	()V	m	defaultPickupDelay
-METHOD	bbg	(I)V	a	setPickupDelay
+METHOD	bbg	()V	m	beginSpawnSequence
+METHOD	bbg	(I)V	a	addScore
 CLASS	bbh	EntityTNTPrimed
 FIELD	bbh	Ltq;	b	FUSE_TICKS
 FIELD	bbh	Laoy;	c	source
 FIELD	bbh	I	d	fuseTicks
-METHOD	bbh	()V	e	initDatawatcher
+METHOD	bbh	()V	e	clearBlocks
 METHOD	bbh	()Z	ax	playStepSound
 METHOD	bbh	()Z	aQ	isInteractable
-METHOD	bbh	()V	j	tick
-METHOD	bbh	()V	k	explode
+METHOD	bbh	()V	j	applyEffects
+METHOD	bbh	()V	k	dropContents
 METHOD	bbh	(Lle;)V	b	saveData
-METHOD	bbh	(Lle;)V	a	loadData
-METHOD	bbh	()Laoy;	g	getSource
+METHOD	bbh	(Lle;)V	a	load
+METHOD	bbh	()Laoy;	g	getOwner_g
 METHOD	bbh	(Lapj;Laon;)F	a	getHeadHeight
-METHOD	bbh	(I)V	a	setFuseTicks
-METHOD	bbh	()I	i	getFuseTicks
+METHOD	bbh	(I)V	a	addScore
+METHOD	bbh	()I	i	getAdjacentX
 CLASS	bbj$b	EntityIllagerAbstract$b
 CLASS	bbj	EntityIllagerAbstract
 METHOD	bbj	()V	o	initPathfinder
@@ -4153,19 +4153,19 @@ CLASS	bbk$1	EntitySkeletonAbstract$1
 CLASS	bbk	EntitySkeletonAbstract
 METHOD	bbk	()V	o	initPathfinder
 METHOD	bbk	()Lapc;	dB	getMonsterType
-METHOD	bbk	()V	k	movementTick
+METHOD	bbk	()V	k	dropContents
 METHOD	bbk	()V	aW	passengerTick
 METHOD	bbk	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
-METHOD	bbk	(Lle;)V	a	loadData
-METHOD	bbk	(Laor;Lbki;)V	a	setSlot
+METHOD	bbk	(Lle;)V	a	load
+METHOD	bbk	(Laor;Lbki;)V	a	setEquipment
 CLASS	bbl$a	EntityBlaze$PathfinderGoalBlazeFireball
 CLASS	bbl	EntityBlaze
 METHOD	bbl	()V	o	initPathfinder
-METHOD	bbl	()V	e	initDatawatcher
+METHOD	bbl	()V	e	clearBlocks
 METHOD	bbl	()Lack;	I	getSoundAmbient
 METHOD	bbl	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bbl	()Lack;	dp	getSoundDeath
-METHOD	bbl	()V	k	movementTick
+METHOD	bbl	()V	k	dropContents
 METHOD	bbl	()V	N	mobTick
 METHOD	bbl	()Z	bm	isBurning
 CLASS	bbm	EntityCaveSpider
@@ -4177,10 +4177,10 @@ FIELD	bbn	I	bw	fuseTicks
 FIELD	bbn	I	bx	maxFuseTicks
 FIELD	bbn	I	by	explosionRadius
 METHOD	bbn	()V	o	initPathfinder
-METHOD	bbn	()V	e	initDatawatcher
+METHOD	bbn	()V	e	clearBlocks
 METHOD	bbn	(Lle;)V	b	saveData
-METHOD	bbn	(Lle;)V	a	loadData
-METHOD	bbn	()V	j	tick
+METHOD	bbn	(Lle;)V	a	load
+METHOD	bbn	()V	j	applyEffects
 METHOD	bbn	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bbn	()Lack;	dp	getSoundDeath
 METHOD	bbn	(Lanw;IZ)V	a	dropDeathLoot
@@ -4189,7 +4189,7 @@ METHOD	bbn	()Z	T_	isPowered
 METHOD	bbn	(Laox;)V	a	onLightningStrike
 METHOD	bbn	()V	eQ	explode
 METHOD	bbn	()V	eT	createEffectCloud
-METHOD	bbn	()Z	eM	isIgnited
+METHOD	bbn	()Z	eM	hasFlowerPos
 METHOD	bbn	()V	eN	ignite
 METHOD	bbn	()Z	eO	canCauseHeadDrop
 METHOD	bbn	()V	eP	setCausedHeadDrop
@@ -4207,7 +4207,7 @@ METHOD	bbp	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	bbp	()Lack;	I	getSoundAmbient
 METHOD	bbp	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bbp	()Lack;	dp	getSoundDeath
-METHOD	bbp	()Lack;	eM	getSoundStep
+METHOD	bbp	()Lack;	eM	getSoundFlop
 METHOD	bbp	()Lack;	aq	getSoundSwim
 CLASS	bbq	EntityGuardianElder
 METHOD	bbq	()Lack;	I	getSoundAmbient
@@ -4223,15 +4223,15 @@ FIELD	bbr$d	Lbbr;	a	enderman
 CLASS	bbr	EntityEnderman
 METHOD	bbr	()V	o	initPathfinder
 METHOD	bbr	(Laoy;)V	i	setGoalTarget
-METHOD	bbr	()V	e	initDatawatcher
+METHOD	bbr	()V	e	clearBlocks
 METHOD	bbr	()V	H_	anger
 METHOD	bbr	(I)V	a_	setAnger
 METHOD	bbr	()I	F_	getAnger
 METHOD	bbr	(Ljava/util/UUID;)V	a	setAngerTarget
 METHOD	bbr	()Ljava/util/UUID;	G_	getAngerTarget
 METHOD	bbr	(Lle;)V	b	saveData
-METHOD	bbr	(Lle;)V	a	loadData
-METHOD	bbr	()V	k	movementTick
+METHOD	bbr	(Lle;)V	a	load
+METHOD	bbr	()V	k	dropContents
 METHOD	bbr	()V	N	mobTick
 METHOD	bbr	()Lack;	I	getSoundAmbient
 METHOD	bbr	(Lanw;)Lack;	e	getSoundHurt
@@ -4240,19 +4240,19 @@ METHOD	bbr	(Lanw;IZ)V	a	dropDeathLoot
 METHOD	bbr	(Lcfj;)V	c	setCarried
 METHOD	bbr	()Lcfj;	eN	getCarried
 METHOD	bbr	(Lanw;F)Z	a	damageEntity
-METHOD	bbr	()Z	K	isSpecialPersistence
+METHOD	bbr	()Z	K	isNight
 CLASS	bbs	EntityEndermite
 METHOD	bbs	()V	o	initPathfinder
 METHOD	bbs	()Z	ax	playStepSound
 METHOD	bbs	()Lack;	I	getSoundAmbient
 METHOD	bbs	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bbs	()Lack;	dp	getSoundDeath
-METHOD	bbs	(Lle;)V	a	loadData
+METHOD	bbs	(Lle;)V	a	load
 METHOD	bbs	(Lle;)V	b	saveData
-METHOD	bbs	()V	j	tick
-METHOD	bbs	()Z	eL	isPlayerSpawned
-METHOD	bbs	(Z)V	t	setPlayerSpawned
-METHOD	bbs	()V	k	movementTick
+METHOD	bbs	()V	j	applyEffects
+METHOD	bbs	()Z	eL	gotFish
+METHOD	bbs	(Z)V	t	setAsleep
+METHOD	bbs	()V	k	dropContents
 METHOD	bbs	()Lapc;	dB	getMonsterType
 CLASS	bbt	IMonster
 CLASS	bbu$1	EntityEvoker$1
@@ -4262,8 +4262,8 @@ CLASS	bbu$c	EntityEvoker$c
 CLASS	bbu$d	EntityEvoker$d
 CLASS	bbu	EntityEvoker
 METHOD	bbu	()V	o	initPathfinder
-METHOD	bbu	()V	e	initDatawatcher
-METHOD	bbu	(Lle;)V	a	loadData
+METHOD	bbu	()V	e	clearBlocks
+METHOD	bbu	(Lle;)V	a	load
 METHOD	bbu	(Lle;)V	b	saveData
 METHOD	bbu	()V	N	mobTick
 METHOD	bbu	()Lack;	I	getSoundAmbient
@@ -4279,7 +4279,7 @@ CLASS	bbv	EntityGhast
 METHOD	bbv	()V	o	initPathfinder
 METHOD	bbv	()I	eJ	getPower
 METHOD	bbv	(Lanw;F)Z	a	damageEntity
-METHOD	bbv	()V	e	initDatawatcher
+METHOD	bbv	()V	e	clearBlocks
 METHOD	bbv	()Lacm;	ct	getSoundCategory
 METHOD	bbv	()Lack;	I	getSoundAmbient
 METHOD	bbv	(Lanw;)Lack;	e	getSoundHurt
@@ -4287,7 +4287,7 @@ METHOD	bbv	()Lack;	dp	getSoundDeath
 METHOD	bbv	()F	dF	getSoundVolume
 METHOD	bbv	()I	er	getMaxSpawnGroup
 METHOD	bbv	(Lle;)V	b	saveData
-METHOD	bbv	(Lle;)V	a	loadData
+METHOD	bbv	(Lle;)V	a	load
 CLASS	bbw	EntityGiantZombie
 CLASS	bbx$a	EntityGuardian$PathfinderGoalGuardianAttack
 CLASS	bbx$b	EntityGuardian$EntitySelectorGuardianTargetHumanSquid
@@ -4295,20 +4295,20 @@ CLASS	bbx$c	EntityGuardian$ControllerMoveGuardian
 CLASS	bbx	EntityGuardian
 FIELD	bbx	Lavf;	c	goalRandomStroll
 METHOD	bbx	()V	o	initPathfinder
-METHOD	bbx	()V	e	initDatawatcher
+METHOD	bbx	()V	e	clearBlocks
 METHOD	bbx	()Lapc;	dB	getMonsterType
 METHOD	bbx	()Lack;	I	getSoundAmbient
 METHOD	bbx	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bbx	()Lack;	dp	getSoundDeath
 METHOD	bbx	()Z	ax	playStepSound
-METHOD	bbx	()V	k	movementTick
+METHOD	bbx	()V	k	dropContents
 METHOD	bbx	()Lack;	eM	getSoundFlop
 METHOD	bbx	(Lanw;F)Z	a	damageEntity
 CLASS	bby	EntityZombieHusk
 METHOD	bby	()Lack;	I	getSoundAmbient
 METHOD	bby	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bby	()Lack;	dp	getSoundDeath
-METHOD	bby	()Lack;	eM	getSoundStep
+METHOD	bby	()Lack;	eM	getSoundFlop
 METHOD	bby	(Laom;)Z	B	attackEntity
 CLASS	bbz$1	EntityIllagerIllusioner$1
 CLASS	bbz$a	EntityIllagerIllusioner$a
@@ -4316,8 +4316,8 @@ CLASS	bbz$b	EntityIllagerIllusioner$b
 CLASS	bbz	EntityIllagerIllusioner
 METHOD	bbz	()V	o	initPathfinder
 METHOD	bbz	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
-METHOD	bbz	()V	e	initDatawatcher
-METHOD	bbz	()V	k	movementTick
+METHOD	bbz	()V	e	clearBlocks
+METHOD	bbz	()V	k	dropContents
 METHOD	bbz	()Lack;	I	getSoundAmbient
 METHOD	bbz	()Lack;	dp	getSoundDeath
 METHOD	bbz	(Lanw;)Lack;	e	getSoundHurt
@@ -4325,7 +4325,7 @@ METHOD	bbz	()Lack;	eN	getSoundCastSpell
 CLASS	bc$a	CriterionConditionEntityFlags$a
 CLASS	bc	CriterionConditionEntityFlags
 CLASS	bca	EntityMagmaCube
-METHOD	bca	(IZ)V	a	setSize
+METHOD	bca	(IZ)V	a	setAge
 METHOD	bca	()Luh;	J	getDefaultLootTable
 METHOD	bca	()Z	bm	isBurning
 METHOD	bca	()V	dJ	jump
@@ -4335,7 +4335,7 @@ METHOD	bca	()Lack;	eO	getSoundSquish
 METHOD	bca	()Lack;	eP	getSoundJump
 CLASS	bcb	EntityMonster
 METHOD	bcb	()Lacm;	ct	getSoundCategory
-METHOD	bcb	()V	k	movementTick
+METHOD	bcb	()V	k	dropContents
 METHOD	bcb	()Lack;	aq	getSoundSwim
 METHOD	bcb	()Lack;	ar	getSoundSplash
 METHOD	bcb	(Lanw;F)Z	a	damageEntity
@@ -4350,13 +4350,13 @@ FIELD	bcc	Z	c	patrolLeader
 FIELD	bcc	Z	d	patrolling
 METHOD	bcc	()V	o	initPathfinder
 METHOD	bcc	(Lle;)V	b	saveData
-METHOD	bcc	(Lle;)V	a	loadData
+METHOD	bcc	(Lle;)V	a	load
 METHOD	bcc	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	bcc	(D)Z	h	isTypeNotPersistent
-METHOD	bcc	(Lfu;)V	g	setPatrolTarget
+METHOD	bcc	(Lfu;)V	g	setFlowerPos
 METHOD	bcc	()Lfu;	eP	getPatrolTarget
-METHOD	bcc	(Z)V	t	setPatrolLeader
-METHOD	bcc	()Z	eT	isPatrolLeader
+METHOD	bcc	(Z)V	t	setAsleep
+METHOD	bcc	()Z	eT	isInLove
 METHOD	bcc	()Z	eW	isPatrolling
 CLASS	bcd$1	EntityPhantom$1
 CLASS	bcd$a	EntityPhantom$AttackPhase
@@ -4372,14 +4372,14 @@ CLASS	bcd$h	EntityPhantom$h
 CLASS	bcd$i	EntityPhantom$i
 CLASS	bcd	EntityPhantom
 METHOD	bcd	()V	o	initPathfinder
-METHOD	bcd	()V	e	initDatawatcher
-METHOD	bcd	(I)V	a	setSize
-METHOD	bcd	()I	m	getSize
-METHOD	bcd	()V	j	tick
-METHOD	bcd	()V	k	movementTick
+METHOD	bcd	()V	e	clearBlocks
+METHOD	bcd	(I)V	a	addScore
+METHOD	bcd	()I	m	getBadOmenLevel
+METHOD	bcd	()V	j	applyEffects
+METHOD	bcd	()V	k	dropContents
 METHOD	bcd	()V	N	mobTick
 METHOD	bcd	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
-METHOD	bcd	(Lle;)V	a	loadData
+METHOD	bcd	(Lle;)V	a	load
 METHOD	bcd	(Lle;)V	b	saveData
 METHOD	bcd	()Lacm;	ct	getSoundCategory
 METHOD	bcd	()Lack;	I	getSoundAmbient
@@ -4390,9 +4390,9 @@ METHOD	bcd	()F	dF	getSoundVolume
 CLASS	bce	EntityPillager
 FIELD	bce	Lanm;	bv	inventory
 METHOD	bce	()V	o	initPathfinder
-METHOD	bce	()V	e	initDatawatcher
+METHOD	bce	()V	e	clearBlocks
 METHOD	bce	(Lle;)V	b	saveData
-METHOD	bce	(Lle;)V	a	loadData
+METHOD	bce	(Lle;)V	a	load
 METHOD	bce	()I	er	getMaxSpawnGroup
 METHOD	bce	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	bce	()Lack;	I	getSoundAmbient
@@ -4406,9 +4406,9 @@ CLASS	bcg$c	EntityRavager$c
 CLASS	bcg	EntityRavager
 METHOD	bcg	()V	o	initPathfinder
 METHOD	bcg	(Lle;)V	b	saveData
-METHOD	bcg	(Lle;)V	a	loadData
+METHOD	bcg	(Lle;)V	a	load
 METHOD	bcg	()Laom;	cl	getRidingPassenger
-METHOD	bcg	()V	k	movementTick
+METHOD	bcg	()V	k	dropContents
 METHOD	bcg	()Z	dH	isFrozen
 METHOD	bcg	(Laom;)Z	D	hasLineOfSight
 METHOD	bcg	(Laom;)Z	B	attackEntity
@@ -4429,13 +4429,13 @@ METHOD	bch	()Lacm;	ct	getSoundCategory
 METHOD	bch	()Lack;	I	getSoundAmbient
 METHOD	bch	()Lack;	dp	getSoundDeath
 METHOD	bch	(Lanw;)Lack;	e	getSoundHurt
-METHOD	bch	()V	e	initDatawatcher
-METHOD	bch	(Lle;)V	a	loadData
+METHOD	bch	()V	e	clearBlocks
+METHOD	bch	(Lle;)V	a	load
 METHOD	bch	(Lle;)V	b	saveData
-METHOD	bch	()V	j	tick
+METHOD	bch	()V	j	applyEffects
 METHOD	bch	(Lapd;Ldem;)V	a	move
 METHOD	bch	(DDD)V	d	setPosition
-METHOD	bch	()V	k	movementTick
+METHOD	bch	()V	k	dropContents
 METHOD	bch	(Lanw;F)Z	a	damageEntity
 METHOD	bch	(Laom;)V	i	collide
 CLASS	bci$a	EntitySilverfish$PathfinderGoalSilverfishHideInBlock
@@ -4448,7 +4448,7 @@ METHOD	bci	()Lack;	I	getSoundAmbient
 METHOD	bci	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bci	()Lack;	dp	getSoundDeath
 METHOD	bci	(Lanw;F)Z	a	damageEntity
-METHOD	bci	()V	j	tick
+METHOD	bci	()V	j	applyEffects
 METHOD	bci	()Lapc;	dB	getMonsterType
 CLASS	bcj	EntitySkeleton
 METHOD	bcj	()Lack;	I	getSoundAmbient
@@ -4462,12 +4462,12 @@ CLASS	bck$d	EntitySlime$ControllerMoveSlime
 CLASS	bck$e	EntitySlime$PathfinderGoalSlimeRandomDirection
 CLASS	bck	EntitySlime
 METHOD	bck	()V	o	initPathfinder
-METHOD	bck	()V	e	initDatawatcher
-METHOD	bck	(IZ)V	a	setSize
-METHOD	bck	()I	eQ	getSize
+METHOD	bck	()V	e	clearBlocks
+METHOD	bck	(IZ)V	a	setAge
+METHOD	bck	()I	eQ	getSize_eQ
 METHOD	bck	(Lle;)V	b	saveData
-METHOD	bck	(Lle;)V	a	loadData
-METHOD	bck	()V	j	tick
+METHOD	bck	(Lle;)V	a	load
+METHOD	bck	()V	j	applyEffects
 METHOD	bck	()V	y_	updateSize
 METHOD	bck	()Laoq;	U	getEntityType
 METHOD	bck	()V	aa	die
@@ -4491,20 +4491,20 @@ FIELD	bcl$a	Lbcl$a;	f	BLINDNESS
 CLASS	bcl$b	EntityIllagerWizard$b
 CLASS	bcl$c	EntityIllagerWizard$c
 CLASS	bcl	EntityIllagerWizard
-METHOD	bcl	()V	e	initDatawatcher
-METHOD	bcl	(Lle;)V	a	loadData
+METHOD	bcl	()V	e	clearBlocks
+METHOD	bcl	(Lle;)V	a	load
 METHOD	bcl	(Lle;)V	b	saveData
 METHOD	bcl	(Lbcl$a;)V	a	setSpell
 METHOD	bcl	()Lbcl$a;	eY	getSpell
 METHOD	bcl	()V	N	mobTick
-METHOD	bcl	()V	j	tick
+METHOD	bcl	()V	j	applyEffects
 CLASS	bcm$a	EntitySpider$PathfinderGoalSpiderMeleeAttack
 CLASS	bcm$b	EntitySpider$GroupDataSpider
 CLASS	bcm$c	EntitySpider$PathfinderGoalSpiderNearestAttackableTarget
 CLASS	bcm	EntitySpider
 METHOD	bcm	()V	o	initPathfinder
-METHOD	bcm	()V	e	initDatawatcher
-METHOD	bcm	()V	j	tick
+METHOD	bcm	()V	e	clearBlocks
+METHOD	bcm	()V	j	applyEffects
 METHOD	bcm	()Lack;	I	getSoundAmbient
 METHOD	bcm	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bcm	()Lack;	dp	getSoundDeath
@@ -4522,16 +4522,16 @@ FIELD	bco$a$a	Lbco$a$a;	c	PIGLIN_RIDER
 CLASS	bco$a	EntityStrider$a
 CLASS	bco$b	EntityStrider$b
 CLASS	bco	EntityStrider
-METHOD	bco	()V	e	initDatawatcher
+METHOD	bco	()V	e	clearBlocks
 METHOD	bco	(Lle;)V	b	saveData
-METHOD	bco	(Lle;)V	a	loadData
+METHOD	bco	(Lle;)V	a	load
 METHOD	bco	()Z	N_	hasSaddle
 METHOD	bco	()Z	M_	canSaddle
 METHOD	bco	(Lacm;)V	a	saddle
 METHOD	bco	()V	o	initPathfinder
 METHOD	bco	()Z	aR	isCollidable
 METHOD	bco	()Laom;	cl	getRidingPassenger
-METHOD	bco	()V	j	tick
+METHOD	bco	()V	j	applyEffects
 METHOD	bco	()Lack;	I	getSoundAmbient
 METHOD	bco	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bco	()Lack;	dp	getSoundDeath
@@ -4545,13 +4545,13 @@ CLASS	bcp$c	EntityVex$c
 CLASS	bcp$d	EntityVex$d
 CLASS	bcp	EntityVex
 METHOD	bcp	(Lapd;Ldem;)V	a	move
-METHOD	bcp	()V	j	tick
+METHOD	bcp	()V	j	applyEffects
 METHOD	bcp	()V	o	initPathfinder
-METHOD	bcp	()V	e	initDatawatcher
-METHOD	bcp	(Lle;)V	a	loadData
+METHOD	bcp	()V	e	clearBlocks
+METHOD	bcp	(Lle;)V	a	load
 METHOD	bcp	(Lle;)V	b	saveData
-METHOD	bcp	()Z	eN	isCharging
-METHOD	bcp	(Z)V	t	setCharging
+METHOD	bcp	()Z	eN	isCarryingChest
+METHOD	bcp	(Z)V	t	setAsleep
 METHOD	bcp	()Lack;	I	getSoundAmbient
 METHOD	bcp	()Lack;	dp	getSoundDeath
 METHOD	bcp	(Lanw;)Lack;	e	getSoundHurt
@@ -4563,19 +4563,19 @@ CLASS	bcq	EntityVindicator
 METHOD	bcq	()V	o	initPathfinder
 METHOD	bcq	()V	N	mobTick
 METHOD	bcq	(Lle;)V	b	saveData
-METHOD	bcq	(Lle;)V	a	loadData
+METHOD	bcq	(Lle;)V	a	load
 METHOD	bcq	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
-METHOD	bcq	(Lmr;)V	a	setCustomName
+METHOD	bcq	(Lmr;)V	a	close
 METHOD	bcq	()Lack;	I	getSoundAmbient
 METHOD	bcq	()Lack;	dp	getSoundDeath
 METHOD	bcq	(Lanw;)Lack;	e	getSoundHurt
 CLASS	bcr	EntityWitch
 METHOD	bcr	()V	o	initPathfinder
-METHOD	bcr	()V	e	initDatawatcher
+METHOD	bcr	()V	e	clearBlocks
 METHOD	bcr	()Lack;	I	getSoundAmbient
 METHOD	bcr	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bcr	()Lack;	dp	getSoundDeath
-METHOD	bcr	()V	k	movementTick
+METHOD	bcr	()V	k	dropContents
 METHOD	bcr	(Lanw;F)F	d	applyMagicModifier
 CLASS	bcs	EntitySkeletonWither
 METHOD	bcs	()V	o	initPathfinder
@@ -4586,42 +4586,42 @@ METHOD	bcs	(Lanw;IZ)V	a	dropDeathLoot
 METHOD	bcs	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	bcs	(Laom;)Z	B	attackEntity
 CLASS	bct	EntityZoglin
-METHOD	bct	()V	e	initDatawatcher
+METHOD	bct	()V	e	clearBlocks
 METHOD	bct	(Laom;)Z	B	attackEntity
 METHOD	bct	(Lanw;F)Z	a	damageEntity
 METHOD	bct	()Lapr;	cI	getBehaviorController
 METHOD	bct	()V	N	mobTick
 METHOD	bct	()Z	x_	isBaby
-METHOD	bct	()V	k	movementTick
+METHOD	bct	()V	k	dropContents
 METHOD	bct	()Lack;	I	getSoundAmbient
 METHOD	bct	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bct	()Lack;	dp	getSoundDeath
 METHOD	bct	()Lapc;	dB	getMonsterType
 METHOD	bct	(Lle;)V	b	saveData
-METHOD	bct	(Lle;)V	a	loadData
+METHOD	bct	(Lle;)V	a	load
 CLASS	bcu$a	EntityZombie$a
 CLASS	bcu$b	EntityZombie$GroupDataZombie
 CLASS	bcu	EntityZombie
 FIELD	bcu	Ltq;	bw	DROWN_CONVERTING
 FIELD	bcu	I	bB	drownedConversionTime
 METHOD	bcu	()V	o	initPathfinder
-METHOD	bcu	()V	e	initDatawatcher
+METHOD	bcu	()V	e	clearBlocks
 METHOD	bcu	()Z	eU	isDrownConverting
 METHOD	bcu	()Z	x_	isBaby
 METHOD	bcu	(Lbec;)I	d	getExpValue
-METHOD	bcu	(Z)V	a	setBaby
-METHOD	bcu	()V	j	tick
-METHOD	bcu	()V	k	movementTick
-METHOD	bcu	(I)V	a	startDrownedConversion
+METHOD	bcu	(Z)V	a	safeShutdown
+METHOD	bcu	()V	j	applyEffects
+METHOD	bcu	()V	k	dropContents
+METHOD	bcu	(I)V	a	addScore
 METHOD	bcu	(Lanw;F)Z	a	damageEntity
 METHOD	bcu	(Laom;)Z	B	attackEntity
 METHOD	bcu	()Lack;	I	getSoundAmbient
 METHOD	bcu	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bcu	()Lack;	dp	getSoundDeath
-METHOD	bcu	()Lack;	eM	getSoundStep
+METHOD	bcu	()Lack;	eM	getSoundFlop
 METHOD	bcu	()Lapc;	dB	getMonsterType
 METHOD	bcu	(Lle;)V	b	saveData
-METHOD	bcu	(Lle;)V	a	loadData
+METHOD	bcu	(Lle;)V	a	load
 METHOD	bcu	(Lbki;)Z	h	canPickup
 METHOD	bcu	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	bcu	(Lanw;IZ)V	a	dropDeathLoot
@@ -4629,18 +4629,18 @@ CLASS	bcv	EntityZombieVillager
 FIELD	bcv	Ltq;	b	CONVERTING
 FIELD	bcv	I	d	conversionTime
 FIELD	bcv	Ljava/util/UUID;	bv	conversionPlayer
-METHOD	bcv	()V	e	initDatawatcher
+METHOD	bcv	()V	e	clearBlocks
 METHOD	bcv	(Lle;)V	b	saveData
-METHOD	bcv	(Lle;)V	a	loadData
-METHOD	bcv	()V	j	tick
+METHOD	bcv	(Lle;)V	a	load
+METHOD	bcv	()V	j	applyEffects
 METHOD	bcv	(D)Z	h	isTypeNotPersistent
-METHOD	bcv	()Z	eX	isConverting
+METHOD	bcv	()Z	eX	canPvP
 METHOD	bcv	(Ljava/util/UUID;I)V	a	startConversion
 METHOD	bcv	()I	fa	getConversionProgress
 METHOD	bcv	()Lack;	I	getSoundAmbient
 METHOD	bcv	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bcv	()Lack;	dp	getSoundDeath
-METHOD	bcv	()Lack;	eM	getSoundStep
+METHOD	bcv	()Lack;	eM	getSoundFlop
 METHOD	bcv	(Lle;)V	g	setOffers
 METHOD	bcv	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	bcv	(Lbdq;)V	a	setVillagerData
@@ -4651,7 +4651,7 @@ METHOD	bcw	()V	N	mobTick
 METHOD	bcw	(Laoy;)V	i	setGoalTarget
 METHOD	bcw	()V	H_	anger
 METHOD	bcw	(Lle;)V	b	saveData
-METHOD	bcw	(Lle;)V	a	loadData
+METHOD	bcw	(Lle;)V	a	load
 METHOD	bcw	(I)V	a_	setAnger
 METHOD	bcw	()I	F_	getAnger
 METHOD	bcw	(Lanw;F)Z	a	damageEntity
@@ -4664,14 +4664,14 @@ METHOD	bcx	(Laom;)Z	B	attackEntity
 METHOD	bcx	(Lanw;F)Z	a	damageEntity
 METHOD	bcx	()Lapr;	cI	getBehaviorController
 METHOD	bcx	()V	N	mobTick
-METHOD	bcx	()V	k	movementTick
+METHOD	bcx	()V	k	dropContents
 METHOD	bcx	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	bcx	(D)Z	h	isTypeNotPersistent
 METHOD	bcx	()Z	cU	isDropExperience
 METHOD	bcx	(Lbec;)I	d	getExpValue
-METHOD	bcx	()V	e	initDatawatcher
+METHOD	bcx	()V	e	clearBlocks
 METHOD	bcx	(Lle;)V	b	saveData
-METHOD	bcx	(Lle;)V	a	loadData
+METHOD	bcx	(Lle;)V	a	load
 METHOD	bcx	(Laok;)Laok;	a	createChild
 METHOD	bcx	()Lacm;	ct	getSoundCategory
 METHOD	bcx	()Lack;	I	getSoundAmbient
@@ -4692,9 +4692,9 @@ FIELD	bdc$a	Lbdc$a;	e	DANCING
 FIELD	bdc$a	Lbdc$a;	f	DEFAULT
 CLASS	bdc	EntityPiglin
 METHOD	bdc	(Lle;)V	b	saveData
-METHOD	bdc	(Lle;)V	a	loadData
+METHOD	bdc	(Lle;)V	a	load
 METHOD	bdc	(Lanw;IZ)V	a	dropDeathLoot
-METHOD	bdc	()V	e	initDatawatcher
+METHOD	bdc	()V	e	clearBlocks
 METHOD	bdc	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	bdc	(D)Z	h	isTypeNotPersistent
 METHOD	bdc	()Lapr;	cI	getBehaviorController
@@ -4718,44 +4718,44 @@ FIELD	bdk	Lbpa;	bv	trades
 FIELD	bdk	Lanm;	by	inventory
 METHOD	bdk	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 METHOD	bdk	()I	eM	getExperience
-METHOD	bdk	()V	e	initDatawatcher
+METHOD	bdk	()V	e	clearBlocks
 METHOD	bdk	(Lbec;)V	f	setTradingPlayer
 METHOD	bdk	()Lbec;	eN	getTrader
 METHOD	bdk	()Lbpa;	eP	getOffers
-METHOD	bdk	(I)V	t	setForcedExperience
+METHOD	bdk	(I)V	t	addScore_t
 METHOD	bdk	()Z	eQ	isRegularVillager
 METHOD	bdk	()Lack;	eR	getTradeSound
 METHOD	bdk	(Lle;)V	b	saveData
-METHOD	bdk	(Lle;)V	a	loadData
+METHOD	bdk	(Lle;)V	a	load
 METHOD	bdk	(Lanw;)V	a	die
 METHOD	bdk	()Lanm;	eU	getInventory
-METHOD	bdk	()Lbqb;	eV	getWorld
+METHOD	bdk	()Lbqb;	eV	getWorld_eV
 CLASS	bdl	MobSpawnerCat
 CLASS	bdm	MerchantWrapper
 METHOD	bdm	()Lbec;	eN	getTrader
 METHOD	bdm	(Lbec;)V	f	setTradingPlayer
 METHOD	bdm	()Lbpa;	eP	getOffers
-METHOD	bdm	()Lbqb;	eV	getWorld
+METHOD	bdm	()Lbqb;	eV	getWorld_eV
 METHOD	bdm	()I	eM	getExperience
-METHOD	bdm	(I)V	t	setForcedExperience
+METHOD	bdm	(I)V	t	addScore_t
 METHOD	bdm	()Z	eQ	isRegularVillager
 METHOD	bdm	()Lack;	eR	getTradeSound
 CLASS	bdo	NPC
 CLASS	bdp	EntityVillager
 METHOD	bdp	()Lapr;	cI	getBehaviorController
 METHOD	bdp	()V	N	mobTick
-METHOD	bdp	()V	j	tick
+METHOD	bdp	()V	j	applyEffects
 METHOD	bdp	(Lbec;)V	f	setTradingPlayer
-METHOD	bdp	()V	e	initDatawatcher
+METHOD	bdp	()V	e	clearBlocks
 METHOD	bdp	(Lle;)V	b	saveData
-METHOD	bdp	(Lle;)V	a	loadData
+METHOD	bdp	(Lle;)V	a	load
 METHOD	bdp	(D)Z	h	isTypeNotPersistent
 METHOD	bdp	()Lack;	I	getSoundAmbient
 METHOD	bdp	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bdp	()Lack;	dp	getSoundDeath
 METHOD	bdp	(Lbdq;)V	a	setVillagerData
 METHOD	bdp	()Lbdq;	eY	getVillagerData
-METHOD	bdp	(Laoy;)V	a	setLastDamager
+METHOD	bdp	(Laoy;)V	a	setAuthor
 METHOD	bdp	(Lanw;)V	a	die
 METHOD	bdp	()Z	f	canBreed
 METHOD	bdp	()V	ft	populateTrades
@@ -4770,7 +4770,7 @@ METHOD	bdp	(Laok;)Laok;	a	createChild
 CLASS	bdq	VillagerData
 METHOD	bdq	()Lbdu;	a	getType
 METHOD	bdq	()Lbds;	b	getProfession
-METHOD	bdq	()I	c	getLevel
+METHOD	bdq	()I	c	getAmplifier
 METHOD	bdq	(Lbdu;)Lbdq;	a	withType
 METHOD	bdq	(Lbds;)Lbdq;	a	withProfession
 METHOD	bdq	(I)Lbdq;	a	withLevel
@@ -4818,13 +4818,13 @@ METHOD	bdv	()V	o	initPathfinder
 METHOD	bdv	(Laok;)Laok;	a	createChild
 METHOD	bdv	()Z	eQ	isRegularVillager
 METHOD	bdv	(Lle;)V	b	saveData
-METHOD	bdv	(Lle;)V	a	loadData
+METHOD	bdv	(Lle;)V	a	load
 METHOD	bdv	(D)Z	h	isTypeNotPersistent
 METHOD	bdv	()Lack;	I	getSoundAmbient
 METHOD	bdv	(Lanw;)Lack;	e	getSoundHurt
 METHOD	bdv	()Lack;	dp	getSoundDeath
 METHOD	bdv	()Lack;	eR	getTradeSound
-METHOD	bdv	()V	k	movementTick
+METHOD	bdv	()V	k	dropContents
 CLASS	bdw	MobSpawnerTrader
 CLASS	bdz	PlayerAbilities
 FIELD	bdz	Z	a	isInvulnerable
@@ -4849,18 +4849,18 @@ FIELD	beb	Lgi;	c	extraSlots
 FIELD	beb	I	d	itemInHandIndex
 FIELD	beb	Lbec;	e	player
 FIELD	beb	Lbki;	g	carried
-METHOD	beb	()Lbki;	f	getItemInHand
-METHOD	beb	()I	g	getHotbarSize
-METHOD	beb	(Lbki;Lbki;)Z	a	isSimilarAndNotFull
-METHOD	beb	()I	h	getFirstEmptySlotIndex
+METHOD	beb	()Lbki;	f	getBook
+METHOD	beb	()I	g	getDamage
+METHOD	beb	(Lbki;Lbki;)Z	a	equals
+METHOD	beb	()I	h	getColor
 METHOD	beb	(Lbki;)I	d	firstPartial
 METHOD	beb	(Lbki;)Z	e	pickup
 METHOD	beb	(II)Lbki;	a	splitStack
 METHOD	beb	(I)Lbki;	b	splitWithoutUpdate
 METHOD	beb	(ILbki;)V	a	setItem
 METHOD	beb	()I	ab_	getSize
-METHOD	beb	()Z	c	isEmpty
-METHOD	beb	(I)Lbki;	a	getItem
+METHOD	beb	()Z	c	isConvertable
+METHOD	beb	(I)Lbki;	a	cloneAndSubtract
 METHOD	beb	()Lmr;	P	getDisplayName
 METHOD	beb	()V	k	dropContents
 METHOD	beb	()V	Z_	update
@@ -4887,8 +4887,8 @@ FIELD	bec	I	bK	expLevel
 FIELD	bec	I	bL	expTotal
 FIELD	bec	F	bM	exp
 FIELD	bec	Lbeo;	bP	hookedFish
-METHOD	bec	()V	e	initDatawatcher
-METHOD	bec	()V	j	tick
+METHOD	bec	()V	e	clearBlocks
+METHOD	bec	()V	j	applyEffects
 METHOD	bec	()Lack;	aq	getSoundSwim
 METHOD	bec	()Lack;	ar	getSoundSplash
 METHOD	bec	()Lack;	as	getSoundSplashHighSpeed
@@ -4896,13 +4896,13 @@ METHOD	bec	()I	bh	getDefaultPortalCooldown
 METHOD	bec	(Lack;FF)V	a	playSound
 METHOD	bec	()Lacm;	ct	getSoundCategory
 METHOD	bec	()I	cu	getMaxFireTicks
-METHOD	bec	()V	m	closeInventory
+METHOD	bec	()V	m	beginSpawnSequence
 METHOD	bec	()V	aW	passengerTick
-METHOD	bec	()V	dO	doTick
-METHOD	bec	()V	k	movementTick
+METHOD	bec	()V	dO	doTick_dO
+METHOD	bec	()V	k	dropContents
 METHOD	bec	()I	eu	getScore
-METHOD	bec	(I)V	s	setScore
-METHOD	bec	(I)V	t	addScore
+METHOD	bec	(I)V	s	setInvul
+METHOD	bec	(I)V	t	addScore_t
 METHOD	bec	(Lanw;)V	a	die
 METHOD	bec	()V	dm	dropInventory
 METHOD	bec	()V	ev	removeCursedItems
@@ -4911,7 +4911,7 @@ METHOD	bec	()Lack;	dp	getSoundDeath
 METHOD	bec	(Z)Z	a	dropItem
 METHOD	bec	(Lbki;Z)Lbbg;	a	drop
 METHOD	bec	(Lcfj;)Z	d	hasBlock
-METHOD	bec	(Lle;)V	a	loadData
+METHOD	bec	(Lle;)V	a	load
 METHOD	bec	(Lle;)V	b	saveData
 METHOD	bec	(Lanw;)Z	b	isInvulnerable
 METHOD	bec	(Lanw;F)Z	a	damageEntity
@@ -4929,7 +4929,7 @@ METHOD	bec	(Laom;)V	f	attack
 METHOD	bec	()V	aa	die
 METHOD	bec	()Lcom/mojang/authlib/GameProfile;	ez	getProfile
 METHOD	bec	(Lfu;)Lcom/mojang/datafixers/util/Either;	a	sleep
-METHOD	bec	(ZZ)V	a	wakeup
+METHOD	bec	(ZZ)V	a	doMobSpawning
 METHOD	bec	()V	em	entityWakeup
 METHOD	bec	(Lzd;Lfu;ZZ)Ljava/util/Optional;	a	getBed
 METHOD	bec	()Z	eA	isDeeplySleeping
@@ -4949,18 +4949,18 @@ METHOD	bec	()Lbge;	eH	getFoodData
 METHOD	bec	(Lbec;)I	d	getExpValue
 METHOD	bec	()Z	cW	alwaysGivesExp
 METHOD	bec	()Z	ax	playStepSound
-METHOD	bec	()V	t	updateAbilities
+METHOD	bec	()V	t	reload
 METHOD	bec	()Lmr;	P	getDisplayName
 METHOD	bec	()Lbho;	eK	getEnderChest
 METHOD	bec	(Laor;)Lbki;	b	getEquipment
-METHOD	bec	(Laor;Lbki;)V	a	setSlot
+METHOD	bec	(Laor;Lbki;)V	a	setEquipment
 METHOD	bec	()Ljava/lang/Iterable;	bk	getArmorItems
 METHOD	bec	()V	eL	releaseShoulderEntities
 METHOD	bec	(Lle;)V	k	spawnEntityFromShoulder
 METHOD	bec	()Z	bx	isSwimming
-METHOD	bec	()Ldfm;	eM	getScoreboard
-METHOD	bec	()Lmr;	d	getScoreboardDisplayName
-METHOD	bec	()Ljava/lang/String;	bT	getName
+METHOD	bec	()Ldfm;	eM	getScoreboard_eM
+METHOD	bec	()Lmr;	d	getDisplayName_d
+METHOD	bec	()Ljava/lang/String;	bT	getName_bT
 METHOD	bec	(F)V	p	setAbsorptionHearts
 METHOD	bec	()F	dS	getAbsorptionHearts
 METHOD	bec	(Ljava/lang/String;)Ljava/util/UUID;	c	getOfflineUUID
@@ -4974,7 +4974,7 @@ METHOD	bec	(F)F	r	getAttackCooldown
 METHOD	bec	()V	eS	resetAttackCooldown
 METHOD	bec	()Lbkf;	eT	getCooldownTracker
 METHOD	bec	()F	am	getBlockSpeedFactor
-METHOD	bec	()Z	eV	isCreativeAndOp
+METHOD	bec	()Z	eV	hasHivePos
 CLASS	bee$a	AutoRecipeStackManager$a
 CLASS	bee	AutoRecipeStackManager
 CLASS	beg$a	EntityArrow$PickupStatus
@@ -4988,34 +4988,34 @@ FIELD	beg	I	e	shake
 FIELD	beg	I	ao	despawnCounter
 FIELD	beg	D	ap	damage
 FIELD	beg	I	aq	knockbackStrength
-METHOD	beg	()V	e	initDatawatcher
+METHOD	beg	()V	e	clearBlocks
 METHOD	beg	(DDDFF)V	c	shoot
-METHOD	beg	()V	j	tick
+METHOD	beg	()V	j	applyEffects
 METHOD	beg	(Lapd;Ldem;)V	a	move
 METHOD	beg	()Lack;	k	getSoundHit
 METHOD	beg	(Lle;)V	b	saveData
-METHOD	beg	(Lle;)V	a	loadData
-METHOD	beg	(Laom;)V	b	setShooter
+METHOD	beg	(Lle;)V	a	load
+METHOD	beg	(Laom;)V	b	chunkCheck
 METHOD	beg	(Lbec;)V	a_	pickup
 METHOD	beg	()Z	ax	playStepSound
 METHOD	beg	(D)V	h	setDamage
 METHOD	beg	()D	n	getDamage
-METHOD	beg	(I)V	a	setKnockbackStrength
+METHOD	beg	(I)V	a	addScore
 METHOD	beg	(Lapj;Laon;)F	a	getHeadHeight
-METHOD	beg	(Z)V	a	setCritical
+METHOD	beg	(Z)V	a	safeShutdown
 METHOD	beg	(B)V	b	setPierceLevel
-METHOD	beg	()Z	p	isCritical
-METHOD	beg	()Z	q	isShotFromCrossbow
+METHOD	beg	()Z	p	hasBasePlate
+METHOD	beg	()Z	q	isAlwaysDestroyable
 METHOD	beg	()B	r	getPierceLevel
-METHOD	beg	(Z)V	p	setShotFromCrossbow
+METHOD	beg	(Z)V	p	setArms
 CLASS	beh	EntityFireball
 FIELD	beh	D	b	dirX
 FIELD	beh	D	c	dirY
 FIELD	beh	D	d	dirZ
-METHOD	beh	()V	e	initDatawatcher
-METHOD	beh	()V	j	tick
+METHOD	beh	()V	e	clearBlocks
+METHOD	beh	()V	j	applyEffects
 METHOD	beh	(Lle;)V	b	saveData
-METHOD	beh	(Lle;)V	a	loadData
+METHOD	beh	(Lle;)V	a	load
 METHOD	beh	()Z	aQ	isInteractable
 METHOD	beh	(Lanw;F)Z	a	damageEntity
 CLASS	bei	EntityTippedArrow
@@ -5024,51 +5024,51 @@ FIELD	bei	Lbmb;	g	potionRegistry
 FIELD	bei	Ljava/util/Set;	an	effects
 FIELD	bei	Z	ao	hasColor
 METHOD	bei	(Laog;)V	a	addEffect
-METHOD	bei	()V	e	initDatawatcher
-METHOD	bei	()V	j	tick
-METHOD	bei	()I	u	getColor
-METHOD	bei	(I)V	c	setColor
+METHOD	bei	()V	e	clearBlocks
+METHOD	bei	()V	j	applyEffects
+METHOD	bei	()I	u	getColor_u
+METHOD	bei	(I)V	c	levelDown
 METHOD	bei	(Lle;)V	b	saveData
-METHOD	bei	(Lle;)V	a	loadData
-METHOD	bei	()Lbki;	m	getItemStack
+METHOD	bei	(Lle;)V	a	load
+METHOD	bei	()Lbki;	m	getCarried
 CLASS	bej	EntityDragonFireball
 METHOD	bej	()Z	aQ	isInteractable
 METHOD	bej	(Lanw;F)Z	a	damageEntity
 CLASS	bek	EntityEvokerFangs
-METHOD	bek	()V	e	initDatawatcher
-METHOD	bek	()Laoy;	g	getOwner
-METHOD	bek	(Lle;)V	a	loadData
+METHOD	bek	()V	e	clearBlocks
+METHOD	bek	()Laoy;	g	getOwner_g
+METHOD	bek	(Lle;)V	a	load
 METHOD	bek	(Lle;)V	b	saveData
-METHOD	bek	()V	j	tick
+METHOD	bek	()V	j	applyEffects
 CLASS	bel	EntityEnderSignal
 FIELD	bel	D	c	targetX
 FIELD	bel	D	d	targetY
 FIELD	bel	D	e	targetZ
 FIELD	bel	I	f	despawnTimer
 FIELD	bel	Z	g	shouldDropItem
-METHOD	bel	()V	e	initDatawatcher
-METHOD	bel	()V	j	tick
+METHOD	bel	()V	e	clearBlocks
+METHOD	bel	()V	j	applyEffects
 METHOD	bel	(Lle;)V	b	saveData
-METHOD	bel	(Lle;)V	a	loadData
+METHOD	bel	(Lle;)V	a	load
 CLASS	bem	EntityFireballFireball
 METHOD	bem	(Lbki;)V	b	setItem
-METHOD	bem	()Lbki;	k	getItem
-METHOD	bem	()V	e	initDatawatcher
+METHOD	bem	()Lbki;	k	getItem_k
+METHOD	bem	()V	e	clearBlocks
 METHOD	bem	(Lle;)V	b	saveData
-METHOD	bem	(Lle;)V	a	loadData
+METHOD	bem	(Lle;)V	a	load
 CLASS	ben	EntityFireworks
 FIELD	ben	Ltq;	b	FIREWORK_ITEM
 FIELD	ben	Ltq;	d	SHOT_AT_ANGLE
 FIELD	ben	I	e	ticksFlown
 FIELD	ben	I	f	expectedLifespan
 FIELD	ben	Laoy;	g	ridingEntity
-METHOD	ben	()V	e	initDatawatcher
-METHOD	ben	()V	j	tick
-METHOD	ben	()V	i	explode
+METHOD	ben	()V	e	clearBlocks
+METHOD	ben	()V	j	applyEffects
+METHOD	ben	()V	i	checkSession
 METHOD	ben	()Z	k	hasExplosions
-METHOD	ben	()Z	h	isShotAtAngle
+METHOD	ben	()Z	h	allowFriendlyFire
 METHOD	ben	(Lle;)V	b	saveData
-METHOD	ben	(Lle;)V	a	loadData
+METHOD	ben	(Lle;)V	a	load
 CLASS	beo$1	EntityFishingHook$1
 CLASS	beo$a	EntityFishingHook$HookState
 FIELD	beo$a	Lbeo$a;	a	FLYING
@@ -5080,11 +5080,11 @@ FIELD	beo$b	Lbeo$b;	b	INSIDE_WATER
 FIELD	beo$b	Lbeo$b;	c	INVALID
 CLASS	beo	EntityFishingHook
 FIELD	beo	Laom;	as	hooked
-METHOD	beo	()V	e	initDatawatcher
-METHOD	beo	()V	j	tick
+METHOD	beo	()V	e	clearBlocks
+METHOD	beo	()V	j	applyEffects
 METHOD	beo	(Lle;)V	b	saveData
-METHOD	beo	(Lle;)V	a	loadData
-METHOD	beo	()V	h	reel
+METHOD	beo	(Lle;)V	a	load
+METHOD	beo	()V	h	exitCombat
 METHOD	beo	()Z	ax	playStepSound
 METHOD	beo	()V	aa	die
 METHOD	beo	()Lbec;	i	getOwner
@@ -5092,17 +5092,17 @@ METHOD	beo	()Z	bK	canPortal
 CLASS	beq	EntityLargeFireball
 FIELD	beq	I	e	yield
 METHOD	beq	(Lle;)V	b	saveData
-METHOD	beq	(Lle;)V	a	loadData
+METHOD	beq	(Lle;)V	a	load
 CLASS	ber	EntityLlamaSpit
-METHOD	ber	()V	j	tick
-METHOD	ber	()V	e	initDatawatcher
+METHOD	ber	()V	j	applyEffects
+METHOD	ber	()V	e	clearBlocks
 CLASS	bes	IProjectile
 FIELD	bes	Ljava/util/UUID;	b	shooter
-METHOD	bes	(Laom;)V	b	setShooter
+METHOD	bes	(Laom;)V	b	chunkCheck
 METHOD	bes	()Laom;	v	getShooter
 METHOD	bes	(Lle;)V	b	saveData
-METHOD	bes	(Lle;)V	a	loadData
-METHOD	bes	()V	j	tick
+METHOD	bes	(Lle;)V	a	load
+METHOD	bes	()V	j	applyEffects
 METHOD	bes	(DDDFF)V	c	shoot
 CLASS	bet	ProjectileHelper
 CLASS	beu	EntityShulkerBullet
@@ -5110,10 +5110,10 @@ FIELD	beu	Laom;	b	target
 FIELD	beu	Lfz;	c	dir
 METHOD	beu	()Lacm;	ct	getSoundCategory
 METHOD	beu	(Lle;)V	b	saveData
-METHOD	beu	(Lle;)V	a	loadData
-METHOD	beu	()V	e	initDatawatcher
+METHOD	beu	(Lle;)V	a	load
+METHOD	beu	()V	e	clearBlocks
 METHOD	beu	()V	cH	checkDespawn
-METHOD	beu	()V	j	tick
+METHOD	beu	()V	j	applyEffects
 METHOD	beu	()Z	bm	isBurning
 METHOD	beu	()Z	aQ	isInteractable
 METHOD	beu	(Lanw;F)Z	a	damageEntity
@@ -5124,18 +5124,18 @@ CLASS	bew	EntitySnowball
 METHOD	bew	()Lbke;	h	getDefaultItem
 CLASS	bex	EntitySpectralArrow
 FIELD	bex	I	f	duration
-METHOD	bex	()V	j	tick
-METHOD	bex	()Lbki;	m	getItemStack
-METHOD	bex	(Lle;)V	a	loadData
+METHOD	bex	()V	j	applyEffects
+METHOD	bex	()Lbki;	m	getCarried
+METHOD	bex	(Lle;)V	a	load
 METHOD	bex	(Lle;)V	b	saveData
 CLASS	bey	EntityProjectileThrowable
 METHOD	bey	(Lbki;)V	b	setItem
-METHOD	bey	()Lbki;	i	getItem
-METHOD	bey	()V	e	initDatawatcher
+METHOD	bey	()Lbki;	i	cloneItemStack
+METHOD	bey	()V	e	clearBlocks
 METHOD	bey	(Lle;)V	b	saveData
-METHOD	bey	(Lle;)V	a	loadData
+METHOD	bey	(Lle;)V	a	load
 CLASS	bez	EntityProjectile
-METHOD	bez	()V	j	tick
+METHOD	bez	()V	j	applyEffects
 CLASS	bf$1	CriterionConditionEntityType$1
 CLASS	bf$a	CriterionConditionEntityType$a
 CLASS	bf$b	CriterionConditionEntityType$b
@@ -5144,28 +5144,28 @@ CLASS	bfa	EntityEgg
 METHOD	bfa	()Lbke;	h	getDefaultItem
 CLASS	bfb	EntityEnderPearl
 METHOD	bfb	()Lbke;	h	getDefaultItem
-METHOD	bfb	()V	j	tick
+METHOD	bfb	()V	j	applyEffects
 CLASS	bfc	EntityThrownExpBottle
 METHOD	bfc	()Lbke;	h	getDefaultItem
 CLASS	bfd	EntityPotion
 METHOD	bfd	()Lbke;	h	getDefaultItem
-METHOD	bfd	()V	m	splash
-METHOD	bfd	()Z	n	isLingering
+METHOD	bfd	()V	m	beginSpawnSequence
+METHOD	bfd	()Z	n	hasTag
 CLASS	bfe	EntityThrownTrident
 FIELD	bfe	Lbki;	ao	trident
-METHOD	bfe	()V	e	initDatawatcher
-METHOD	bfe	()V	j	tick
-METHOD	bfe	()Lbki;	m	getItemStack
+METHOD	bfe	()V	e	clearBlocks
+METHOD	bfe	()V	j	applyEffects
+METHOD	bfe	()Lbki;	m	getCarried
 METHOD	bfe	(Lbec;)V	a_	pickup
-METHOD	bfe	(Lle;)V	a	loadData
+METHOD	bfe	(Lle;)V	a	load
 METHOD	bfe	(Lle;)V	b	saveData
 CLASS	bff	EntityWitherSkull
 METHOD	bff	()Z	bm	isBurning
 METHOD	bff	()Z	aQ	isInteractable
 METHOD	bff	(Lanw;F)Z	a	damageEntity
-METHOD	bff	()V	e	initDatawatcher
-METHOD	bff	()Z	k	isCharged
-METHOD	bff	(Z)V	a	setCharged
+METHOD	bff	()V	e	clearBlocks
+METHOD	bff	()Z	k	hasExplosions
+METHOD	bff	(Z)V	a	safeShutdown
 CLASS	bfh$1	Raid$1
 CLASS	bfh$a	Raid$Status
 FIELD	bfh$a	Lbfh$a;	a	ONGOING
@@ -5196,19 +5196,19 @@ FIELD	bfh	I	t	preRaidTicks
 FIELD	bfh	Ljava/util/Random;	u	random
 FIELD	bfh	I	v	numGroups
 FIELD	bfh	Lbfh$a;	w	status
-METHOD	bfh	()Z	d	isStopped
-METHOD	bfh	()Z	e	isVictory
-METHOD	bfh	()Z	f	isLoss
-METHOD	bfh	()Lbqb;	i	getWorld
-METHOD	bfh	()Z	j	isStarted
-METHOD	bfh	()I	k	getGroupsSpawned
+METHOD	bfh	()Z	d	hasSkyLight
+METHOD	bfh	()Z	e	hasCeiling
+METHOD	bfh	()Z	f	canBreed
+METHOD	bfh	()Lbqb;	i	getWorld_i
+METHOD	bfh	()Z	j	hasStorm
+METHOD	bfh	()I	k	getAdjacentZ
 METHOD	bfh	()I	l	getMaxBadOmenLevel
 METHOD	bfh	()I	m	getBadOmenLevel
-METHOD	bfh	()V	n	stop
-METHOD	bfh	()V	p	updateProgress
+METHOD	bfh	()V	n	broadcastCarriedItem
+METHOD	bfh	()V	p	tickChunks
 METHOD	bfh	()F	q	sumMobHealth
 METHOD	bfh	()Lfu;	t	getCenter
-METHOD	bfh	()I	u	getId
+METHOD	bfh	()I	u	getColor_u
 CLASS	bfi$a	EntityRaider$a
 CLASS	bfi$b	EntityRaider$b
 CLASS	bfi$c	EntityRaider$c
@@ -5216,15 +5216,15 @@ CLASS	bfi$d	EntityRaider$d
 CLASS	bfi	EntityRaider
 FIELD	bfi	Z	bw	canJoinRaid
 METHOD	bfi	()V	o	initPathfinder
-METHOD	bfi	()V	e	initDatawatcher
+METHOD	bfi	()V	e	clearBlocks
 METHOD	bfi	()Z	fa	isCanJoinRaid
 METHOD	bfi	(Z)V	w	setCanJoinRaid
-METHOD	bfi	()V	k	movementTick
+METHOD	bfi	()V	k	dropContents
 METHOD	bfi	(Lanw;)V	a	die
 METHOD	bfi	(Lle;)V	b	saveData
-METHOD	bfi	(Lle;)V	a	loadData
+METHOD	bfi	(Lle;)V	a	load
 METHOD	bfi	(D)Z	h	isTypeNotPersistent
-METHOD	bfi	()Z	K	isSpecialPersistence
+METHOD	bfi	()Z	K	isNight
 METHOD	bfi	(Lanw;F)Z	a	damageEntity
 METHOD	bfi	(Lbqc;Lane;Lapb;Lapo;Lle;)Lapo;	a	prepare
 CLASS	bfj	PersistentRaid
@@ -5266,22 +5266,22 @@ FIELD	bfr$a	Lbfr$a;	f	HOPPER
 FIELD	bfr$a	Lbfr$a;	g	COMMAND_BLOCK
 CLASS	bfr	EntityMinecartAbstract
 METHOD	bfr	()Z	ax	playStepSound
-METHOD	bfr	()V	e	initDatawatcher
+METHOD	bfr	()V	e	clearBlocks
 METHOD	bfr	()Z	aR	isCollidable
 METHOD	bfr	(Lanw;F)Z	a	damageEntity
 METHOD	bfr	()F	am	getBlockSpeedFactor
 METHOD	bfr	()Z	aQ	isInteractable
 METHOD	bfr	()Lfz;	bZ	getAdjustedDirection
-METHOD	bfr	()V	j	tick
+METHOD	bfr	()V	j	applyEffects
 METHOD	bfr	()D	g	getMaxSpeed
-METHOD	bfr	()V	i	decelerate
-METHOD	bfr	(Lle;)V	a	loadData
+METHOD	bfr	()V	i	checkSession
+METHOD	bfr	(Lle;)V	a	load
 METHOD	bfr	(Lle;)V	b	saveData
 METHOD	bfr	(Laom;)V	i	collide
 METHOD	bfr	(F)V	a	setDamage
 METHOD	bfr	()F	k	getDamage
-METHOD	bfr	()I	m	getType
-METHOD	bfr	()Lcfj;	p	getDisplayBlock
+METHOD	bfr	()I	m	getBadOmenLevel
+METHOD	bfr	()Lcfj;	p	getBlock_p
 METHOD	bfr	()I	r	getDisplayBlockOffset
 METHOD	bfr	(Lcfj;)V	b	setDisplayBlock
 METHOD	bfr	(I)V	l	setDisplayBlockOffset
@@ -5289,16 +5289,16 @@ CLASS	bfs	EntityMinecartContainer
 FIELD	bfs	Lgi;	b	items
 FIELD	bfs	Luh;	d	lootTable
 FIELD	bfs	J	e	lootTableSeed
-METHOD	bfs	()Z	c	isEmpty
-METHOD	bfs	(I)Lbki;	a	getItem
+METHOD	bfs	()Z	c	isConvertable
+METHOD	bfs	(I)Lbki;	a	cloneAndSubtract
 METHOD	bfs	(II)Lbki;	a	splitStack
 METHOD	bfs	(I)Lbki;	b	splitWithoutUpdate
 METHOD	bfs	(ILbki;)V	a	setItem
 METHOD	bfs	()V	Z_	update
 METHOD	bfs	()V	aa	die
 METHOD	bfs	(Lle;)V	b	saveData
-METHOD	bfs	(Lle;)V	a	loadData
-METHOD	bfs	()V	i	decelerate
+METHOD	bfs	(Lle;)V	a	load
+METHOD	bfs	()V	i	checkSession
 METHOD	bfs	()V	aa_	clear
 METHOD	bfs	(Luh;J)V	a	setLootTable
 CLASS	bft$1	EntityBoat$1
@@ -5318,17 +5318,17 @@ FIELD	bft$b	Lbft$b;	f	DARK_OAK
 CLASS	bft	EntityBoat
 METHOD	bft	(Lapj;Laon;)F	a	getHeadHeight
 METHOD	bft	()Z	ax	playStepSound
-METHOD	bft	()V	e	initDatawatcher
+METHOD	bft	()V	e	clearBlocks
 METHOD	bft	()Z	aR	isCollidable
 METHOD	bft	(Lanw;F)Z	a	damageEntity
 METHOD	bft	(Laom;)V	i	collide
 METHOD	bft	()Z	aQ	isInteractable
 METHOD	bft	()Lfz;	bZ	getAdjustedDirection
-METHOD	bft	()V	j	tick
+METHOD	bft	()V	j	applyEffects
 METHOD	bft	(Lle;)V	b	saveData
-METHOD	bft	(Lle;)V	a	loadData
+METHOD	bft	(Lle;)V	a	load
 METHOD	bft	(F)V	a	setDamage
-METHOD	bft	()F	m	getDamage
+METHOD	bft	()F	m	getDamage_m
 METHOD	bft	(Lbft$b;)V	a	setType
 METHOD	bft	()Lbft$b;	p	getType
 METHOD	bft	()Laom;	cl	getRidingPassenger
@@ -5339,45 +5339,45 @@ CLASS	bfw	EntityMinecartChest
 METHOD	bfw	()I	ab_	getSize
 METHOD	bfw	()Lbfr$a;	o	getMinecartType
 CLASS	bfx$a	EntityMinecartCommandBlock$a
-METHOD	bfx$a	()Lcz;	h	getWrapper
+METHOD	bfx$a	()Lcz;	h	getWrapper_h
 CLASS	bfx	EntityMinecartCommandBlock
 FIELD	bfx	Ltq;	b	COMMAND
-METHOD	bfx	()V	e	initDatawatcher
-METHOD	bfx	(Lle;)V	a	loadData
+METHOD	bfx	()V	e	clearBlocks
+METHOD	bfx	(Lle;)V	a	load
 METHOD	bfx	(Lle;)V	b	saveData
 METHOD	bfx	()Lbfr$a;	o	getMinecartType
-METHOD	bfx	()Lbpc;	u	getCommandBlock
+METHOD	bfx	()Lbpc;	u	getCommandBlock_u
 CLASS	bfy	EntityMinecartFurnace
 METHOD	bfy	()Lbfr$a;	o	getMinecartType
-METHOD	bfy	()V	e	initDatawatcher
-METHOD	bfy	()V	j	tick
+METHOD	bfy	()V	e	clearBlocks
+METHOD	bfy	()V	j	applyEffects
 METHOD	bfy	()D	g	getMaxSpeed
-METHOD	bfy	()V	i	decelerate
+METHOD	bfy	()V	i	checkSession
 METHOD	bfy	(Lle;)V	b	saveData
-METHOD	bfy	(Lle;)V	a	loadData
+METHOD	bfy	(Lle;)V	a	load
 CLASS	bfz	EntityMinecartHopper
 METHOD	bfz	()Lbfr$a;	o	getMinecartType
 METHOD	bfz	()I	ab_	getSize
 METHOD	bfz	()Z	u	isEnabled
 METHOD	bfz	(Z)V	o	setEnabled
-METHOD	bfz	()Lbqb;	v	getWorld
-METHOD	bfz	()V	j	tick
+METHOD	bfz	()Lbqb;	v	getWorld_v
+METHOD	bfz	()V	j	applyEffects
 METHOD	bfz	(Lle;)V	b	saveData
-METHOD	bfz	(Lle;)V	a	loadData
+METHOD	bfz	(Lle;)V	a	load
 METHOD	bfz	(I)V	m	setCooldown
 CLASS	bg$a	CriterionTriggerFilledBucket$a
 CLASS	bg	CriterionTriggerFilledBucket
 CLASS	bga$1	EntityMinecartMobSpawner$1
 CLASS	bga	EntityMinecartMobSpawner
 METHOD	bga	()Lbfr$a;	o	getMinecartType
-METHOD	bga	(Lle;)V	a	loadData
+METHOD	bga	(Lle;)V	a	load
 METHOD	bga	(Lle;)V	b	saveData
-METHOD	bga	()V	j	tick
+METHOD	bga	()V	j	applyEffects
 CLASS	bgb	EntityMinecartTNT
 METHOD	bgb	()Lbfr$a;	o	getMinecartType
-METHOD	bgb	()V	j	tick
+METHOD	bgb	()V	j	applyEffects
 METHOD	bgb	(Lanw;F)Z	a	damageEntity
-METHOD	bgb	(Lle;)V	a	loadData
+METHOD	bgb	(Lle;)V	a	load
 METHOD	bgb	(Lle;)V	b	saveData
 CLASS	bge	FoodMetaData
 FIELD	bge	I	a	foodLevel
@@ -5390,8 +5390,8 @@ METHOD	bge	()F	e	getSaturationLevel
 CLASS	bgf$1	FoodInfo$1
 CLASS	bgf$a	FoodInfo$a
 CLASS	bgf	FoodInfo
-METHOD	bgf	()I	a	getNutrition
-METHOD	bgf	()F	b	getSaturationModifier
+METHOD	bgf	()I	a	getFoodLevel
+METHOD	bgf	()F	b	getExperience
 CLASS	bgg	Foods
 CLASS	bgi	Container
 FIELD	bgi	Lgi;	c	items
@@ -5416,8 +5416,8 @@ FIELD	bgk	Lbgw;	j	levelCost
 CLASS	bgl$1	ContainerBeacon$1
 METHOD	bgl$1	()I	X_	getMaxStackSize
 CLASS	bgl$a	ContainerBeacon$SlotBeacon
-METHOD	bgl$a	(Lbki;)Z	a	isAllowed
-METHOD	bgl$a	()I	a	getMaxStackSize
+METHOD	bgl$a	(Lbki;)Z	a	canEnchant
+METHOD	bgl$a	()I	a	getFoodLevel
 CLASS	bgl	ContainerBeacon
 FIELD	bgl	Lamz;	c	beacon
 FIELD	bgl	Lbgs;	e	containerAccess
@@ -5426,14 +5426,14 @@ METHOD	bgl	(Lbec;)Z	a	canUse
 METHOD	bgl	(Lbec;I)Lbki;	b	shiftClick
 CLASS	bgm	ContainerBlastFurnace
 CLASS	bgn$a	ContainerBrewingStand$a
-METHOD	bgn$a	(Lbki;)Z	a	isAllowed
-METHOD	bgn$a	()I	a	getMaxStackSize
+METHOD	bgn$a	(Lbki;)Z	a	canEnchant
+METHOD	bgn$a	()I	a	getFoodLevel
 CLASS	bgn$b	ContainerBrewingStand$SlotBrewing
-METHOD	bgn$b	(Lbki;)Z	a	isAllowed
-METHOD	bgn$b	()I	a	getMaxStackSize
+METHOD	bgn$b	(Lbki;)Z	a	canEnchant
+METHOD	bgn$b	()I	a	getFoodLevel
 CLASS	bgn$c	ContainerBrewingStand$SlotPotionBottle
-METHOD	bgn$c	(Lbki;)Z	a	isAllowed
-METHOD	bgn$c	()I	a	getMaxStackSize
+METHOD	bgn$c	(Lbki;)Z	a	canEnchant
+METHOD	bgn$c	()I	a	getFoodLevel
 CLASS	bgn	ContainerBrewingStand
 FIELD	bgn	Lamz;	c	brewingStand
 METHOD	bgn	(Lbec;)Z	a	canUse
@@ -5443,11 +5443,11 @@ METHOD	bgo$1	()V	Z_	update
 CLASS	bgo$2	ContainerCartography$2
 METHOD	bgo$2	()V	Z_	update
 CLASS	bgo$3	ContainerCartography$3
-METHOD	bgo$3	(Lbki;)Z	a	isAllowed
+METHOD	bgo$3	(Lbki;)Z	a	canEnchant
 CLASS	bgo$4	ContainerCartography$4
-METHOD	bgo$4	(Lbki;)Z	a	isAllowed
+METHOD	bgo$4	(Lbki;)Z	a	canEnchant
 CLASS	bgo$5	ContainerCartography$5
-METHOD	bgo$5	(Lbki;)Z	a	isAllowed
+METHOD	bgo$5	(Lbki;)Z	a	canEnchant
 CLASS	bgo	ContainerCartography
 FIELD	bgo	Lbgs;	d	containerAccess
 FIELD	bgo	Lamz;	c	inventory
@@ -5476,8 +5476,8 @@ CLASS	bgu	InventoryCrafting
 FIELD	bgu	Lgi;	a	items
 FIELD	bgu	Lbgi;	d	container
 METHOD	bgu	()I	ab_	getSize
-METHOD	bgu	()Z	c	isEmpty
-METHOD	bgu	(I)Lbki;	a	getItem
+METHOD	bgu	()Z	c	isConvertable
+METHOD	bgu	(I)Lbki;	a	cloneAndSubtract
 METHOD	bgu	(I)Lbki;	b	splitWithoutUpdate
 METHOD	bgu	(II)Lbki;	a	splitStack
 METHOD	bgu	(ILbki;)V	a	setItem
@@ -5491,13 +5491,13 @@ METHOD	bgv	(Lbec;)Z	a	canUse
 METHOD	bgv	(Lbec;I)Lbki;	b	shiftClick
 CLASS	bgw$1	ContainerProperty$1
 METHOD	bgw$1	()I	b	get
-METHOD	bgw$1	(I)V	a	set
+METHOD	bgw$1	(I)V	a	addScore
 CLASS	bgw$2	ContainerProperty$2
 METHOD	bgw$2	()I	b	get
-METHOD	bgw$2	(I)V	a	set
+METHOD	bgw$2	(I)V	a	addScore
 CLASS	bgw$3	ContainerProperty$3
 METHOD	bgw$3	()I	b	get
-METHOD	bgw$3	(I)V	a	set
+METHOD	bgw$3	(I)V	a	addScore
 CLASS	bgw	ContainerProperty
 CLASS	bgx	ContainerDispenser
 FIELD	bgx	Lamz;	c	items
@@ -5506,10 +5506,10 @@ METHOD	bgx	(Lbec;I)Lbki;	b	shiftClick
 CLASS	bgy$1	ContainerEnchantTable$1
 METHOD	bgy$1	()V	Z_	update
 CLASS	bgy$2	ContainerEnchantTable$2
-METHOD	bgy$2	(Lbki;)Z	a	isAllowed
-METHOD	bgy$2	()I	a	getMaxStackSize
+METHOD	bgy$2	(Lbki;)Z	a	canEnchant
+METHOD	bgy$2	()I	a	getFoodLevel
 CLASS	bgy$3	ContainerEnchantTable$3
-METHOD	bgy$3	(Lbki;)Z	a	isAllowed
+METHOD	bgy$3	(Lbki;)Z	a	canEnchant
 CLASS	bgy	ContainerEnchantTable
 FIELD	bgy	Lamz;	f	enchantSlots
 FIELD	bgy	Lbgs;	g	containerAccess
@@ -5519,20 +5519,20 @@ FIELD	bgy	[I	e	levels
 METHOD	bgy	(Lbec;)Z	a	canUse
 METHOD	bgy	(Lbec;I)Lbki;	b	shiftClick
 CLASS	bgz	SlotFurnaceFuel
-METHOD	bgz	(Lbki;)Z	a	isAllowed
+METHOD	bgz	(Lbki;)Z	a	canEnchant
 METHOD	bgz	(Lbki;)I	b	getMaxStackSize
 CLASS	bh	CriterionConditionInOpenWater
 CLASS	bha	ContainerFurnaceFurnace
 CLASS	bhb	SlotFurnaceResult
-METHOD	bhb	(Lbki;)Z	a	isAllowed
+METHOD	bhb	(Lbki;)Z	a	canEnchant
 CLASS	bhc$1	ContainerGrindstone$1
 METHOD	bhc$1	()V	Z_	update
 CLASS	bhc$2	ContainerGrindstone$2
-METHOD	bhc$2	(Lbki;)Z	a	isAllowed
+METHOD	bhc$2	(Lbki;)Z	a	canEnchant
 CLASS	bhc$3	ContainerGrindstone$3
-METHOD	bhc$3	(Lbki;)Z	a	isAllowed
+METHOD	bhc$3	(Lbki;)Z	a	canEnchant
 CLASS	bhc$4	ContainerGrindstone$4
-METHOD	bhc$4	(Lbki;)Z	a	isAllowed
+METHOD	bhc$4	(Lbki;)Z	a	canEnchant
 CLASS	bhc	ContainerGrindstone
 FIELD	bhc	Lamz;	c	resultInventory
 FIELD	bhc	Lamz;	d	craftInventory
@@ -5544,17 +5544,17 @@ FIELD	bhd	Lamz;	c	hopper
 METHOD	bhd	(Lbec;)Z	a	canUse
 METHOD	bhd	(Lbec;I)Lbki;	b	shiftClick
 CLASS	bhe$1	ContainerHorse$1
-METHOD	bhe$1	(Lbki;)Z	a	isAllowed
+METHOD	bhe$1	(Lbki;)Z	a	canEnchant
 CLASS	bhe$2	ContainerHorse$2
-METHOD	bhe$2	(Lbki;)Z	a	isAllowed
-METHOD	bhe$2	()I	a	getMaxStackSize
+METHOD	bhe$2	(Lbki;)Z	a	canEnchant
+METHOD	bhe$2	()I	a	getFoodLevel
 CLASS	bhe	ContainerHorse
 METHOD	bhe	(Lbec;)Z	a	canUse
 METHOD	bhe	(Lbec;I)Lbki;	b	shiftClick
 CLASS	bhf$1	ContainerPlayer$1
-METHOD	bhf$1	()I	a	getMaxStackSize
-METHOD	bhf$1	(Lbki;)Z	a	isAllowed
-METHOD	bhf$1	(Lbec;)Z	a	isAllowed
+METHOD	bhf$1	()I	a	getFoodLevel
+METHOD	bhf$1	(Lbki;)Z	a	canEnchant
+METHOD	bhf$1	(Lbec;)Z	a	canUse
 CLASS	bhf$2	ContainerPlayer$2
 CLASS	bhf	ContainerPlayer
 FIELD	bhf	Lbgu;	l	craftInventory
@@ -5565,8 +5565,8 @@ METHOD	bhf	(Lbec;I)Lbki;	b	shiftClick
 CLASS	bhg$1	ContainerAnvilAbstract$1
 METHOD	bhg$1	()V	Z_	update
 CLASS	bhg$2	ContainerAnvilAbstract$2
-METHOD	bhg$2	(Lbki;)Z	a	isAllowed
-METHOD	bhg$2	(Lbec;)Z	a	isAllowed
+METHOD	bhg$2	(Lbki;)Z	a	canEnchant
+METHOD	bhg$2	(Lbec;)Z	a	canUse
 CLASS	bhg	ContainerAnvilAbstract
 FIELD	bhg	Lamz;	c	resultInventory
 FIELD	bhg	Lamz;	d	repairInventory
@@ -5584,13 +5584,13 @@ METHOD	bhi$1	()V	Z_	update
 CLASS	bhi$2	ContainerLoom$2
 METHOD	bhi$2	()V	Z_	update
 CLASS	bhi$3	ContainerLoom$3
-METHOD	bhi$3	(Lbki;)Z	a	isAllowed
+METHOD	bhi$3	(Lbki;)Z	a	canEnchant
 CLASS	bhi$4	ContainerLoom$4
-METHOD	bhi$4	(Lbki;)Z	a	isAllowed
+METHOD	bhi$4	(Lbki;)Z	a	canEnchant
 CLASS	bhi$5	ContainerLoom$5
-METHOD	bhi$5	(Lbki;)Z	a	isAllowed
+METHOD	bhi$5	(Lbki;)Z	a	canEnchant
 CLASS	bhi$6	ContainerLoom$6
-METHOD	bhi$6	(Lbki;)Z	a	isAllowed
+METHOD	bhi$6	(Lbki;)Z	a	canEnchant
 CLASS	bhi	ContainerLoom
 FIELD	bhi	Lbgs;	c	containerAccess
 FIELD	bhi	Lamz;	k	craftInventory
@@ -5630,8 +5630,8 @@ FIELD	bhl	Lgi;	b	itemsInSlots
 FIELD	bhl	Lboz;	c	recipe
 FIELD	bhl	I	d	selectedIndex
 METHOD	bhl	()I	ab_	getSize
-METHOD	bhl	()Z	c	isEmpty
-METHOD	bhl	(I)Lbki;	a	getItem
+METHOD	bhl	()Z	c	isConvertable
+METHOD	bhl	(I)Lbki;	a	cloneAndSubtract
 METHOD	bhl	(II)Lbki;	a	splitStack
 METHOD	bhl	(I)Lbki;	b	splitWithoutUpdate
 METHOD	bhl	(ILbki;)V	a	setItem
@@ -5644,7 +5644,7 @@ FIELD	bhm	Lbhl;	d	inventoryMerchant
 METHOD	bhm	(Lbec;)Z	a	canUse
 METHOD	bhm	(Lbec;I)Lbki;	b	shiftClick
 CLASS	bhn	SlotMerchantResult
-METHOD	bhn	(Lbki;)Z	a	isAllowed
+METHOD	bhn	(Lbki;)Z	a	canEnchant
 CLASS	bho	InventoryEnderChest
 METHOD	bho	(Lbec;)V	c_	startOpen
 METHOD	bho	(Lbec;)V	b_	closeContainer
@@ -5653,34 +5653,34 @@ CLASS	bhq	RecipeHolder
 CLASS	bhr	InventoryCraftResult
 FIELD	bhr	Lgi;	a	items
 METHOD	bhr	()I	ab_	getSize
-METHOD	bhr	()Z	c	isEmpty
-METHOD	bhr	(I)Lbki;	a	getItem
+METHOD	bhr	()Z	c	isConvertable
+METHOD	bhr	(I)Lbki;	a	cloneAndSubtract
 METHOD	bhr	(II)Lbki;	a	splitStack
 METHOD	bhr	(I)Lbki;	b	splitWithoutUpdate
 METHOD	bhr	(ILbki;)V	a	setItem
 METHOD	bhr	()V	Z_	update
 METHOD	bhr	()V	aa_	clear
 CLASS	bhs	SlotResult
-METHOD	bhs	(Lbki;)Z	a	isAllowed
+METHOD	bhs	(Lbki;)Z	a	canEnchant
 CLASS	bht	ContainerShulkerBox
 METHOD	bht	(Lbec;)Z	a	canUse
 METHOD	bht	(Lbec;I)Lbki;	b	shiftClick
 CLASS	bhu	SlotShulkerBox
-METHOD	bhu	(Lbki;)Z	a	isAllowed
+METHOD	bhu	(Lbki;)Z	a	canEnchant
 CLASS	bhv	ContainerProperties
-METHOD	bhv	(I)I	a	getProperty
-METHOD	bhv	(II)V	a	setProperty
+METHOD	bhv	(I)I	a	getOrbValue
+METHOD	bhv	(II)V	a	flagDirty
 CLASS	bhw	Slot
 FIELD	bhw	I	a	index
 FIELD	bhw	Lamz;	c	inventory
 FIELD	bhw	I	d	rawSlotIndex
-METHOD	bhw	(Lbki;)Z	a	isAllowed
+METHOD	bhw	(Lbki;)Z	a	canEnchant
 METHOD	bhw	()Lbki;	e	getItem
-METHOD	bhw	()Z	f	hasItem
+METHOD	bhw	()Z	f	canBreed
 METHOD	bhw	(Lbki;)V	d	set
-METHOD	bhw	()I	a	getMaxStackSize
+METHOD	bhw	()I	a	getFoodLevel
 METHOD	bhw	(Lbki;)I	b	getMaxStackSize
-METHOD	bhw	(Lbec;)Z	a	isAllowed
+METHOD	bhw	(Lbec;)Z	a	canUse
 CLASS	bhx	ContainerSmithing
 CLASS	bhy	ContainerSmoker
 CLASS	bhz	AutoRecipeOutput
@@ -5689,7 +5689,7 @@ CLASS	bi	CriterionTriggerFishingRodHooked
 CLASS	bia$1	ContainerStonecutter$1
 METHOD	bia$1	()V	Z_	update
 CLASS	bia$2	ContainerStonecutter$2
-METHOD	bia$2	(Lbki;)Z	a	isAllowed
+METHOD	bia$2	(Lbki;)Z	a	canEnchant
 CLASS	bia	ContainerStonecutter
 FIELD	bia	Lbgs;	f	containerAccess
 FIELD	bia	Lbgw;	g	containerProperty
@@ -5700,7 +5700,7 @@ METHOD	bia	(Lbec;)Z	a	canUse
 METHOD	bia	()Lbhk;	a	getType
 METHOD	bia	(Lbec;I)Lbki;	b	shiftClick
 CLASS	bic	ItemAir
-METHOD	bic	()Ljava/lang/String;	a	getName
+METHOD	bic	()Ljava/lang/String;	a	getKey
 CLASS	bid$1	ItemArmor$1
 CLASS	bid	ItemArmor
 CLASS	bie	ArmorMaterial
@@ -5720,11 +5720,11 @@ CLASS	bij	ItemBanner
 CLASS	bik	ItemBannerPattern
 CLASS	bil	ItemBed
 CLASS	bim	ItemBlock
-METHOD	bim	()Z	d	isCheckCollisions
-METHOD	bim	()Ljava/lang/String;	a	getName
-METHOD	bim	()Lbvr;	e	getBlock
+METHOD	bim	()Z	d	hasSkyLight
+METHOD	bim	()Ljava/lang/String;	a	getKey
+METHOD	bim	()Lbvr;	e	getBlock_e
 CLASS	bin	BlockActionContext
-METHOD	bin	()Lfu;	a	getClickPosition
+METHOD	bin	()Lfu;	a	getBlockPosition
 CLASS	bio	ItemBoat
 CLASS	bip	ItemBoneMeal
 CLASS	biq	ItemBook
@@ -5757,8 +5757,8 @@ CLASS	bjb	ItemTool
 METHOD	bjb	(Lbki;Lcfj;)F	a	getDestroySpeed
 CLASS	bjc$1	BlockActionContextDirectional$1
 CLASS	bjc	BlockActionContextDirectional
-METHOD	bjc	()Lfu;	a	getClickPosition
-METHOD	bjc	()Z	g	isSneaking
+METHOD	bjc	()Lfu;	a	getBlockPosition
+METHOD	bjc	()Z	g	hasBook
 CLASS	bjd	ItemBisected
 CLASS	bje	EnumColor
 FIELD	bje	Lbje;	a	WHITE
@@ -5777,11 +5777,11 @@ FIELD	bje	Lbje;	m	BROWN
 FIELD	bje	Lbje;	n	GREEN
 FIELD	bje	Lbje;	o	RED
 FIELD	bje	Lbje;	p	BLACK
-METHOD	bje	()I	b	getColorIndex
+METHOD	bje	()I	b	get
 METHOD	bje	()[F	e	getColor
-METHOD	bje	()I	g	getFireworksColor
+METHOD	bje	()I	g	getDamage
 METHOD	bje	(I)Lbje;	a	fromColorIndex
-METHOD	bje	()Ljava/lang/String;	a	getName
+METHOD	bje	()Ljava/lang/String;	a	getKey
 CLASS	bjf	ItemDye
 CLASS	bjg	ItemArmorColorable
 CLASS	bjh	ItemHorseArmorDyeable
@@ -5827,15 +5827,15 @@ FIELD	bke	Lbgf;	l	foodInfo
 METHOD	bke	(Lbke;)I	a	getId
 METHOD	bke	(I)Lbke;	b	getById
 METHOD	bke	(Lbvr;)Lbke;	a	getItemOf
-METHOD	bke	()Lbke;	h	getItem
+METHOD	bke	()Lbke;	h	getDefaultItem
 METHOD	bke	(Lbki;Lcfj;)F	a	getDestroySpeed
-METHOD	bke	()I	i	getMaxStackSize
-METHOD	bke	()I	j	getMaxDurability
-METHOD	bke	()Z	k	usesDurability
+METHOD	bke	()I	i	getAdjacentX
+METHOD	bke	()I	j	getAdjacentY
+METHOD	bke	()Z	k	hasExplosions
 METHOD	bke	(Lcfj;)Z	b	canDestroySpecialBlock
-METHOD	bke	()Ljava/lang/String;	a	getName
+METHOD	bke	()Ljava/lang/String;	a	getKey
 METHOD	bke	()Lbke;	o	getCraftingRemainingItem
-METHOD	bke	()Z	s	isFood
+METHOD	bke	()Z	s	isDifficultyLocked
 METHOD	bke	()Lbgf;	t	getFoodInfo
 CLASS	bkf$1	ItemCooldown$1
 CLASS	bkf$a	ItemCooldown$Info
@@ -5843,24 +5843,24 @@ FIELD	bkf$a	I	c	endTick
 CLASS	bkf	ItemCooldown
 FIELD	bkf	Ljava/util/Map;	a	cooldowns
 FIELD	bkf	I	b	currentTick
-METHOD	bkf	(Lbke;)Z	a	hasCooldown
+METHOD	bkf	(Lbke;)Z	a	canEnchant
 METHOD	bkf	(Lbke;I)V	a	setCooldown
 CLASS	bkg	ItemItemFrame
 CLASS	bkh	ItemNamedBlock
-METHOD	bkh	()Ljava/lang/String;	a	getName
+METHOD	bkh	()Ljava/lang/String;	a	getKey
 CLASS	bki	ItemStack
 FIELD	bki	Lorg/apache/logging/log4j/Logger;	d	LOGGER
 FIELD	bki	I	f	count
 FIELD	bki	Lbke;	h	item
 FIELD	bki	Lle;	i	tag
 METHOD	bki	()V	I	checkEmpty
-METHOD	bki	()Z	a	isEmpty
+METHOD	bki	()Z	a	isDone
 METHOD	bki	(I)Lbki;	a	cloneAndSubtract
 METHOD	bki	()Lbke;	b	getItem
 METHOD	bki	(Lblv;)Lang;	a	placeItem
-METHOD	bki	(Lle;)Lle;	b	save
-METHOD	bki	()I	c	getMaxStackSize
-METHOD	bki	()Z	d	isStackable
+METHOD	bki	(Lle;)Lle;	b	save_b
+METHOD	bki	()I	c	getAmplifier
+METHOD	bki	()Z	d	hasSkyLight
 METHOD	bki	()I	g	getDamage
 METHOD	bki	(I)V	b	setDamage
 METHOD	bki	(ILjava/util/Random;Lze;)Z	a	isDamaged
@@ -5869,24 +5869,24 @@ METHOD	bki	(Lcfj;)Z	b	canDestroySpecialBlock
 METHOD	bki	()Lbki;	i	cloneItemStack
 METHOD	bki	(Lbki;Lbki;)Z	a	equals
 METHOD	bki	(Lbki;Lbki;)Z	b	matches
-METHOD	bki	(Lbki;)Z	a	doMaterialsMatch
+METHOD	bki	(Lbki;)Z	a	canEnchant
 METHOD	bki	()Z	n	hasTag
 METHOD	bki	()Lle;	o	getTag
 METHOD	bki	()Lle;	p	getOrCreateTag
-METHOD	bki	(Ljava/lang/String;)V	c	removeTag
+METHOD	bki	(Ljava/lang/String;)V	c	handleCommand
 METHOD	bki	()Llk;	q	getEnchantments
 METHOD	bki	(Lle;)V	c	setTag
-METHOD	bki	()Lmr;	r	getName
+METHOD	bki	()Lmr;	r	getName_r
 METHOD	bki	()Z	t	hasName
 METHOD	bki	()Z	w	canEnchant
 METHOD	bki	(Lbnw;I)V	a	addEnchantment
-METHOD	bki	()Z	x	hasEnchantments
+METHOD	bki	()Z	x	executeNext
 METHOD	bki	()I	B	getRepairCost
-METHOD	bki	(I)V	c	setRepairCost
+METHOD	bki	(I)V	c	levelDown
 METHOD	bki	()I	E	getCount
 METHOD	bki	(I)V	e	setCount
 METHOD	bki	(I)V	f	add
-METHOD	bki	(I)V	g	subtract
+METHOD	bki	(I)V	g	setFireTicks
 CLASS	bkj	ItemLiquidUtil
 CLASS	bkk	Items
 FIELD	bkk	Lbke;	a	AIR
@@ -6279,7 +6279,7 @@ FIELD	bkw	Lbkw;	d	EPIC
 CLASS	bkx	ItemRecord
 CLASS	bky	ItemSaddle
 CLASS	bkz	ItemScaffolding
-METHOD	bkz	()Z	d	isCheckCollisions
+METHOD	bkz	()Z	d	hasSkyLight
 CLASS	bl$a	CriterionTriggerInventoryChanged$a
 CLASS	bl	CriterionTriggerInventoryChanged
 CLASS	bla	ItemCooldownPlayer
@@ -6322,14 +6322,14 @@ FIELD	blu	Lblu;	e	BOW
 FIELD	blu	Lblu;	f	SPEAR
 FIELD	blu	Lblu;	g	CROSSBOW
 CLASS	blv	ItemActionContext
-METHOD	blv	()Lfu;	a	getClickPosition
+METHOD	blv	()Lfu;	a	getBlockPosition
 METHOD	blv	()Lfz;	i	getClickedFace
-METHOD	blv	()Ldem;	j	getPos
-METHOD	blv	()Lbki;	l	getItemStack
+METHOD	blv	()Ldem;	j	getPos_j
+METHOD	blv	()Lbki;	l	getItemStack_l
 METHOD	blv	()Lbec;	m	getEntity
 METHOD	blv	()Lanf;	n	getHand
-METHOD	blv	()Lbqb;	o	getWorld
-METHOD	blv	()Z	g	isSneaking
+METHOD	blv	()Lbqb;	o	getWorld_o
+METHOD	blv	()Z	g	hasBook
 CLASS	blw	ItemVanishable
 CLASS	blx	ItemWaterLily
 CLASS	bly	ItemWearable
@@ -6394,9 +6394,9 @@ FIELD	bmg	Lbki;	e	result
 FIELD	bmg	F	f	experience
 FIELD	bmg	I	g	cookingTime
 METHOD	bmg	()F	b	getExperience
-METHOD	bmg	()Lbki;	c	getResult
+METHOD	bmg	()Lbki;	c	getBuyItem2
 METHOD	bmg	()I	e	getCookingTime
-METHOD	bmg	()Luh;	f	getKey
+METHOD	bmg	()Luh;	f	getKey_f
 CLASS	bmh	RecipeArmorDye
 METHOD	bmh	()Lbmw;	ai_	getRecipeSerializer
 CLASS	bmi	RecipeBannerDuplicate
@@ -6409,16 +6409,16 @@ CLASS	bml	RecipeCampfire
 METHOD	bml	()Lbmw;	ai_	getRecipeSerializer
 CLASS	bmm	RecipeCrafting
 CLASS	bmn	IRecipeComplex
-METHOD	bmn	()Luh;	f	getKey
+METHOD	bmn	()Luh;	f	getKey_f
 METHOD	bmn	()Z	ah_	isComplex
-METHOD	bmn	()Lbki;	c	getResult
+METHOD	bmn	()Lbki;	c	getBuyItem2
 CLASS	bmo	RecipeFireworks
-METHOD	bmo	()Lbki;	c	getResult
+METHOD	bmo	()Lbki;	c	getBuyItem2
 METHOD	bmo	()Lbmw;	ai_	getRecipeSerializer
 CLASS	bmp	RecipeFireworksFade
 METHOD	bmp	()Lbmw;	ai_	getRecipeSerializer
 CLASS	bmq	RecipeFireworksStar
-METHOD	bmq	()Lbki;	c	getResult
+METHOD	bmq	()Lbki;	c	getBuyItem2
 METHOD	bmq	()Lbmw;	ai_	getRecipeSerializer
 CLASS	bmr$1	RecipeItemStack$1
 CLASS	bmr$a	RecipeItemStack$StackProvider
@@ -6426,7 +6426,7 @@ CLASS	bmr$b	RecipeItemStack$b
 CLASS	bmr$c	RecipeItemStack$Provider
 CLASS	bmr	RecipeItemStack
 FIELD	bmr	[Lbki;	c	choices
-METHOD	bmr	()V	f	buildChoices
+METHOD	bmr	()V	f	bind
 CLASS	bms	RecipeMapClone
 METHOD	bms	()Lbmw;	ai_	getRecipeSerializer
 CLASS	bmt	RecipeMapExtend
@@ -6458,9 +6458,9 @@ FIELD	bmz	Lgi;	c	items
 FIELD	bmz	Lbki;	d	result
 FIELD	bmz	Luh;	e	key
 FIELD	bmz	Ljava/lang/String;	f	group
-METHOD	bmz	()Luh;	f	getKey
+METHOD	bmz	()Luh;	f	getKey_f
 METHOD	bmz	()Lbmw;	ai_	getRecipeSerializer
-METHOD	bmz	()Lbki;	c	getResult
+METHOD	bmz	()Lbki;	c	getBuyItem2
 CLASS	bn$a	CriterionTriggerThrownItemPickedUpByEntity$a
 CLASS	bn	CriterionTriggerThrownItemPickedUpByEntity
 CLASS	bna$a	ShapelessRecipes$a
@@ -6469,9 +6469,9 @@ FIELD	bna	Luh;	a	key
 FIELD	bna	Ljava/lang/String;	b	group
 FIELD	bna	Lbki;	c	result
 FIELD	bna	Lgi;	d	ingredients
-METHOD	bna	()Luh;	f	getKey
+METHOD	bna	()Luh;	f	getKey_f
 METHOD	bna	()Lbmw;	ai_	getRecipeSerializer
-METHOD	bna	()Lbki;	c	getResult
+METHOD	bna	()Lbki;	c	getBuyItem2
 CLASS	bnb	RecipiesShield
 METHOD	bnb	()Lbmw;	ai_	getRecipeSerializer
 CLASS	bnc	RecipeShulkerBox
@@ -6487,8 +6487,8 @@ FIELD	bnf	Lbki;	b	result
 FIELD	bnf	Luh;	c	key
 FIELD	bnf	Ljava/lang/String;	d	group
 METHOD	bnf	()Lbmw;	ai_	getRecipeSerializer
-METHOD	bnf	()Luh;	f	getKey
-METHOD	bnf	()Lbki;	c	getResult
+METHOD	bnf	()Luh;	f	getKey_f
+METHOD	bnf	()Lbki;	c	getBuyItem2
 CLASS	bng	FurnaceRecipe
 METHOD	bng	()Lbmw;	ai_	getRecipeSerializer
 CLASS	bnh	RecipeSmoking
@@ -6500,30 +6500,30 @@ CLASS	bnk	RecipeTippedArrow
 METHOD	bnk	()Lbmw;	ai_	getRecipeSerializer
 CLASS	bnl$a	RecipeSmithing$a
 CLASS	bnl	RecipeSmithing
-METHOD	bnl	()Lbki;	c	getResult
-METHOD	bnl	()Luh;	f	getKey
+METHOD	bnl	()Lbki;	c	getBuyItem2
+METHOD	bnl	()Luh;	f	getKey_f
 METHOD	bnl	()Lbmw;	ai_	getRecipeSerializer
 CLASS	bnn	EnchantmentArrowDamage
-METHOD	bnn	()I	a	getMaxLevel
+METHOD	bnn	()I	a	getFoodLevel
 CLASS	bno	EnchantmentFlameArrows
-METHOD	bno	()I	a	getMaxLevel
+METHOD	bno	()I	a	getFoodLevel
 CLASS	bnp	EnchantmentInfiniteArrows
-METHOD	bnp	()I	a	getMaxLevel
+METHOD	bnp	()I	a	getFoodLevel
 CLASS	bnq	EnchantmentArrowKnockback
-METHOD	bnq	()I	a	getMaxLevel
+METHOD	bnq	()I	a	getFoodLevel
 CLASS	bnr	EnchantmentPiercing
-METHOD	bnr	()I	a	getMaxLevel
+METHOD	bnr	()I	a	getFoodLevel
 CLASS	bns	EnchantmentBinding
-METHOD	bns	()I	a	getMaxLevel
-METHOD	bns	()Z	b	isTreasure
+METHOD	bns	()I	a	getFoodLevel
+METHOD	bns	()Z	b	hasSaddle_b
 CLASS	bnt	EnchantmentWeaponDamage
-METHOD	bnt	()I	a	getMaxLevel
+METHOD	bnt	()I	a	getFoodLevel
 METHOD	bnt	(Lbki;)Z	a	canEnchant
 CLASS	bnu	EnchantmentDurability
-METHOD	bnu	()I	a	getMaxLevel
+METHOD	bnu	()I	a	getFoodLevel
 METHOD	bnu	(Lbki;)Z	a	canEnchant
 CLASS	bnv	EnchantmentDigging
-METHOD	bnv	()I	a	getMaxLevel
+METHOD	bnv	()I	a	getFoodLevel
 METHOD	bnv	(Lbki;)Z	a	canEnchant
 CLASS	bnw$a	Enchantment$Rarity
 FIELD	bnw$a	Lbnw$a;	a	COMMON
@@ -6532,11 +6532,11 @@ FIELD	bnw$a	Lbnw$a;	c	RARE
 FIELD	bnw$a	Lbnw$a;	d	VERY_RARE
 CLASS	bnw	Enchantment
 FIELD	bnw	Lbnx;	b	itemTarget
-METHOD	bnw	()I	e	getStartLevel
-METHOD	bnw	()I	a	getMaxLevel
+METHOD	bnw	()I	e	getCookingTime
+METHOD	bnw	()I	a	getFoodLevel
 METHOD	bnw	(Lbnw;)Z	b	isCompatible
 METHOD	bnw	(Lbki;)Z	a	canEnchant
-METHOD	bnw	()Z	b	isTreasure
+METHOD	bnw	()Z	b	hasSaddle_b
 CLASS	bnx$1	EnchantmentSlotType$1
 METHOD	bnx$1	(Lbke;)Z	a	canEnchant
 CLASS	bnx$10	EnchantmentSlotType$10
@@ -6586,7 +6586,7 @@ METHOD	bny	(Lbnw;Lbki;)I	a	getEnchantmentLevel
 METHOD	bny	(Laoy;)I	c	getFireAspectEnchantmentLevel
 METHOD	bny	(Laoy;)I	d	getOxygenEnchantmentLevel
 METHOD	bny	(Laoy;)I	f	getDigSpeedEnchantmentLevel
-METHOD	bny	(Lbki;)Z	e	shouldNotDrop
+METHOD	bny	(Lbki;)Z	e	pickup
 CLASS	bnz	WeightedRandomEnchant
 FIELD	bnz	Lbnw;	b	enchantment
 FIELD	bnz	I	c	level
@@ -6632,23 +6632,23 @@ FIELD	boa	Lbnw;	J	PIERCING
 FIELD	boa	Lbnw;	K	MENDING
 FIELD	boa	Lbnw;	L	VANISHING_CURSE
 CLASS	bob	EnchantmentFire
-METHOD	bob	()I	a	getMaxLevel
+METHOD	bob	()I	a	getFoodLevel
 CLASS	boc	EnchantmentLure
-METHOD	boc	()I	a	getMaxLevel
+METHOD	boc	()I	a	getFoodLevel
 CLASS	bod	EnchantmentFrostWalker
-METHOD	bod	()Z	b	isTreasure
-METHOD	bod	()I	a	getMaxLevel
+METHOD	bod	()Z	b	hasSaddle_b
+METHOD	bod	()I	a	getFoodLevel
 CLASS	boe	EnchantmentKnockback
-METHOD	boe	()I	a	getMaxLevel
+METHOD	boe	()I	a	getFoodLevel
 CLASS	bof	EnchantmentLootBonus
-METHOD	bof	()I	a	getMaxLevel
+METHOD	bof	()I	a	getFoodLevel
 CLASS	bog	EnchantmentMending
-METHOD	bog	()Z	b	isTreasure
-METHOD	bog	()I	a	getMaxLevel
+METHOD	bog	()Z	b	hasSaddle_b
+METHOD	bog	()I	a	getFoodLevel
 CLASS	boh	EnchantmentMultishot
-METHOD	boh	()I	a	getMaxLevel
+METHOD	boh	()I	a	getFoodLevel
 CLASS	boi	EnchantmentOxygen
-METHOD	boi	()I	a	getMaxLevel
+METHOD	boi	()I	a	getFoodLevel
 CLASS	boj$a	EnchantmentProtection$DamageType
 FIELD	boj$a	Lboj$a;	a	ALL
 FIELD	boj$a	Lboj$a;	b	FIRE
@@ -6656,34 +6656,34 @@ FIELD	boj$a	Lboj$a;	c	FALL
 FIELD	boj$a	Lboj$a;	d	EXPLOSION
 FIELD	boj$a	Lboj$a;	e	PROJECTILE
 CLASS	boj	EnchantmentProtection
-METHOD	boj	()I	a	getMaxLevel
+METHOD	boj	()I	a	getFoodLevel
 CLASS	bok	EnchantmentQuickCharge
-METHOD	bok	()I	a	getMaxLevel
+METHOD	bok	()I	a	getFoodLevel
 CLASS	bol	EnchantmentSoulSpeed
-METHOD	bol	()Z	b	isTreasure
-METHOD	bol	()I	a	getMaxLevel
+METHOD	bol	()Z	b	hasSaddle_b
+METHOD	bol	()I	a	getFoodLevel
 CLASS	bom	EnchantmentSweeping
-METHOD	bom	()I	a	getMaxLevel
+METHOD	bom	()I	a	getFoodLevel
 CLASS	bon	EnchantmentThorns
-METHOD	bon	()I	a	getMaxLevel
+METHOD	bon	()I	a	getFoodLevel
 METHOD	bon	(Lbki;)Z	a	canEnchant
 CLASS	boo	EnchantmentTridentChanneling
-METHOD	boo	()I	a	getMaxLevel
+METHOD	boo	()I	a	getFoodLevel
 CLASS	bop	EnchantmentTridentImpaling
-METHOD	bop	()I	a	getMaxLevel
+METHOD	bop	()I	a	getFoodLevel
 CLASS	boq	EnchantmentTridentLoyalty
-METHOD	boq	()I	a	getMaxLevel
+METHOD	boq	()I	a	getFoodLevel
 CLASS	bor	EnchantmentTridentRiptide
-METHOD	bor	()I	a	getMaxLevel
+METHOD	bor	()I	a	getFoodLevel
 CLASS	bos	EnchantmentSilkTouch
-METHOD	bos	()I	a	getMaxLevel
+METHOD	bos	()I	a	getFoodLevel
 CLASS	bot	EnchantmentVanishing
-METHOD	bot	()I	a	getMaxLevel
-METHOD	bot	()Z	b	isTreasure
+METHOD	bot	()I	a	getFoodLevel
+METHOD	bot	()Z	b	hasSaddle_b
 CLASS	bou	EnchantmentDepthStrider
-METHOD	bou	()I	a	getMaxLevel
+METHOD	bou	()I	a	getFoodLevel
 CLASS	bov	EnchantmentWaterWorker
-METHOD	bov	()I	a	getMaxLevel
+METHOD	bov	()I	a	getFoodLevel
 CLASS	boy	IMerchant
 METHOD	boy	(Lbec;Lmr;I)V	a	openTrade
 CLASS	boz	MerchantRecipe
@@ -6699,20 +6699,20 @@ FIELD	boz	F	i	priceMultiplier
 FIELD	boz	I	j	xp
 METHOD	boz	()Lbki;	b	getBuyItem1
 METHOD	boz	()Lbki;	c	getBuyItem2
-METHOD	boz	()Lbki;	d	getSellingItem
-METHOD	boz	()I	g	getUses
-METHOD	boz	()V	h	resetUses
-METHOD	boz	()I	i	getMaxUses
-METHOD	boz	()V	j	increaseUses
-METHOD	boz	()I	k	getDemand
-METHOD	boz	(I)V	a	increaseSpecialPrice
-METHOD	boz	()V	l	setSpecialPrice
-METHOD	boz	()I	m	getSpecialPrice
-METHOD	boz	(I)V	b	setSpecialPrice
+METHOD	boz	()Lbki;	d	getRecord
+METHOD	boz	()I	g	getDamage
+METHOD	boz	()V	h	exitCombat
+METHOD	boz	()I	i	getAdjacentX
+METHOD	boz	()V	j	applyEffects
+METHOD	boz	()I	k	getAdjacentZ
+METHOD	boz	(I)V	a	addScore
+METHOD	boz	()V	l	handleDisconnection
+METHOD	boz	()I	m	getBadOmenLevel
+METHOD	boz	(I)V	b	setDamage
 METHOD	boz	()F	n	getPriceMultiplier
 METHOD	boz	()I	o	getXp
-METHOD	boz	()Z	p	isFullyUsed
-METHOD	boz	()Z	s	isRewardExp
+METHOD	boz	()Z	p	hasBasePlate
+METHOD	boz	()Z	s	isDifficultyLocked
 CLASS	bp$a	CriterionTriggerInteractBlock$a
 CLASS	bp	CriterionTriggerInteractBlock
 CLASS	bpa	MerchantRecipeList
@@ -6724,13 +6724,13 @@ FIELD	bpc	Z	g	trackOutput
 FIELD	bpc	Lmr;	h	lastOutput
 FIELD	bpc	Ljava/lang/String;	i	command
 FIELD	bpc	Lmr;	j	customName
-METHOD	bpc	(Ljava/lang/String;)V	a	setCommand
+METHOD	bpc	(Ljava/lang/String;)V	a	enter
 METHOD	bpc	()Ljava/lang/String;	k	getCommand
 METHOD	bpc	()Lmr;	l	getName
-METHOD	bpc	(Lmr;)V	a	setName
+METHOD	bpc	(Lmr;)V	a	close
 METHOD	bpc	(Lmr;Ljava/util/UUID;)V	a	sendMessage
-METHOD	bpc	()Z	a	shouldSendSuccess
-METHOD	bpc	()Z	b	shouldSendFailure
+METHOD	bpc	()Z	a	isDone
+METHOD	bpc	()Z	b	hasSaddle_b
 METHOD	bpc	()Z	S_	shouldBroadcastCommands
 CLASS	bpd	MobSpawnerAbstract
 FIELD	bpd	Lorg/apache/logging/log4j/Logger;	a	LOGGER
@@ -6758,12 +6758,12 @@ CLASS	bph$1	ChunkCoordIntPair$1
 CLASS	bph	ChunkCoordIntPair
 FIELD	bph	I	b	x
 FIELD	bph	I	c	z
-METHOD	bph	()J	a	pair
+METHOD	bph	()J	a	asLong
 METHOD	bph	(II)J	a	pair
 METHOD	bph	(J)I	a	getX
 METHOD	bph	(J)I	b	getZ
-METHOD	bph	()I	h	getRegionX
-METHOD	bph	()I	i	getRegionZ
+METHOD	bph	()I	h	getColor
+METHOD	bph	()I	i	getAdjacentX
 CLASS	bpi$1	TickListChunk$1
 CLASS	bpi$a	TickListChunk$a
 CLASS	bpi	TickListChunk
@@ -6816,9 +6816,9 @@ CLASS	bpu	ExplosionDamageCalculator
 CLASS	bpw	ForcedChunk
 CLASS	bpx$1	GameRules$1
 CLASS	bpx$a	GameRules$GameRuleBoolean
-METHOD	bpx$a	()Ljava/lang/String;	b	getValue
-METHOD	bpx$a	(Ljava/lang/String;)V	a	setValue
-METHOD	bpx$a	()I	c	getIntValue
+METHOD	bpx$a	()Ljava/lang/String;	b	getName
+METHOD	bpx$a	(Ljava/lang/String;)V	a	enter
+METHOD	bpx$a	()I	c	getAmplifier
 CLASS	bpx$b	GameRules$GameRuleCategory
 FIELD	bpx$b	Lbpx$b;	a	PLAYER
 FIELD	bpx$b	Lbpx$b;	b	MOBS
@@ -6829,9 +6829,9 @@ FIELD	bpx$b	Lbpx$b;	f	CHAT
 FIELD	bpx$b	Lbpx$b;	g	MISC
 CLASS	bpx$c	GameRules$GameRuleVisitor
 CLASS	bpx$d	GameRules$GameRuleInt
-METHOD	bpx$d	()Ljava/lang/String;	b	getValue
-METHOD	bpx$d	(Ljava/lang/String;)V	a	setValue
-METHOD	bpx$d	()I	c	getIntValue
+METHOD	bpx$d	()Ljava/lang/String;	b	getName
+METHOD	bpx$d	(Ljava/lang/String;)V	a	enter
+METHOD	bpx$d	()I	c	getAmplifier
 CLASS	bpx$e	GameRules$GameRuleKey
 CLASS	bpx$f	GameRules$GameRuleDefinition
 METHOD	bpx$f	()Lbpx$g;	a	getValue
@@ -6882,15 +6882,15 @@ FIELD	bpy	Lbpy;	b	SURVIVAL
 FIELD	bpy	Lbpy;	c	CREATIVE
 FIELD	bpy	Lbpy;	d	ADVENTURE
 FIELD	bpy	Lbpy;	e	SPECTATOR
-METHOD	bpy	()I	a	getId
-METHOD	bpy	()Z	e	isCreative
+METHOD	bpy	()I	a	getFoodLevel
+METHOD	bpy	()Z	e	hasCeiling
 METHOD	bpy	(I)Lbpy;	a	getById
 CLASS	bq$a	CriterionTriggerKilledByCrossbow$a
 CLASS	bq	CriterionTriggerKilledByCrossbow
 CLASS	bqa	IMaterial
 CLASS	bqb$1	World$1
 METHOD	bqb$1	()D	a	getCenterX
-METHOD	bqb$1	()D	b	getCenterZ
+METHOD	bqb$1	()D	b	getBaseValue
 CLASS	bqb	World
 FIELD	bqb	Lorg/apache/logging/log4j/Logger;	e	LOGGER
 FIELD	bqb	Lug;	g	OVERWORLD
@@ -6915,7 +6915,7 @@ FIELD	bqb	Lcgw;	z	worldBorder
 FIELD	bqb	Lbrg;	A	biomeManager
 FIELD	bqb	Lug;	B	dimensionKey
 FIELD	bqb	Lug;	C	typeKey
-METHOD	bqb	()Lnet/minecraft/server/MinecraftServer;	l	getMinecraftServer
+METHOD	bqb	()Lnet/minecraft/server/MinecraftServer;	l	getMinecraftServer_l
 METHOD	bqb	(Lfu;)Z	j	isValidLocation
 METHOD	bqb	(Lfu;)Z	l	isOutsideWorld
 METHOD	bqb	(Lfu;)Lchj;	n	getChunkAtWorldCoords
@@ -6935,7 +6935,7 @@ METHOD	bqb	(Laom;DDDFZLbpt$a;)Lbpt;	a	createExplosion
 METHOD	bqb	(Laom;Lanw;Lbpu;DDDFZLbpt$a;)Lbpt;	a	createExplosion
 METHOD	bqb	(Lfu;)Lcdl;	c	getTileEntity
 METHOD	bqb	(Lfu;Lcdl;)V	a	setTileEntity
-METHOD	bqb	(Lfu;)V	o	removeTileEntity
+METHOD	bqb	(Lfu;)V	o	removeTileEntity_o
 METHOD	bqb	(ZZ)V	b	setSpawnFlags
 METHOD	bqb	(Laom;Ldeg;Ljava/util/function/Predicate;)Ljava/util/List;	a	getEntities
 METHOD	bqb	()I	t_	getSeaLevel
@@ -6958,8 +6958,8 @@ METHOD	bqb	()Lcgw;	f	getWorldBorder
 METHOD	bqb	()Lcif;	m	getDimensionManager
 METHOD	bqb	()Lug;	V	getTypeKey
 METHOD	bqb	()Lug;	W	getDimensionKey
-METHOD	bqb	()Ljava/util/Random;	v_	getRandom
-METHOD	bqb	()Z	q	isSavingDisabled
+METHOD	bqb	()Ljava/util/Random;	v_	getRandom_v_
+METHOD	bqb	()Z	q	isAlwaysDestroyable
 METHOD	bqb	()Lami;	X	getMethodProfiler
 METHOD	bqb	()Ljava/util/function/Supplier;	Y	getMethodProfilerSupplier
 METHOD	bqb	()Z	Z	isDebugWorld
@@ -6990,11 +6990,11 @@ FIELD	bqe	Z	c	hardcore
 FIELD	bqe	Land;	d	difficulty
 FIELD	bqe	Z	e	allowCommands
 FIELD	bqe	Lbpx;	f	gameRules
-METHOD	bqe	()Ljava/lang/String;	a	getLevelName
-METHOD	bqe	()Lbpy;	b	getGameType
-METHOD	bqe	()Z	c	isHardcore
-METHOD	bqe	()Land;	d	getDifficulty
-METHOD	bqe	()Lbpx;	f	getGameRules
+METHOD	bqe	()Ljava/lang/String;	a	getKey
+METHOD	bqe	()Lbpy;	b	getGameMode
+METHOD	bqe	()Z	c	isConvertable
+METHOD	bqe	()Land;	d	getDifficulty_d
+METHOD	bqe	()Lbpx;	f	getGameRules_f
 CLASS	bqf	VirtualLevelWritable
 CLASS	bqg	VirtualLevelReadable
 CLASS	bqh	IWorldWriter
@@ -7075,7 +7075,7 @@ FIELD	bre$b	Lbre$b;	n	RIVER
 FIELD	bre$b	Lbre$b;	o	SWAMP
 FIELD	bre$b	Lbre$b;	p	MUSHROOM
 FIELD	bre$b	Lbre$b;	q	NETHER
-METHOD	bre$b	()Ljava/lang/String;	a	getName
+METHOD	bre$b	()Ljava/lang/String;	a	getKey
 CLASS	bre$c	BiomeBase$EnumTemperature
 FIELD	bre$c	Lbre$c;	a	OCEAN
 FIELD	bre$c	Lbre$c;	b	COLD
@@ -7087,7 +7087,7 @@ CLASS	bre$f	BiomeBase$Precipitation
 FIELD	bre$f	Lbre$f;	a	NONE
 FIELD	bre$f	Lbre$f;	b	RAIN
 FIELD	bre$f	Lbre$f;	c	SNOW
-METHOD	bre$f	()Ljava/lang/String;	a	getName
+METHOD	bre$f	()Ljava/lang/String;	a	getKey
 CLASS	bre$g	BiomeBase$BiomeMeta
 CLASS	bre	BiomeBase
 FIELD	bre	Lorg/apache/logging/log4j/Logger;	a	LOGGER
@@ -7521,13 +7521,13 @@ METHOD	bvr	(Lbqb;Lfu;Laom;)V	a	stepOn
 METHOD	bvr	(Lbin;)Lcfj;	a	getPlacedState
 METHOD	bvr	(Lbqb;Lfu;Lcfj;Laoy;Lbki;)V	a	postPlace
 METHOD	bvr	(Lbqb;Lfu;Laom;F)V	a	fallOn
-METHOD	bvr	()F	j	getFrictionFactor
-METHOD	bvr	()F	k	getSpeedFactor
-METHOD	bvr	()F	l	getJumpFactor
+METHOD	bvr	()F	j	asFloat
+METHOD	bvr	()F	k	getDamage
+METHOD	bvr	()F	l	getHumidity
 METHOD	bvr	()Lcfk;	m	getStates
-METHOD	bvr	()Lcfj;	n	getBlockData
+METHOD	bvr	()Lcfj;	n	getBlockData_n
 METHOD	bvr	(Lcfj;)Lcbh;	k	getStepSound
-METHOD	bvr	()Lbke;	h	getItem
+METHOD	bvr	()Lbke;	h	getDefaultItem
 CLASS	bvs	Blocks
 FIELD	bvs	Lbvr;	a	AIR
 FIELD	bvs	Lbvr;	b	STONE
@@ -8355,7 +8355,7 @@ METHOD	bwg	(Lbin;)Lcfj;	a	getPlacedState
 METHOD	bwg	(Lcfj;Lfz;Lcfj;Lbqc;Lfu;Lfu;)Lcfj;	a	updateState
 CLASS	bwh$1	BlockChest$1
 CLASS	bwh$2$1	BlockChest$2$1
-METHOD	bwh$2$1	()Lmr;	d	getScoreboardDisplayName
+METHOD	bwh$2$1	()Lmr;	d	getDisplayName_d
 CLASS	bwh$2	BlockChest$2
 CLASS	bwh$4	BlockChest$4
 CLASS	bwh	BlockChest
@@ -8459,7 +8459,7 @@ METHOD	bwu	(Lcfj;Lbqb;Lfu;)Lanj;	b	getInventory
 CLASS	bwv	BlockCrops
 FIELD	bwv	Lcgi;	b	AGE
 METHOD	bwv	(I)Lcfj;	b	setAge
-METHOD	bwv	(Lcfj;)Z	h	isRipe
+METHOD	bwv	(Lcfj;)Z	h	canFallThrough
 METHOD	bwv	(Lcfj;)Z	a_	isTicking
 METHOD	bwv	(Lcfj;Lzd;Lfu;Ljava/util/Random;)V	b	tick
 METHOD	bwv	(Lcfj;Lbqd;Lfu;)Z	a	canPlace
@@ -8692,7 +8692,7 @@ METHOD	byq	(Lbin;)Lcfj;	a	getPlacedState
 METHOD	byq	(Lcfj;Lfz;Lcfj;Lbqc;Lfu;Lfu;)Lcfj;	a	updateState
 CLASS	byr	BlockIce
 METHOD	byr	(Lcfj;Lzd;Lfu;Ljava/util/Random;)V	b	tick
-METHOD	byr	(Lcfj;Lbqb;Lfu;)V	d	melt
+METHOD	byr	(Lcfj;Lbqb;Lfu;)V	d	fade
 METHOD	byr	(Lcfj;)Lcxf;	f	getPushReaction
 CLASS	bys	BlockMonsterEggs
 METHOD	bys	(Lcfj;Lbqb;Lfu;Lbki;)V	a	dropNaturally
@@ -8708,7 +8708,7 @@ CLASS	byv	BlockJukeBox
 FIELD	byv	Lcga;	a	HAS_RECORD
 METHOD	byv	(Lbqb;Lfu;Lcfj;Laoy;Lbki;)V	a	postPlace
 METHOD	byv	(Lcfj;Lbqb;Lfu;Lbec;Lanf;Ldeh;)Lang;	a	interact
-METHOD	byv	(Lbqb;Lfu;)V	a	dropRecord
+METHOD	byv	(Lbqb;Lfu;)V	a	dispense
 METHOD	byv	(Lcfj;Lbqb;Lfu;Lcfj;Z)V	a	remove
 METHOD	byv	(Lbpg;)Lcdl;	a	createTile
 METHOD	byv	(Lcfj;)Z	a	isComplexRedstone
@@ -8743,7 +8743,7 @@ CLASS	bzb$1	BlockLectern$1
 CLASS	bzb	BlockLectern
 METHOD	bzb	(Lbin;)Lcfj;	a	getPlacedState
 METHOD	bzb	(Lbpg;)Lcdl;	a	createTile
-METHOD	bzb	(Lbqb;Lfu;Lcfj;Z)V	a	setHasBook
+METHOD	bzb	(Lbqb;Lfu;Lcfj;Z)V	a	onPlace
 METHOD	bzb	(Lcfj;Lzd;Lfu;Ljava/util/Random;)V	a	tickAlways
 METHOD	bzb	(Lcfj;Lbqb;Lfu;Lcfj;Z)V	a	remove
 METHOD	bzb	(Lcfj;)Z	b_	isPowerSource
@@ -8791,7 +8791,7 @@ CLASS	bzm$a	BlockPortal$Shape
 FIELD	bzm$a	Lfu;	f	position
 FIELD	bzm$a	I	g	height
 FIELD	bzm$a	I	h	width
-METHOD	bzm$a	()V	e	createPortal
+METHOD	bzm$a	()V	e	clearBlocks
 CLASS	bzm	BlockPortal
 FIELD	bzm	Lcgg;	a	AXIS
 METHOD	bzm	(Lcfj;Lzd;Lfu;Ljava/util/Random;)V	b	tick
@@ -8810,7 +8810,7 @@ FIELD	bzr	Lcgi;	c	NOTE
 METHOD	bzr	(Lbin;)Lcfj;	a	getPlacedState
 METHOD	bzr	(Lcfj;Lfz;Lcfj;Lbqc;Lfu;Lfu;)Lcfj;	a	updateState
 METHOD	bzr	(Lcfj;Lbqb;Lfu;Lbvr;Lfu;Z)V	a	doPhysics
-METHOD	bzr	(Lbqb;Lfu;)V	a	play
+METHOD	bzr	(Lbqb;Lfu;)V	a	dispense
 METHOD	bzr	(Lcfj;Lbqb;Lfu;Lbec;Lanf;Ldeh;)Lang;	a	interact
 METHOD	bzr	(Lcfj;Lbqb;Lfu;Lbec;)V	a	attack
 CLASS	bzs	BlockNylium
@@ -8882,7 +8882,7 @@ FIELD	c	Lc;	S	ROT_90_REF_Y_NEG
 FIELD	c	Lc;	T	ROT_90_REF_Y_POS
 FIELD	c	Lc;	U	ROT_90_REF_Z_NEG
 FIELD	c	Lc;	V	ROT_90_REF_Z_POS
-METHOD	c	()Ljava/lang/String;	a	getName
+METHOD	c	()Ljava/lang/String;	a	getKey
 CLASS	ca$a	CriterionTriggerNetherTravel$a
 CLASS	ca	CriterionTriggerNetherTravel
 CLASS	caa$1	BlockPoweredRail$1
@@ -8907,11 +8907,11 @@ CLASS	caf	BlockRedstoneOre
 METHOD	caf	(Lcfj;Lbqb;Lfu;Lbec;)V	a	attack
 METHOD	caf	(Lbqb;Lfu;Laom;)V	a	stepOn
 METHOD	caf	(Lcfj;Lbqb;Lfu;Lbec;Lanf;Ldeh;)Lang;	a	interact
-METHOD	caf	(Lcfj;Lbqb;Lfu;)V	d	interact
+METHOD	caf	(Lcfj;Lbqb;Lfu;)V	d	fade
 METHOD	caf	(Lcfj;)Z	a_	isTicking
 METHOD	caf	(Lcfj;Lzd;Lfu;Ljava/util/Random;)V	b	tick
 METHOD	caf	(Lcfj;Lbqb;Lfu;Lbki;)V	a	dropNaturally
-METHOD	caf	(Lbqb;Lfu;)V	a	playEffect
+METHOD	caf	(Lbqb;Lfu;)V	a	dispense
 CLASS	cag$1	BlockRedstoneWire$1
 CLASS	cag	BlockRedstoneWire
 FIELD	cag	Lcgg;	a	NORTH
@@ -9236,29 +9236,29 @@ FIELD	cda	Lbje;	b	color
 METHOD	cda	(Lcfj;Lfz;Lcfj;Lbqc;Lfu;Lfu;)Lcfj;	a	updateState
 METHOD	cda	(Lcfj;Lbqd;Lfu;)Z	a	canPlace
 CLASS	cdb$1	TileEntityFurnace$1
-METHOD	cdb$1	(I)I	a	getProperty
-METHOD	cdb$1	(II)V	a	setProperty
+METHOD	cdb$1	(I)I	a	getOrbValue
+METHOD	cdb$1	(II)V	a	flagDirty
 CLASS	cdb	TileEntityFurnace
 FIELD	cdb	Lgi;	a	items
 FIELD	cdb	I	j	burnTime
 FIELD	cdb	I	k	ticksForCurrentFuel
 FIELD	cdb	I	l	cookTime
 FIELD	cdb	I	m	cookTimeTotal
-METHOD	cdb	()Z	j	isBurning
+METHOD	cdb	()Z	j	hasStorm
 METHOD	cdb	(Lcfj;Lle;)V	a	load
 METHOD	cdb	(Lle;)Lle;	a	save
 METHOD	cdb	()V	al_	tick
 METHOD	cdb	(Lbmu;)Z	b	canBurn
 METHOD	cdb	(Lbmu;)V	c	burn
-METHOD	cdb	(Lbki;)I	a	fuelTime
-METHOD	cdb	()I	h	getRecipeCookingTime
+METHOD	cdb	(Lbki;)I	a	addItem
+METHOD	cdb	()I	h	getColor
 METHOD	cdb	(Lbki;)Z	b	isFuel
 METHOD	cdb	(Lfz;)[I	a	getSlotsForFace
 METHOD	cdb	(ILbki;Lfz;)Z	a	canPlaceItemThroughFace
 METHOD	cdb	(ILbki;Lfz;)Z	b	canTakeItemThroughFace
 METHOD	cdb	()I	ab_	getSize
-METHOD	cdb	()Z	c	isEmpty
-METHOD	cdb	(I)Lbki;	a	getItem
+METHOD	cdb	()Z	c	isConvertable
+METHOD	cdb	(I)Lbki;	a	cloneAndSubtract
 METHOD	cdb	(II)Lbki;	a	splitStack
 METHOD	cdb	(I)Lbki;	b	splitWithoutUpdate
 METHOD	cdb	(ILbki;)V	a	setItem
@@ -9328,13 +9328,13 @@ FIELD	cdf	Lani;	a	chestLock
 FIELD	cdf	Lmr;	b	customName
 METHOD	cdf	(Lcfj;Lle;)V	a	load
 METHOD	cdf	(Lle;)Lle;	a	save
-METHOD	cdf	(Lmr;)V	a	setCustomName
+METHOD	cdf	(Lmr;)V	a	close
 METHOD	cdf	()Lmr;	P	getDisplayName
-METHOD	cdf	()Lmr;	d	getScoreboardDisplayName
+METHOD	cdf	()Lmr;	d	getDisplayName_d
 METHOD	cdf	()Lmr;	R	getCustomName
 CLASS	cdg$1	TileEntityBeacon$1
-METHOD	cdg$1	(I)I	a	getProperty
-METHOD	cdg$1	(II)V	a	setProperty
+METHOD	cdg$1	(I)I	a	getOrbValue
+METHOD	cdg$1	(II)V	a	flagDirty
 CLASS	cdg$a	TileEntityBeacon$BeaconColorTracker
 CLASS	cdg	TileEntityBeacon
 FIELD	cdg	I	h	levels
@@ -9348,8 +9348,8 @@ METHOD	cdg	()V	j	applyEffects
 METHOD	cdg	()Lnv;	a	getUpdatePacket
 METHOD	cdg	(Lcfj;Lle;)V	a	load
 METHOD	cdg	(Lle;)Lle;	a	save
-METHOD	cdg	(Lmr;)V	a	setCustomName
-METHOD	cdg	()Lmr;	d	getScoreboardDisplayName
+METHOD	cdg	(Lmr;)V	a	close
+METHOD	cdg	()Lmr;	d	getDisplayName_d
 CLASS	cdh	TileEntityBed
 FIELD	cdh	Lbje;	a	color
 METHOD	cdh	()Lnv;	a	getUpdatePacket
@@ -9366,12 +9366,12 @@ CLASS	cdi	TileEntityBeehive
 FIELD	cdi	Ljava/util/List;	a	bees
 FIELD	cdi	Lfu;	b	flowerPos
 METHOD	cdi	()V	Z_	update
-METHOD	cdi	()Z	f	isEmpty
-METHOD	cdi	()Z	h	isFull
+METHOD	cdi	()Z	f	canBreed
+METHOD	cdi	()Z	h	allowFriendlyFire
 METHOD	cdi	(Lcfj;Lcdi$b;)Ljava/util/List;	a	releaseBees
 METHOD	cdi	(Laom;Z)V	a	addBee
-METHOD	cdi	()I	j	getBeeCount
-METHOD	cdi	()Z	k	isSedated
+METHOD	cdi	()I	j	getAdjacentY
+METHOD	cdi	()Z	k	hasExplosions
 METHOD	cdi	(Lcfj;Lcdi$a;Ljava/util/List;Lcdi$b;)Z	a	releaseBee
 METHOD	cdi	()V	al_	tick
 METHOD	cdi	(Lcfj;Lle;)V	a	load
@@ -9381,28 +9381,28 @@ METHOD	cdj	(II)Z	a_	setProperty
 METHOD	cdj	()V	al_	tick
 CLASS	cdk	TileEntityBlastFurnace
 METHOD	cdk	()Lmr;	g	getContainerName
-METHOD	cdk	(Lbki;)I	a	fuelTime
+METHOD	cdk	(Lbki;)I	a	addItem
 METHOD	cdk	(ILbeb;)Lbgi;	a	createContainer
 CLASS	cdl	TileEntity
 FIELD	cdl	Lorg/apache/logging/log4j/Logger;	a	LOGGER
 FIELD	cdl	Lcdm;	b	tileType
 FIELD	cdl	Lbqb;	d	world
 FIELD	cdl	Lfu;	e	position
-METHOD	cdl	()Lbqb;	v	getWorld
-METHOD	cdl	(Lbqb;Lfu;)V	a	setLocation
-METHOD	cdl	()Z	n	hasWorld
+METHOD	cdl	()Lbqb;	v	getWorld_v
+METHOD	cdl	(Lbqb;Lfu;)V	a	dispense
+METHOD	cdl	()Z	n	hasTag
 METHOD	cdl	(Lcfj;Lle;)V	a	load
 METHOD	cdl	(Lle;)Lle;	a	save
 METHOD	cdl	(Lcfj;Lle;)Lcdl;	b	create
 METHOD	cdl	()V	Z_	update
 METHOD	cdl	()Lfu;	o	getPosition
-METHOD	cdl	()Lcfj;	p	getBlock
+METHOD	cdl	()Lcfj;	p	getBlock_p
 METHOD	cdl	()Lnv;	a	getUpdatePacket
-METHOD	cdl	()Z	q	isRemoved
+METHOD	cdl	()Z	q	isAlwaysDestroyable
 METHOD	cdl	(II)Z	a_	setProperty
 METHOD	cdl	()V	s	invalidateBlockCache
-METHOD	cdl	(Lfu;)V	a	setPosition
-METHOD	cdl	()Z	t	isFilteredNBT
+METHOD	cdl	(Lfu;)V	a	setBeamTarget
+METHOD	cdl	()Z	t	hasName
 METHOD	cdl	()Lcdm;	u	getTileType
 CLASS	cdm$a	TileEntityTypes$a
 CLASS	cdm	TileEntityTypes
@@ -9442,19 +9442,19 @@ FIELD	cdm	Lcdm;	F	CAMPFIRE
 FIELD	cdm	Lcdm;	G	BEEHIVE
 METHOD	cdm	(Lbvr;)Z	a	isValidBlock
 CLASS	cdn$1	TileEntityBrewingStand$1
-METHOD	cdn$1	(I)I	a	getProperty
-METHOD	cdn$1	(II)V	a	setProperty
+METHOD	cdn$1	(I)I	a	getOrbValue
+METHOD	cdn$1	(II)V	a	flagDirty
 CLASS	cdn	TileEntityBrewingStand
 FIELD	cdn	Lgi;	h	items
 FIELD	cdn	I	i	brewTime
 FIELD	cdn	I	l	fuelLevel
 METHOD	cdn	()Lmr;	g	getContainerName
 METHOD	cdn	()I	ab_	getSize
-METHOD	cdn	()Z	c	isEmpty
+METHOD	cdn	()Z	c	isConvertable
 METHOD	cdn	()V	al_	tick
 METHOD	cdn	(Lcfj;Lle;)V	a	load
 METHOD	cdn	(Lle;)Lle;	a	save
-METHOD	cdn	(I)Lbki;	a	getItem
+METHOD	cdn	(I)Lbki;	a	cloneAndSubtract
 METHOD	cdn	(II)Lbki;	a	splitStack
 METHOD	cdn	(I)Lbki;	b	splitWithoutUpdate
 METHOD	cdn	(ILbki;)V	a	setItem
@@ -9484,11 +9484,11 @@ METHOD	cdp	()V	al_	tick
 METHOD	cdp	(II)Z	a_	setProperty
 METHOD	cdp	(Lbec;)V	c_	startOpen
 METHOD	cdp	(Lbec;)V	b_	closeContainer
-METHOD	cdp	()V	h	onOpen
+METHOD	cdp	()V	h	exitCombat
 METHOD	cdp	(ILbeb;)Lbgi;	a	createContainer
 CLASS	cdq$1	TileEntityCommand$1
-METHOD	cdq$1	(Ljava/lang/String;)V	a	setCommand
-METHOD	cdq$1	()Lcz;	h	getWrapper
+METHOD	cdq$1	(Ljava/lang/String;)V	a	enter
+METHOD	cdq$1	()Lcz;	h	getWrapper_h
 CLASS	cdq$a	TileEntityCommand$Type
 FIELD	cdq$a	Lcdq$a;	a	SEQUENCE
 FIELD	cdq$a	Lcdq$a;	b	AUTO
@@ -9497,7 +9497,7 @@ CLASS	cdq	TileEntityCommand
 METHOD	cdq	(Lle;)Lle;	a	save
 METHOD	cdq	(Lcfj;Lle;)V	a	load
 METHOD	cdq	()Lnv;	a	getUpdatePacket
-METHOD	cdq	()Z	t	isFilteredNBT
+METHOD	cdq	()Z	t	hasName
 METHOD	cdq	()Lbpc;	d	getCommandBlock
 CLASS	cdr	TileEntityComparator
 METHOD	cdr	(Lle;)Lle;	a	save
@@ -9525,7 +9525,7 @@ METHOD	cdw	(Lle;)Lle;	a	save
 METHOD	cdw	(Lcfj;Lle;)V	a	load
 METHOD	cdw	()V	al_	tick
 METHOD	cdw	()Lmr;	P	getDisplayName
-METHOD	cdw	(Lmr;)V	a	setCustomName
+METHOD	cdw	(Lmr;)V	a	close
 METHOD	cdw	()Lmr;	R	getCustomName
 CLASS	cdx	TileEntityEnderChest
 METHOD	cdx	()V	al_	tick
@@ -9550,12 +9550,12 @@ METHOD	cea	(ILbki;)V	a	setItem
 METHOD	cea	()Lmr;	g	getContainerName
 METHOD	cea	()V	al_	tick
 METHOD	cea	(Lamz;Lamz;Lbki;Lfz;)Lbki;	a	addItem
-METHOD	cea	(I)V	c	setCooldown
+METHOD	cea	(I)V	c	levelDown
 METHOD	cea	(ILbeb;)Lbgi;	a	createContainer
 CLASS	ceb$a	TileEntityJigsaw$JointType
 FIELD	ceb$a	Lceb$a;	a	ROLLABLE
 FIELD	ceb$a	Lceb$a;	b	ALIGNED
-METHOD	ceb$a	()Ljava/lang/String;	a	getName
+METHOD	ceb$a	()Ljava/lang/String;	a	getKey
 CLASS	ceb$b	TileEntityJigsaw$b
 CLASS	ceb	TileEntityJigsaw
 METHOD	ceb	(Lle;)Lle;	a	save
@@ -9565,12 +9565,12 @@ CLASS	cec	TileEntityJukeBox
 METHOD	cec	(Lcfj;Lle;)V	a	load
 METHOD	cec	(Lle;)Lle;	a	save
 METHOD	cec	()Lbki;	d	getRecord
-METHOD	cec	(Lbki;)V	a	setRecord
+METHOD	cec	(Lbki;)V	a	setBook
 METHOD	cec	()V	aa_	clear
 CLASS	ced$1	TileEntityLectern$1
 METHOD	ced$1	()I	ab_	getSize
-METHOD	ced$1	()Z	c	isEmpty
-METHOD	ced$1	(I)Lbki;	a	getItem
+METHOD	ced$1	()Z	c	isConvertable
+METHOD	ced$1	(I)Lbki;	a	cloneAndSubtract
 METHOD	ced$1	(II)Lbki;	a	splitStack
 METHOD	ced$1	(I)Lbki;	b	splitWithoutUpdate
 METHOD	ced$1	(ILbki;)V	a	setItem
@@ -9578,8 +9578,8 @@ METHOD	ced$1	()I	X_	getMaxStackSize
 METHOD	ced$1	()V	Z_	update
 METHOD	ced$1	()V	aa_	clear
 CLASS	ced$2	TileEntityLectern$2
-METHOD	ced$2	(I)I	a	getProperty
-METHOD	ced$2	(II)V	a	setProperty
+METHOD	ced$2	(I)I	a	getOrbValue
+METHOD	ced$2	(II)V	a	flagDirty
 CLASS	ced	TileEntityLectern
 FIELD	ced	Lamz;	a	inventory
 FIELD	ced	Lbgr;	b	containerProperties
@@ -9589,19 +9589,19 @@ FIELD	ced	I	h	maxPage
 METHOD	ced	()Lbki;	f	getBook
 METHOD	ced	()Z	g	hasBook
 METHOD	ced	(Lbki;)V	a	setBook
-METHOD	ced	(I)V	a	setPage
-METHOD	ced	()I	h	getPage
-METHOD	ced	()Z	t	isFilteredNBT
+METHOD	ced	(I)V	a	addScore
+METHOD	ced	()I	h	getColor
+METHOD	ced	()Z	t	hasName
 METHOD	ced	(Lcfj;Lle;)V	a	load
 METHOD	ced	(Lle;)Lle;	a	save
 METHOD	ced	()V	aa_	clear
-METHOD	ced	()Lmr;	d	getScoreboardDisplayName
+METHOD	ced	()Lmr;	d	getDisplayName_d
 CLASS	cef	TileEntityLootable
 FIELD	cef	Luh;	g	lootTable
 FIELD	cef	J	h	lootTableSeed
 METHOD	cef	(Luh;J)V	a	setLootTable
-METHOD	cef	()Z	c	isEmpty
-METHOD	cef	(I)Lbki;	a	getItem
+METHOD	cef	()Z	c	isConvertable
+METHOD	cef	(I)Lbki;	a	cloneAndSubtract
 METHOD	cef	(II)Lbki;	a	splitStack
 METHOD	cef	(I)Lbki;	b	splitWithoutUpdate
 METHOD	cef	(ILbki;)V	a	setItem
@@ -9633,8 +9633,8 @@ FIELD	ceh	Lbje;	h	color
 METHOD	ceh	(Lle;)Lle;	a	save
 METHOD	ceh	(Lcfj;Lle;)V	a	load
 METHOD	ceh	()Lnv;	a	getUpdatePacket
-METHOD	ceh	()Z	t	isFilteredNBT
-METHOD	ceh	()Lbje;	g	getColor
+METHOD	ceh	()Z	t	hasName
+METHOD	ceh	()Lbje;	g	getColor_g
 METHOD	ceh	(Lbje;)Z	a	setColor
 CLASS	cei	TileEntitySkull
 FIELD	cei	Labl;	a	userCache
@@ -9644,10 +9644,10 @@ METHOD	cei	(Lle;)Lle;	a	save
 METHOD	cei	(Lcfj;Lle;)V	a	load
 METHOD	cei	()V	al_	tick
 METHOD	cei	()Lnv;	a	getUpdatePacket
-METHOD	cei	(Lcom/mojang/authlib/GameProfile;)V	a	setGameProfile
+METHOD	cei	(Lcom/mojang/authlib/GameProfile;)V	a	addOp
 CLASS	cej	TileEntitySmoker
 METHOD	cej	()Lmr;	g	getContainerName
-METHOD	cej	(Lbki;)I	a	fuelTime
+METHOD	cej	(Lbki;)I	a	addItem
 METHOD	cej	(ILbeb;)Lbgi;	a	createContainer
 CLASS	cek$1	TileEntityMobSpawner$1
 METHOD	cek$1	(Lbqp;)V	a	setSpawnData
@@ -9657,7 +9657,7 @@ METHOD	cek	(Lle;)Lle;	a	save
 METHOD	cek	()V	al_	tick
 METHOD	cek	()Lnv;	a	getUpdatePacket
 METHOD	cek	(II)Z	a_	setProperty
-METHOD	cek	()Z	t	isFilteredNBT
+METHOD	cek	()Z	t	hasName
 METHOD	cek	()Lbpd;	d	getSpawner
 CLASS	cel$a	TileEntityStructure$UpdateType
 FIELD	cel$a	Lcel$a;	a	UPDATE_DATA
@@ -9682,8 +9682,8 @@ FIELD	cel	J	q	seed
 METHOD	cel	(Lle;)Lle;	a	save
 METHOD	cel	(Lcfj;Lle;)V	a	load
 METHOD	cel	()Lnv;	a	getUpdatePacket
-METHOD	cel	()Ljava/lang/String;	d	getStructureName
-METHOD	cel	(Ljava/lang/String;)V	a	setStructureName
+METHOD	cel	()Ljava/lang/String;	d	getId
+METHOD	cel	(Ljava/lang/String;)V	a	enter
 METHOD	cel	(Laoy;)V	a	setAuthor
 METHOD	cel	()Lcgq;	x	getUsageMode
 METHOD	cel	(Lcgq;)V	a	setUsageMode
@@ -9700,7 +9700,7 @@ METHOD	cem	(II)Z	a_	setProperty
 CLASS	cen	TileEntityEnderPortal
 CLASS	ceo	ITickable
 CLASS	cep	TileEntityChestTrapped
-METHOD	cep	()V	h	onOpen
+METHOD	cep	()V	h	exitCombat
 CLASS	cer	WorldGenMegaTreeProvider
 CLASS	ces	WorldGenTreeProvider
 CLASS	cet	WorldGenTreeProviderAcacia
@@ -9748,12 +9748,12 @@ CLASS	cfi$a	BlockBase$BlockData
 FIELD	cfi$a	F	i	strength
 METHOD	cfi$a	()Lbvr;	b	getBlock
 METHOD	cfi$a	()Lcxd;	c	getMaterial
-METHOD	cfi$a	()Z	g	isAir
+METHOD	cfi$a	()Z	g	hasBook
 METHOD	cfi$a	(Lbpg;Lfu;)Z	g	isOccluding
-METHOD	cfi$a	()Z	i	isPowerSource
-METHOD	cfi$a	()Z	j	isComplexRedstone
+METHOD	cfi$a	()Z	i	canSeeFriendlyInvisibles
+METHOD	cfi$a	()Z	j	hasStorm
 METHOD	cfi$a	(Lbec;Lbpg;Lfu;)F	a	getDamage
-METHOD	cfi$a	()Lcxf;	k	getPushReaction
+METHOD	cfi$a	()Lcxf;	k	getPushReaction_k
 METHOD	cfi$a	(Lbpg;Lfu;)Ldfg;	j	getShape
 METHOD	cfi$a	(Lbpg;Lfu;)Ldfg;	k	getCollisionShape
 METHOD	cfi$a	(Lbqb;Lfu;Lbvr;Lfu;Z)V	a	doPhysics
@@ -9765,7 +9765,7 @@ METHOD	cfi$a	(Lbqb;Lfu;Lbec;)V	a	attack
 METHOD	cfi$a	(Lfz;Lcfj;Lbqc;Lfu;Lfu;)Lcfj;	a	updateState
 METHOD	cfi$a	(Lbqd;Lfu;)Z	a	canPlace
 METHOD	cfi$a	()Lcxa;	m	getFluid
-METHOD	cfi$a	()Z	n	isTicking
+METHOD	cfi$a	()Z	n	hasTag
 METHOD	cfi$a	()Lcbh;	o	getStepSound
 METHOD	cfi$a	()Z	q	isAlwaysDestroyable
 CLASS	cfi$b	BlockBase$EnumRandomOffset
@@ -9797,7 +9797,7 @@ METHOD	cfi	(Lcfj;Lzd;Lfu;Ljava/util/Random;)V	a	tickAlways
 METHOD	cfi	(Lcfj;Lbec;Lbpg;Lfu;)F	a	getDamage
 METHOD	cfi	(Lcfj;Lbqb;Lfu;Lbki;)V	a	dropNaturally
 METHOD	cfi	(Lcfj;Lbqb;Lfu;Lbec;)V	a	attack
-METHOD	cfi	()Z	q	isTileEntity
+METHOD	cfi	()Z	q	isAlwaysDestroyable
 CLASS	cfj	IBlockData
 CLASS	cfk$a	BlockStateList$a
 CLASS	cfk$b	BlockStateList$b
@@ -9811,10 +9811,10 @@ METHOD	cfl	(Lcgl;)Ljava/lang/Comparable;	c	get
 METHOD	cfl	(Lcgl;Ljava/lang/Comparable;)Ljava/lang/Object;	a	set
 METHOD	cfl	()Lcom/google/common/collect/ImmutableMap;	s	getStateMap
 CLASS	cfn	ShapeDetectorBlock
-METHOD	cfn	()Lfu;	d	getPosition
+METHOD	cfn	()Lfu;	d	getBlockPosition_d
 CLASS	cfo$a	ShapeDetector$BlockLoader
 CLASS	cfo$b	ShapeDetector$ShapeDetectorCollection
-METHOD	cfo$b	()Lfz;	b	getFacing
+METHOD	cfo$b	()Lfz;	b	getDirection
 CLASS	cfo$c	ShapeDetector$Shape
 FIELD	cfo$c	Ldem;	a	position
 FIELD	cfo$c	Ldem;	b	velocity
@@ -9829,55 +9829,55 @@ CLASS	cfv	BlockPropertyAttachPosition
 FIELD	cfv	Lcfv;	a	FLOOR
 FIELD	cfv	Lcfv;	b	WALL
 FIELD	cfv	Lcfv;	c	CEILING
-METHOD	cfv	()Ljava/lang/String;	a	getName
+METHOD	cfv	()Ljava/lang/String;	a	getKey
 CLASS	cfw	BlockPropertyBambooSize
 FIELD	cfw	Lcfw;	a	NONE
 FIELD	cfw	Lcfw;	b	SMALL
 FIELD	cfw	Lcfw;	c	LARGE
-METHOD	cfw	()Ljava/lang/String;	a	getName
+METHOD	cfw	()Ljava/lang/String;	a	getKey
 CLASS	cfx	BlockPropertyBedPart
 FIELD	cfx	Lcfx;	a	HEAD
 FIELD	cfx	Lcfx;	b	FOOT
-METHOD	cfx	()Ljava/lang/String;	a	getName
+METHOD	cfx	()Ljava/lang/String;	a	getKey
 CLASS	cfy	BlockPropertyBellAttach
 FIELD	cfy	Lcfy;	a	FLOOR
 FIELD	cfy	Lcfy;	b	CEILING
 FIELD	cfy	Lcfy;	c	SINGLE_WALL
 FIELD	cfy	Lcfy;	d	DOUBLE_WALL
-METHOD	cfy	()Ljava/lang/String;	a	getName
+METHOD	cfy	()Ljava/lang/String;	a	getKey
 CLASS	cfz	BlockProperties
 CLASS	cg	LootSerializationContext
 CLASS	cga	BlockStateBoolean
-METHOD	cga	()Ljava/util/Collection;	a	getValues
+METHOD	cga	()Ljava/util/Collection;	a	getAdvancements
 METHOD	cga	(Ljava/lang/String;)Lcga;	a	of
 CLASS	cgb	BlockPropertyChestType
 FIELD	cgb	Lcgb;	a	SINGLE
 FIELD	cgb	Lcgb;	b	LEFT
 FIELD	cgb	Lcgb;	c	RIGHT
-METHOD	cgb	()Ljava/lang/String;	a	getName
+METHOD	cgb	()Ljava/lang/String;	a	getKey
 CLASS	cgc	BlockPropertyComparatorMode
 FIELD	cgc	Lcgc;	a	COMPARE
 FIELD	cgc	Lcgc;	b	SUBTRACT
-METHOD	cgc	()Ljava/lang/String;	a	getName
+METHOD	cgc	()Ljava/lang/String;	a	getKey
 CLASS	cgd	BlockStateDirection
 CLASS	cge	BlockPropertyDoorHinge
 FIELD	cge	Lcge;	a	LEFT
 FIELD	cge	Lcge;	b	RIGHT
-METHOD	cge	()Ljava/lang/String;	a	getName
+METHOD	cge	()Ljava/lang/String;	a	getKey
 CLASS	cgf	BlockPropertyDoubleBlockHalf
 FIELD	cgf	Lcgf;	a	UPPER
 FIELD	cgf	Lcgf;	b	LOWER
-METHOD	cgf	()Ljava/lang/String;	a	getName
+METHOD	cgf	()Ljava/lang/String;	a	getKey
 CLASS	cgg	BlockStateEnum
-METHOD	cgg	()Ljava/util/Collection;	a	getValues
+METHOD	cgg	()Ljava/util/Collection;	a	getAdvancements
 METHOD	cgg	(Ljava/lang/String;Ljava/lang/Class;)Lcgg;	a	of
 METHOD	cgg	(Ljava/lang/String;Ljava/lang/Class;[Ljava/lang/Enum;)Lcgg;	a	of
 CLASS	cgh	BlockPropertyHalf
 FIELD	cgh	Lcgh;	a	TOP
 FIELD	cgh	Lcgh;	b	BOTTOM
-METHOD	cgh	()Ljava/lang/String;	a	getName
+METHOD	cgh	()Ljava/lang/String;	a	getKey
 CLASS	cgi	BlockStateInteger
-METHOD	cgi	()Ljava/util/Collection;	a	getValues
+METHOD	cgi	()Ljava/util/Collection;	a	getAdvancements
 METHOD	cgi	(Ljava/lang/String;II)Lcgi;	a	of
 CLASS	cgj	BlockPropertyInstrument
 FIELD	cgj	Lcgj;	a	HARP
@@ -9896,15 +9896,15 @@ FIELD	cgj	Lcgj;	m	DIDGERIDOO
 FIELD	cgj	Lcgj;	n	BIT
 FIELD	cgj	Lcgj;	o	BANJO
 FIELD	cgj	Lcgj;	p	PLING
-METHOD	cgj	()Ljava/lang/String;	a	getName
+METHOD	cgj	()Ljava/lang/String;	a	getKey
 CLASS	cgk	BlockPropertyPistonType
 FIELD	cgk	Lcgk;	a	DEFAULT
 FIELD	cgk	Lcgk;	b	STICKY
-METHOD	cgk	()Ljava/lang/String;	a	getName
+METHOD	cgk	()Ljava/lang/String;	a	getKey
 CLASS	cgl$1	IBlockState$1
 CLASS	cgl$a	IBlockState$a
 CLASS	cgl	IBlockState
-METHOD	cgl	()Ljava/lang/String;	f	getName
+METHOD	cgl	()Ljava/lang/String;	f	getName_f
 METHOD	cgl	()Ljava/lang/Class;	g	getType
 CLASS	cgm	BlockPropertyTrackPosition
 FIELD	cgm	Lcgm;	a	NORTH_SOUTH
@@ -9917,35 +9917,35 @@ FIELD	cgm	Lcgm;	g	SOUTH_EAST
 FIELD	cgm	Lcgm;	h	SOUTH_WEST
 FIELD	cgm	Lcgm;	i	NORTH_WEST
 FIELD	cgm	Lcgm;	j	NORTH_EAST
-METHOD	cgm	()Ljava/lang/String;	a	getName
+METHOD	cgm	()Ljava/lang/String;	a	getKey
 CLASS	cgn	BlockPropertyRedstoneSide
 FIELD	cgn	Lcgn;	a	UP
 FIELD	cgn	Lcgn;	b	SIDE
 FIELD	cgn	Lcgn;	c	NONE
-METHOD	cgn	()Ljava/lang/String;	a	getName
+METHOD	cgn	()Ljava/lang/String;	a	getKey
 CLASS	cgo	BlockPropertySlabType
 FIELD	cgo	Lcgo;	a	TOP
 FIELD	cgo	Lcgo;	b	BOTTOM
 FIELD	cgo	Lcgo;	c	DOUBLE
-METHOD	cgo	()Ljava/lang/String;	a	getName
+METHOD	cgo	()Ljava/lang/String;	a	getKey
 CLASS	cgp	BlockPropertyStairsShape
 FIELD	cgp	Lcgp;	a	STRAIGHT
 FIELD	cgp	Lcgp;	b	INNER_LEFT
 FIELD	cgp	Lcgp;	c	INNER_RIGHT
 FIELD	cgp	Lcgp;	d	OUTER_LEFT
 FIELD	cgp	Lcgp;	e	OUTER_RIGHT
-METHOD	cgp	()Ljava/lang/String;	a	getName
+METHOD	cgp	()Ljava/lang/String;	a	getKey
 CLASS	cgq	BlockPropertyStructureMode
 FIELD	cgq	Lcgq;	a	SAVE
 FIELD	cgq	Lcgq;	b	LOAD
 FIELD	cgq	Lcgq;	c	CORNER
 FIELD	cgq	Lcgq;	d	DATA
-METHOD	cgq	()Ljava/lang/String;	a	getName
+METHOD	cgq	()Ljava/lang/String;	a	getKey
 CLASS	cgr	BlockPropertyWallHeight
 FIELD	cgr	Lcgr;	a	NONE
 FIELD	cgr	Lcgr;	b	LOW
 FIELD	cgr	Lcgr;	c	TALL
-METHOD	cgr	()Ljava/lang/String;	a	getName
+METHOD	cgr	()Ljava/lang/String;	a	getKey
 CLASS	cgs	BlockPropertyWood
 CLASS	cgu$a	IWorldBorderListener$a
 CLASS	cgu	IWorldBorderListener
@@ -9957,19 +9957,19 @@ CLASS	cgw$d	WorldBorder$d
 CLASS	cgw	WorldBorder
 METHOD	cgw	(Lbph;)Z	a	isInBounds
 METHOD	cgw	()D	a	getCenterX
-METHOD	cgw	()D	b	getCenterZ
+METHOD	cgw	()D	b	getBaseValue
 METHOD	cgw	(DD)V	c	setCenter
-METHOD	cgw	()D	i	getSize
+METHOD	cgw	()D	i	asDouble
 METHOD	cgw	(D)V	a	setSize
 METHOD	cgw	(DDJ)V	a	transitionSizeBetween
-METHOD	cgw	()D	n	getDamageBuffer
+METHOD	cgw	()D	n	getDamage
 METHOD	cgw	(D)V	b	setDamageBuffer
 METHOD	cgw	()D	o	getDamageAmount
 METHOD	cgw	(D)V	c	setDamageAmount
 METHOD	cgw	()I	q	getWarningTime
-METHOD	cgw	(I)V	b	setWarningTime
-METHOD	cgw	()I	r	getWarningDistance
-METHOD	cgw	(I)V	c	setWarningDistance
+METHOD	cgw	(I)V	b	setDamage
+METHOD	cgw	()I	r	getDisplayBlockOffset
+METHOD	cgw	(I)V	c	levelDown
 CLASS	cgy	IChunkAccess
 CLASS	cgz	BiomeStorage
 FIELD	cgz	Lorg/apache/logging/log4j/Logger;	d	LOGGER
@@ -9984,13 +9984,13 @@ METHOD	cha	(Lzd;Lcml;Lfu;IZ)Lfu;	a	findNearestMapFeature
 METHOD	cha	(Lzj;Lbqq;)V	a	addDecorations
 METHOD	cha	(Lzj;)V	a	addMobs
 METHOD	cha	()Lciw;	b	getSettings
-METHOD	cha	()I	c	getSpawnHeight
+METHOD	cha	()I	c	getAmplifier
 METHOD	cha	()Lbrh;	d	getWorldChunkManager
-METHOD	cha	()I	e	getGenerationDepth
+METHOD	cha	()I	e	getCookingTime
 METHOD	cha	(Lbre;Lbqq;Lapa;Lfu;)Ljava/util/List;	a	getMobsFor
 METHOD	cha	(Lbqq;Lcgy;Lcva;J)V	a	createStructures
 METHOD	cha	(Lbqc;Lbqq;Lcgy;)V	a	storeStructures
-METHOD	cha	()I	f	getSeaLevel
+METHOD	cha	()I	f	asInt
 CLASS	chb	IChunkProvider
 METHOD	chb	(IIZ)Lchj;	a	getChunkAt
 CLASS	chc$a	ChunkStatus$Type
@@ -10022,8 +10022,8 @@ METHOD	che	(Lfu;Lcfj;Z)Lcfj;	a	setType
 METHOD	che	(Lfu;)Lcxa;	b	getFluid
 METHOD	che	(Lfu;Lcdl;)V	a	setTileEntity
 METHOD	che	(Lfu;)V	d	removeTileEntity
-METHOD	che	()V	s	markDirty
-METHOD	che	()Z	t	isEmpty
+METHOD	che	()V	s	invalidateBlockCache
+METHOD	che	()Z	t	hasName
 METHOD	che	()Lyo$b;	u	getState
 CLASS	chf	IStructureAccess
 CLASS	chg	DataPaletteGlobal
@@ -10037,10 +10037,10 @@ METHOD	chi	(Lfu;Lcdl;)V	a	setTileEntity
 METHOD	chi	()[Lchk;	d	getSections
 METHOD	chi	(Lcio$a;II)I	a	getHighestBlock
 METHOD	chi	()Lbph;	g	getPos
-METHOD	chi	(J)V	a	setLastSaved
+METHOD	chi	(J)V	a	setDayTime
 METHOD	chi	()Lcgz;	i	getBiomeIndex
-METHOD	chi	(Z)V	a	setNeedsSaving
-METHOD	chi	()Z	j	isNeedsSaving
+METHOD	chi	(Z)V	a	safeShutdown
+METHOD	chi	()Z	j	hasStorm
 METHOD	chi	()Lchc;	k	getChunkStatus
 METHOD	chi	(Lfu;)V	d	removeTileEntity
 CLASS	chj$a	Chunk$EnumTileEntityState
@@ -10067,19 +10067,19 @@ METHOD	chj	(Lfu;)Lcdl;	c	getTileEntity
 METHOD	chj	(Lfu;Lcdl;)V	a	setTileEntity
 METHOD	chj	(Lfu;)V	d	removeTileEntity
 METHOD	chj	()V	w	addEntities
-METHOD	chj	()V	s	markDirty
-METHOD	chj	()Z	t	isEmpty
+METHOD	chj	()V	s	invalidateBlockCache
+METHOD	chj	()Z	t	hasName
 METHOD	chj	()Lbph;	g	getPos
 METHOD	chj	()Lcgz;	i	getBiomeIndex
 METHOD	chj	(Z)V	c	setLoaded
-METHOD	chj	()Lbqb;	x	getWorld
+METHOD	chj	()Lbqb;	x	getWorld_x
 METHOD	chj	()Ljava/util/Map;	y	getTileEntities
 METHOD	chj	()[Ladk;	z	getEntitySlices
-METHOD	chj	(Z)V	a	setNeedsSaving
-METHOD	chj	()Z	j	isNeedsSaving
-METHOD	chj	(J)V	a	setLastSaved
+METHOD	chj	(Z)V	a	safeShutdown
+METHOD	chj	()Z	j	hasStorm
+METHOD	chj	(J)V	a	setDayTime
 METHOD	chj	()J	q	getInhabitedTime
-METHOD	chj	(J)V	b	setInhabitedTime
+METHOD	chj	(J)V	b	setDayTime_b
 METHOD	chj	()Lchc;	k	getChunkStatus
 METHOD	chj	()Lyo$b;	u	getState
 CLASS	chk	ChunkSection
@@ -10091,9 +10091,9 @@ FIELD	chk	Lchq;	f	blockIds
 METHOD	chk	(III)Lcfj;	a	getType
 METHOD	chk	(IIILcfj;)Lcfj;	a	setType
 METHOD	chk	(IIILcfj;Z)Lcfj;	a	setType
-METHOD	chk	()Z	e	shouldTick
-METHOD	chk	()I	g	getYPosition
-METHOD	chk	()V	h	recalcBlockCounts
+METHOD	chk	()Z	e	hasCeiling
+METHOD	chk	()I	g	getDamage
+METHOD	chk	()V	h	exitCombat
 METHOD	chk	()Lchq;	i	getBlocks
 CLASS	chl	ILightAccess
 CLASS	chm	DataPaletteLinear
@@ -10113,14 +10113,14 @@ METHOD	chr	(Lfu;Lcfj;Z)Lcfj;	a	setType
 METHOD	chr	(Lfu;Lcdl;)V	a	setTileEntity
 METHOD	chr	(Lfu;)Lcdl;	c	getTileEntity
 METHOD	chr	()Lcgz;	i	getBiomeIndex
-METHOD	chr	(Z)V	a	setNeedsSaving
-METHOD	chr	()Z	j	isNeedsSaving
+METHOD	chr	(Z)V	a	safeShutdown
+METHOD	chr	()Z	j	hasStorm
 METHOD	chr	()Lchc;	k	getChunkStatus
 METHOD	chr	()[Lchk;	d	getSections
 METHOD	chr	(Lcio$a;II)I	a	getHighestBlock
 METHOD	chr	()Lbph;	g	getPos
-METHOD	chr	(J)V	a	setLastSaved
-METHOD	chr	(J)V	b	setInhabitedTime
+METHOD	chr	(J)V	a	setDayTime
+METHOD	chr	(J)V	b	setDayTime_b
 METHOD	chr	()J	q	getInhabitedTime
 METHOD	chr	(Lfu;)V	d	removeTileEntity
 CLASS	chs	ProtoChunkTickList
@@ -10146,7 +10146,7 @@ METHOD	chv	(Lzd;Lcgy;)Lle;	a	saveChunk
 METHOD	chv	(Lle;Lchj;)V	a	loadEntities
 CLASS	chw	IChunkLoader
 METHOD	chw	(Lug;Ljava/util/function/Supplier;Lle;)Lle;	a	getChunkData
-METHOD	chw	(Lbph;)Lle;	e	read
+METHOD	chw	(Lbph;)Lle;	e	read_e
 CLASS	chx$a	IOWorker$a
 CLASS	chx$b	IOWorker$Priority
 FIELD	chx$b	Lchx$b;	a	HIGH
@@ -10196,19 +10196,19 @@ FIELD	cif	I	w	logicalHeight
 FIELD	cif	Lbrj;	x	genLayerZoomer
 FIELD	cif	Luh;	y	infiniburn
 FIELD	cif	F	z	ambientLight
-METHOD	cif	()Ljava/lang/String;	c	getSuffix
+METHOD	cif	()Ljava/lang/String;	c	getName_c
 METHOD	cif	()Z	d	hasSkyLight
 METHOD	cif	()Z	e	hasCeiling
-METHOD	cif	()Z	f	isNether
-METHOD	cif	()Z	g	isNatural
-METHOD	cif	()Z	i	isPiglinSafe
-METHOD	cif	()Z	j	isBedWorks
-METHOD	cif	()Z	k	isRespawnAnchorWorks
-METHOD	cif	()Z	l	hasRaids
-METHOD	cif	()I	m	getLogicalHeight
-METHOD	cif	()Z	n	isCreateDragonBattle
+METHOD	cif	()Z	f	canBreed
+METHOD	cif	()Z	g	hasBook
+METHOD	cif	()Z	i	canSeeFriendlyInvisibles
+METHOD	cif	()Z	j	hasStorm
+METHOD	cif	()Z	k	hasExplosions
+METHOD	cif	()Z	l	getEnableCommandBlock
+METHOD	cif	()I	m	getBadOmenLevel
+METHOD	cif	()Z	n	hasTag
 METHOD	cif	()Lbrj;	o	getGenLayerZoomer
-METHOD	cif	()Z	p	isFixedTime
+METHOD	cif	()Z	p	hasBasePlate
 CLASS	cig	WorldDimension
 FIELD	cig	Lug;	b	OVERWORLD
 FIELD	cig	Lug;	c	THE_NETHER
@@ -10235,9 +10235,9 @@ FIELD	cii	Ljava/util/UUID;	m	dragonUUID
 FIELD	cii	Lfu;	o	exitPortalLocation
 FIELD	cii	Lcih;	p	respawnPhase
 METHOD	cii	(Lcih;)V	a	setRespawnPhase
-METHOD	cii	()Z	d	isPreviouslyKilled
-METHOD	cii	()V	e	initiateRespawn
-METHOD	cii	()V	f	resetCrystals
+METHOD	cii	()Z	d	hasSkyLight
+METHOD	cii	()V	e	clearBlocks
+METHOD	cii	()V	f	bind
 CLASS	cil	ChunkProviderDebug
 METHOD	cil	(Lzj;Lcgy;)V	a	buildBase
 METHOD	cil	(JLbrg;Lcgy;Lcin$a;)V	a	doCarving
@@ -10246,13 +10246,13 @@ METHOD	cil	(Lbqc;Lbqq;Lcgy;)V	b	buildNoise
 METHOD	cil	(IILcio$a;)I	a	getBaseHeight
 CLASS	cim	ChunkProviderFlat
 METHOD	cim	(Lzj;Lcgy;)V	a	buildBase
-METHOD	cim	()I	c	getSpawnHeight
+METHOD	cim	()I	c	getAmplifier
 METHOD	cim	(Lbqc;Lbqq;Lcgy;)V	b	buildNoise
 METHOD	cim	(IILcio$a;)I	a	getBaseHeight
 CLASS	cin$a	WorldGenStage$Features
 FIELD	cin$a	Lcin$a;	a	AIR
 FIELD	cin$a	Lcin$a;	b	LIQUID
-METHOD	cin$a	()Ljava/lang/String;	a	getName
+METHOD	cin$a	()Ljava/lang/String;	a	getKey
 CLASS	cin$b	WorldGenStage$Decoration
 FIELD	cin$b	Lcin$b;	a	RAW_GENERATION
 FIELD	cin$b	Lcin$b;	b	LAKES
@@ -10264,7 +10264,7 @@ FIELD	cin$b	Lcin$b;	g	UNDERGROUND_ORES
 FIELD	cin$b	Lcin$b;	h	UNDERGROUND_DECORATION
 FIELD	cin$b	Lcin$b;	i	VEGETAL_DECORATION
 FIELD	cin$b	Lcin$b;	j	TOP_LAYER_MODIFICATION
-METHOD	cin$b	()Ljava/lang/String;	a	getName
+METHOD	cin$b	()Ljava/lang/String;	a	getKey
 CLASS	cin	WorldGenStage
 CLASS	cio$a	HeightMap$Type
 FIELD	cio$a	Lcio$a;	a	WORLD_SURFACE_WG
@@ -10273,7 +10273,7 @@ FIELD	cio$a	Lcio$a;	c	OCEAN_FLOOR_WG
 FIELD	cio$a	Lcio$a;	d	OCEAN_FLOOR
 FIELD	cio$a	Lcio$a;	e	MOTION_BLOCKING
 FIELD	cio$a	Lcio$a;	f	MOTION_BLOCKING_NO_LEAVES
-METHOD	cio$a	()Ljava/lang/String;	a	getName
+METHOD	cio$a	()Ljava/lang/String;	a	getKey
 CLASS	cio$b	HeightMap$Use
 FIELD	cio$b	Lcio$b;	a	WORLDGEN
 FIELD	cio$b	Lcio$b;	b	LIVE_WORLD
@@ -10283,8 +10283,8 @@ CLASS	cip	ChunkGeneratorAbstract
 METHOD	cip	(IILcio$a;)I	a	getBaseHeight
 METHOD	cip	(Lzj;Lcgy;)V	a	buildBase
 METHOD	cip	(Lbqc;Lbqq;Lcgy;)V	b	buildNoise
-METHOD	cip	()I	e	getGenerationDepth
-METHOD	cip	()I	f	getSeaLevel
+METHOD	cip	()I	e	getCookingTime
+METHOD	cip	()I	f	asInt
 METHOD	cip	(Lbre;Lbqq;Lapa;Lfu;)Ljava/util/List;	a	getMobsFor
 METHOD	cip	(Lzj;)V	a	addMobs
 CLASS	ciq$1	GeneratorSettingBase$1
@@ -10299,11 +10299,11 @@ CLASS	ciw	StructureSettings
 CLASS	cix	GeneratorSettings
 FIELD	cix	Lorg/apache/logging/log4j/Logger;	c	LOGGER
 FIELD	cix	J	e	seed
-METHOD	cix	()J	b	getSeed
-METHOD	cix	()Z	c	shouldGenerateMapFeatures
+METHOD	cix	()J	b	getMonotonicMillis
+METHOD	cix	()Z	c	isConvertable
 METHOD	cix	()Lcha;	f	getChunkGenerator
-METHOD	cix	()Z	h	isDebugWorld
-METHOD	cix	()Z	i	isFlatWorld
+METHOD	cix	()Z	h	allowFriendlyFire
+METHOD	cix	()Z	i	canSeeFriendlyInvisibles
 CLASS	ciy	SeededRandom
 CLASS	ciz	WorldGenCanyon
 CLASS	cj$a	CriterionSlideDownBlock$a
@@ -10466,7 +10466,7 @@ CLASS	cli$a	WorldGenMineshaft$a
 CLASS	cli$b	WorldGenMineshaft$Type
 FIELD	cli$b	Lcli$b;	a	NORMAL
 FIELD	cli$b	Lcli$b;	b	MESA
-METHOD	cli$b	()Ljava/lang/String;	a	getName
+METHOD	cli$b	()Ljava/lang/String;	a	getKey
 CLASS	cli	WorldGenMineshaft
 CLASS	clj	WorldGenDungeons
 FIELD	clj	Lorg/apache/logging/log4j/Logger;	a	LOGGER
@@ -10507,7 +10507,7 @@ FIELD	cly$b	Lcly$b;	d	SWAMP
 FIELD	cly$b	Lcly$b;	e	MOUNTAIN
 FIELD	cly$b	Lcly$b;	f	OCEAN
 FIELD	cly$b	Lcly$b;	g	NETHER
-METHOD	cly$b	()Ljava/lang/String;	a	getName
+METHOD	cly$b	()Ljava/lang/String;	a	getKey
 CLASS	cly	WorldGenFeatureRuinedPortal
 CLASS	clz	WorldGenFeatureVillageSavanna
 CLASS	cm$a	CriterionTriggerTamedAnimal$a
@@ -10616,7 +10616,7 @@ CLASS	coc$a	WorldGenFeatureOreConfiguration$Target
 FIELD	coc$a	Lcoc$a;	a	NATURAL_STONE
 FIELD	coc$a	Lcoc$a;	b	NETHERRACK
 FIELD	coc$a	Lcoc$a;	c	NETHER_ORE_REPLACEABLES
-METHOD	coc$a	()Ljava/lang/String;	a	getName
+METHOD	coc$a	()Ljava/lang/String;	a	getKey
 CLASS	coc	WorldGenFeatureOreConfiguration
 CLASS	cod	WorldGenFeatureConfigurationChance
 CLASS	coe	WorldGenFeatureChoiceConfiguration
@@ -10683,7 +10683,7 @@ CLASS	cqe	WorldGenFeatureDefinedStructurePools
 CLASS	cqf$a	WorldGenFeatureDefinedStructurePoolTemplate$Matching
 FIELD	cqf$a	Lcqf$a;	a	TERRAIN_MATCHING
 FIELD	cqf$a	Lcqf$a;	b	RIGID
-METHOD	cqf$a	()Ljava/lang/String;	a	getName
+METHOD	cqf$a	()Ljava/lang/String;	a	getKey
 CLASS	cqf	WorldGenFeatureDefinedStructurePoolTemplate
 FIELD	cqf	Lorg/apache/logging/log4j/Logger;	d	LOGGER
 CLASS	cqg	WorldGenFeatureDefinedStructurePoolTemplates
@@ -10837,7 +10837,7 @@ CLASS	ctp$a	WorldGenFeatureOceanRuin$a
 CLASS	ctp$b	WorldGenFeatureOceanRuin$Temperature
 FIELD	ctp$b	Lctp$b;	a	WARM
 FIELD	ctp$b	Lctp$b;	b	COLD
-METHOD	ctp$b	()Ljava/lang/String;	a	getName
+METHOD	ctp$b	()Ljava/lang/String;	a	getKey
 CLASS	ctp	WorldGenFeatureOceanRuin
 CLASS	ctq$a	WorldGenFeatureOceanRuinPieces$a
 CLASS	ctq	WorldGenFeatureOceanRuinPieces
@@ -11000,10 +11000,10 @@ CLASS	cwz	FluidType
 CLASS	cx	CommandException
 CLASS	cxa	Fluid
 METHOD	cxa	()Lcwz;	a	getType
-METHOD	cxa	()Z	b	isSource
-METHOD	cxa	()Z	c	isEmpty
+METHOD	cxa	()Z	b	hasSaddle_b
+METHOD	cxa	()Z	c	isConvertable
 METHOD	cxa	(Lbpg;Lfu;)F	a	getHeight
-METHOD	cxa	()Lcfj;	g	getBlockData
+METHOD	cxa	()Lcfj;	g	getBlockData_g
 CLASS	cxb	FluidTypes
 FIELD	cxb	Lcwz;	a	EMPTY
 FIELD	cxb	Lcwy;	b	FLOWING_WATER
@@ -11059,11 +11059,11 @@ FIELD	cxd	Lcxd;	O	PUMPKIN
 FIELD	cxd	Lcxd;	P	DRAGON_EGG
 FIELD	cxd	Lcxd;	Q	CAKE
 FIELD	cxd	Z	U	canBurn
-METHOD	cxd	()Z	a	isLiquid
-METHOD	cxd	()Z	b	isBuildable
-METHOD	cxd	()Z	c	isSolid
-METHOD	cxd	()Z	d	isBurnable
-METHOD	cxd	()Z	e	isReplaceable
+METHOD	cxd	()Z	a	isDone
+METHOD	cxd	()Z	b	hasSaddle_b
+METHOD	cxd	()Z	c	isConvertable
+METHOD	cxd	()Z	d	hasSkyLight
+METHOD	cxd	()Z	e	hasCeiling
 METHOD	cxd	()Lcxf;	g	getPushReaction
 CLASS	cxe	MaterialMapColor
 FIELD	cxe	I	ai	rgb
@@ -11107,8 +11107,8 @@ FIELD	cxy	Lorg/apache/logging/log4j/Logger;	a	LOGGER
 CLASS	cxz	GenLayers
 CLASS	cy$1	ICommandListener$1
 METHOD	cy$1	(Lmr;Ljava/util/UUID;)V	a	sendMessage
-METHOD	cy$1	()Z	a	shouldSendSuccess
-METHOD	cy$1	()Z	b	shouldSendFailure
+METHOD	cy$1	()Z	a	isDone
+METHOD	cy$1	()Z	b	hasSaddle_b
 METHOD	cy$1	()Z	S_	shouldBroadcastCommands
 CLASS	cy	ICommandListener
 FIELD	cy	Lcy;	a_	DUMMY
@@ -11152,16 +11152,16 @@ CLASS	cyw	AreaTransformer
 CLASS	cyx	AreaTransformer8
 CLASS	cz	CommandListenerWrapper
 FIELD	cz	Lcy;	c	base
-METHOD	cz	()Lmr;	b	getScoreboardDisplayName
-METHOD	cz	()Ljava/lang/String;	c	getName
+METHOD	cz	()Lmr;	b	getDeathMessage
+METHOD	cz	()Ljava/lang/String;	c	getName_c
 METHOD	cz	(I)Z	c	hasPermission
 METHOD	cz	()Ldem;	d	getPosition
-METHOD	cz	()Lzd;	e	getWorld
-METHOD	cz	()Laom;	f	getEntity
-METHOD	cz	()Lnet/minecraft/server/MinecraftServer;	j	getServer
+METHOD	cz	()Lzd;	e	getWorld_e
+METHOD	cz	()Laom;	f	getEntity_f
+METHOD	cz	()Lnet/minecraft/server/MinecraftServer;	j	getServer_j
 METHOD	cz	(Lmr;Z)V	a	sendMessage
-METHOD	cz	(Lmr;)V	b	sendAdminMessage
-METHOD	cz	(Lmr;)V	a	sendFailureMessage
+METHOD	cz	(Lmr;)V	b	disconnect
+METHOD	cz	(Lmr;)V	a	close
 CLASS	cza	Path
 CLASS	czb	PathType
 FIELD	czb	Lczb;	a	BLOCKED
@@ -11245,7 +11245,7 @@ METHOD	czs	()Lczs$a;	b	getType
 METHOD	czs	()B	c	getX
 METHOD	czs	()B	d	getY
 METHOD	czs	()B	e	getRotation
-METHOD	czs	()Lmr;	g	getName
+METHOD	czs	()Lmr;	g	getContainerName
 CLASS	czt	WorldMapFrame
 CLASS	czu	PersistentIdCounts
 CLASS	czv$a	WorldMap$WorldMapHumanTracker
@@ -11268,24 +11268,24 @@ METHOD	czv	(II)V	a	flagDirty
 CLASS	czy$a	PersistentCommandStorage$a
 CLASS	czy	PersistentCommandStorage
 CLASS	czz	SecondaryWorldData
-METHOD	czz	()J	d	getTime
-METHOD	czz	()J	e	getDayTime
-METHOD	czz	()Ljava/lang/String;	f	getName
-METHOD	czz	()Z	h	isThundering
-METHOD	czz	()I	i	getThunderDuration
+METHOD	czz	()J	d	getTime_d
+METHOD	czz	()J	e	asLong_e
+METHOD	czz	()Ljava/lang/String;	f	getName_f
+METHOD	czz	()Z	h	allowFriendlyFire
+METHOD	czz	()I	i	getAdjacentX
 METHOD	czz	()Z	j	hasStorm
-METHOD	czz	()I	k	getWeatherDuration
+METHOD	czz	()I	k	getAdjacentZ
 METHOD	czz	()Lbpy;	l	getGameType
-METHOD	czz	(J)V	a	setTime
-METHOD	czz	(J)V	b	setDayTime
-METHOD	czz	(Lfu;)V	a	setSpawn
-METHOD	czz	(Z)V	a	setThundering
-METHOD	czz	(I)V	e	setThunderDuration
-METHOD	czz	(Z)V	b	setStorm
-METHOD	czz	(I)V	f	setWeatherDuration
-METHOD	czz	(Lbpy;)V	a	setGameType
+METHOD	czz	(J)V	a	setDayTime
+METHOD	czz	(J)V	b	setDayTime_b
+METHOD	czz	(Lfu;)V	a	setBeamTarget
+METHOD	czz	(Z)V	a	safeShutdown
+METHOD	czz	(I)V	e	setCount
+METHOD	czz	(Z)V	b	setCanSeeFriendlyInvisibles
+METHOD	czz	(I)V	f	add
+METHOD	czz	(Lbpy;)V	a	setGameMode
 METHOD	czz	()Z	m	isHardcore
-METHOD	czz	()Land;	r	getDifficulty
+METHOD	czz	()Land;	r	getDifficulty_r
 METHOD	czz	()Z	s	isDifficultyLocked
 CLASS	d	Quaternion
 CLASS	da$a	CommandDispatcher$ServerType
@@ -11313,7 +11313,7 @@ CLASS	dae$a	Convertable$ConversionSession
 FIELD	dae$a	Ladp;	b	lock
 FIELD	dae$a	Ljava/nio/file/Path;	c	folder
 FIELD	dae$a	Ljava/lang/String;	d	levelName
-METHOD	dae$a	()Ljava/lang/String;	a	getLevelName
+METHOD	dae$a	()Ljava/lang/String;	a	getKey
 METHOD	dae$a	(Ldac;)Ljava/nio/file/Path;	a	getWorldFolder
 METHOD	dae$a	()V	i	checkSession
 METHOD	dae$a	()Z	c	isConvertable
@@ -11331,7 +11331,7 @@ FIELD	dai	Lorg/apache/logging/log4j/Logger;	b	LOGGER
 FIELD	dai	Ljava/io/File;	c	playerDir
 METHOD	dai	(Lbec;)V	a	save
 METHOD	dai	(Lbec;)Lle;	b	load
-METHOD	dai	()[Ljava/lang/String;	a	getSeenPlayers
+METHOD	dai	()[Ljava/lang/String;	a	getEntries
 CLASS	daj	WorldDataServer
 FIELD	daj	Lorg/apache/logging/log4j/Logger;	a	LOGGER
 FIELD	daj	I	o	clearWeatherTime
@@ -11340,33 +11340,33 @@ FIELD	daj	I	q	rainTime
 FIELD	daj	Z	r	thundering
 FIELD	daj	I	s	thunderTime
 FIELD	daj	Lle;	x	customBossEvents
-METHOD	daj	()J	d	getTime
-METHOD	daj	()J	e	getDayTime
-METHOD	daj	(J)V	a	setTime
-METHOD	daj	(J)V	b	setDayTime
-METHOD	daj	(Lfu;)V	a	setSpawn
-METHOD	daj	()Ljava/lang/String;	f	getName
-METHOD	daj	()Z	h	isThundering
-METHOD	daj	(Z)V	a	setThundering
-METHOD	daj	()I	i	getThunderDuration
-METHOD	daj	(I)V	e	setThunderDuration
+METHOD	daj	()J	d	getTime_d
+METHOD	daj	()J	e	asLong_e
+METHOD	daj	(J)V	a	setDayTime
+METHOD	daj	(J)V	b	setDayTime_b
+METHOD	daj	(Lfu;)V	a	setBeamTarget
+METHOD	daj	()Ljava/lang/String;	f	getName_f
+METHOD	daj	()Z	h	allowFriendlyFire
+METHOD	daj	(Z)V	a	safeShutdown
+METHOD	daj	()I	i	getAdjacentX
+METHOD	daj	(I)V	e	setCount
 METHOD	daj	()Z	j	hasStorm
-METHOD	daj	(Z)V	b	setStorm
-METHOD	daj	()I	k	getWeatherDuration
-METHOD	daj	(I)V	f	setWeatherDuration
+METHOD	daj	(Z)V	b	setCanSeeFriendlyInvisibles
+METHOD	daj	()I	k	getAdjacentZ
+METHOD	daj	(I)V	f	add
 METHOD	daj	()Lbpy;	l	getGameType
-METHOD	daj	(Lbpy;)V	a	setGameType
+METHOD	daj	(Lbpy;)V	a	setGameMode
 METHOD	daj	()Z	m	isHardcore
-METHOD	daj	()Land;	r	getDifficulty
+METHOD	daj	()Land;	r	getDifficulty_r
 METHOD	daj	(Land;)V	a	setDifficulty
 METHOD	daj	()Z	s	isDifficultyLocked
 METHOD	daj	()Lcix;	z	getGeneratorSettings
 METHOD	daj	()Lle;	D	getCustomBossEvents
-METHOD	daj	(Lle;)V	b	setCustomBossEvents
+METHOD	daj	(Lle;)V	b	saveData
 CLASS	dak	IWorldDataServer
 CLASS	dal	SaveData
 CLASS	dam	WorldDataMutable
-METHOD	dam	(Lfu;)V	a	setSpawn
+METHOD	dam	(Lfu;)V	a	setBeamTarget
 CLASS	dan$a	LootValueBinomial$a
 CLASS	dan	LootValueBinomial
 CLASS	dao	LootTables
@@ -11398,7 +11398,7 @@ FIELD	dat	F	b	luck
 FIELD	dat	Lzd;	c	world
 METHOD	dat	(Ldcx;)Z	a	hasContextParameter
 METHOD	dat	(Ldcx;)Ljava/lang/Object;	c	getContextParameter
-METHOD	dat	()F	b	getLuck
+METHOD	dat	()F	b	getExperience
 METHOD	dat	()Lzd;	c	getWorld
 CLASS	dau	LootItemUser
 CLASS	dav$1	LootSelector$1
@@ -11414,7 +11414,7 @@ FIELD	daw	Ldaw;	a	EMPTY
 METHOD	daw	(Ldat;Ljava/util/function/Consumer;)V	a	populateLootDirect
 METHOD	daw	(Ldat;Ljava/util/function/Consumer;)V	b	populateLoot
 METHOD	daw	(Ldat;)Ljava/util/List;	a	populateLoot
-METHOD	daw	()Ldcy;	a	getLootContextParameterSet
+METHOD	daw	()Ldcy;	a	build
 METHOD	daw	(Lamz;Ldat;)V	a	fillInventory
 CLASS	dax	LootTableRegistry
 FIELD	dax	Lorg/apache/logging/log4j/Logger;	a	LOGGER
@@ -11591,7 +11591,7 @@ METHOD	dcy$a	(Ldcx;)Ldcy$a;	a	addRequired
 METHOD	dcy$a	(Ldcx;)Ldcy$a;	b	addOptional
 METHOD	dcy$a	()Ldcy;	a	build
 CLASS	dcy	LootContextParameterSet
-METHOD	dcy	()Ljava/util/Set;	a	getRequired
+METHOD	dcy	()Ljava/util/Set;	a	getAttributes
 METHOD	dcy	()Ljava/util/Set;	b	getOptional
 CLASS	dcz	LootContextParameterSets
 FIELD	dcz	Ldcy;	a	EMPTY
@@ -11713,9 +11713,9 @@ FIELD	dem	D	c	y
 FIELD	dem	D	d	z
 METHOD	dem	(DDD)Ldem;	b	add
 METHOD	dem	(Ldem;)D	g	distanceSquared
-METHOD	dem	()D	a	getX
-METHOD	dem	()D	b	getY
-METHOD	dem	()D	c	getZ
+METHOD	dem	()D	a	getCenterX
+METHOD	dem	()D	b	getBaseValue
+METHOD	dem	()D	c	getY
 CLASS	deo$1	VoxelShapeArray$1
 CLASS	deo	VoxelShapeArray
 CLASS	dep	VoxelShapeBitSet
@@ -11759,28 +11759,28 @@ CLASS	dfe	VoxelShapeSlice
 CLASS	dff	VoxelShapeDiscreteSlice
 CLASS	dfg	VoxelShape
 METHOD	dfg	()Ldeg;	a	getBoundingBox
-METHOD	dfg	()Z	b	isEmpty
+METHOD	dfg	()Z	b	hasSaddle_b
 METHOD	dfg	(Ldem;Ldem;Lfu;)Ldeh;	a	rayTrace
 CLASS	dfj	ScoreboardObjective
 FIELD	dfj	Lmr;	d	displayName
 METHOD	dfj	()Ljava/lang/String;	b	getName
 METHOD	dfj	()Ldfp;	c	getCriteria
-METHOD	dfj	()Lmr;	d	getDisplayName
-METHOD	dfj	(Lmr;)V	a	setDisplayName
+METHOD	dfj	()Lmr;	d	getDisplayName_d
+METHOD	dfj	(Lmr;)V	a	close
 METHOD	dfj	()Ldfp$a;	f	getRenderType
 METHOD	dfj	(Ldfp$a;)V	a	setRenderType
 CLASS	dfk	ScoreboardTeam
 METHOD	dfk	()Ljava/lang/String;	b	getName
-METHOD	dfk	()Lmr;	c	getDisplayName
-METHOD	dfk	(Lmr;)V	a	setDisplayName
-METHOD	dfk	(Lmr;)V	b	setPrefix
+METHOD	dfk	()Lmr;	c	getDisplayName_c
+METHOD	dfk	(Lmr;)V	a	close
+METHOD	dfk	(Lmr;)V	b	disconnect
 METHOD	dfk	()Lmr;	e	getPrefix
 METHOD	dfk	(Lmr;)V	c	setSuffix
 METHOD	dfk	()Lmr;	f	getSuffix
 METHOD	dfk	()Ljava/util/Collection;	g	getPlayerNameSet
 METHOD	dfk	(Lmr;)Lmx;	d	getFormattedName
 METHOD	dfk	()Z	h	allowFriendlyFire
-METHOD	dfk	(Z)V	a	setAllowFriendlyFire
+METHOD	dfk	(Z)V	a	safeShutdown
 METHOD	dfk	()Z	i	canSeeFriendlyInvisibles
 METHOD	dfk	(Z)V	b	setCanSeeFriendlyInvisibles
 METHOD	dfk	()Ldfo$b;	j	getNameTagVisibility
@@ -11789,7 +11789,7 @@ METHOD	dfk	(Ldfo$b;)V	a	setNameTagVisibility
 METHOD	dfk	(Ldfo$b;)V	b	setDeathMessageVisibility
 METHOD	dfk	()Ldfo$a;	l	getCollisionRule
 METHOD	dfk	(Ldfo$a;)V	a	setCollisionRule
-METHOD	dfk	()I	m	packOptionData
+METHOD	dfk	()I	m	getBadOmenLevel
 METHOD	dfk	(Li;)V	a	setColor
 METHOD	dfk	()Li;	n	getColor
 CLASS	dfl	ScoreboardScore
@@ -11797,10 +11797,10 @@ FIELD	dfl	Ljava/lang/String;	d	playerName
 FIELD	dfl	I	e	score
 METHOD	dfl	(I)V	a	addScore
 METHOD	dfl	()V	a	incrementScore
-METHOD	dfl	()I	b	getScore
-METHOD	dfl	(I)V	c	setScore
+METHOD	dfl	()I	b	get
+METHOD	dfl	(I)V	c	levelDown
 METHOD	dfl	()Ldfj;	d	getObjective
-METHOD	dfl	()Ljava/lang/String;	e	getPlayerName
+METHOD	dfl	()Ljava/lang/String;	e	getMessages
 CLASS	dfm	Scoreboard
 FIELD	dfm	Ljava/util/Map;	a	objectivesByName
 FIELD	dfm	Ljava/util/Map;	b	objectivesByCriteria
@@ -11826,13 +11826,13 @@ METHOD	dfm	(Ldfk;)V	d	removeTeam
 METHOD	dfm	(Ljava/lang/String;Ldfk;)Z	a	addPlayerToTeam
 METHOD	dfm	(Ljava/lang/String;)Z	h	removePlayerFromTeam
 METHOD	dfm	(Ljava/lang/String;Ldfk;)V	b	removePlayerFromTeam
-METHOD	dfm	()Ljava/util/Collection;	g	getTeams
+METHOD	dfm	()Ljava/util/Collection;	g	getPlayerNameSet
 METHOD	dfm	(Ljava/lang/String;)Ldfk;	i	getPlayerTeam
 METHOD	dfm	(Ldfj;)V	a	handleObjectiveAdded
 METHOD	dfm	(Ldfj;)V	b	handleObjectiveChanged
 METHOD	dfm	(Ldfj;)V	c	handleObjectiveRemoved
 METHOD	dfm	(Ldfl;)V	a	handleScoreChanged
-METHOD	dfm	(Ljava/lang/String;)V	a	handlePlayerRemoved
+METHOD	dfm	(Ljava/lang/String;)V	a	enter
 METHOD	dfm	(Ldfk;)V	a	handleTeamAdded
 METHOD	dfm	(Ldfk;)V	b	handleTeamChanged
 METHOD	dfm	(Ldfk;)V	c	handleTeamRemoved
@@ -11868,8 +11868,8 @@ FIELD	dfp	Ldfp;	i	AIR
 FIELD	dfp	Ldfp;	j	ARMOR
 FIELD	dfp	Ldfp;	k	XP
 FIELD	dfp	Ldfp;	l	LEVEL
-METHOD	dfp	()Ljava/lang/String;	c	getName
-METHOD	dfp	()Z	d	isReadOnly
+METHOD	dfp	()Ljava/lang/String;	c	getName_c
+METHOD	dfp	()Z	d	hasSkyLight
 CLASS	dg$a	ArgumentAnchor$Anchor
 FIELD	dg$a	Ldg$a;	a	FEET
 FIELD	dg$a	Ldg$a;	b	EYES
@@ -11961,7 +11961,7 @@ FIELD	ez	Z	m	checkPermissions
 METHOD	ez	(Lcz;)Ljava/util/List;	b	getEntities
 CLASS	fa	ArgumentParserSelector
 FIELD	fa	Z	T	checkPermissions
-METHOD	fa	()V	b	parseSelector
+METHOD	fa	()V	b	doTick
 METHOD	fa	()Lez;	t	parse
 CLASS	fb$1	PlayerSelector$1
 CLASS	fb$a	PlayerSelector$a
@@ -12003,9 +12003,9 @@ FIELD	fu	Lorg/apache/logging/log4j/Logger;	e	LOGGER
 FIELD	fu	Lfu;	b	ZERO
 METHOD	fu	(J)Lfu;	e	fromLong
 METHOD	fu	()J	a	asLong
-METHOD	fu	()Lfu;	b	up
+METHOD	fu	()Lfu;	b	getBlockPosition_b
 METHOD	fu	(I)Lfu;	b	up
-METHOD	fu	()Lfu;	d	north
+METHOD	fu	()Lfu;	d	getBlockPosition_d
 METHOD	fu	(I)Lfu;	d	north
 METHOD	fu	()Lfu;	e	south
 METHOD	fu	(I)Lfu;	e	south
@@ -12020,12 +12020,12 @@ METHOD	fu	(I)Lgr;	l	down
 METHOD	fu	()Lgr;	n	down
 CLASS	fv	ISourceBlock
 CLASS	fw	SourceBlock
-METHOD	fw	()Lbqb;	h	getWorld
-METHOD	fw	()D	a	getX
-METHOD	fw	()D	b	getY
-METHOD	fw	()D	c	getZ
-METHOD	fw	()Lfu;	d	getBlockPosition
-METHOD	fw	()Lcfj;	e	getBlockData
+METHOD	fw	()Lbqb;	h	getWorld_h
+METHOD	fw	()D	a	getCenterX
+METHOD	fw	()D	b	getBaseValue
+METHOD	fw	()D	c	getY
+METHOD	fw	()Lfu;	d	getBlockPosition_d
+METHOD	fw	()Lcfj;	e	getBlockData_e
 METHOD	fw	()Lcdl;	g	getTileEntity
 CLASS	fx	CursorPosition
 CLASS	fy	RegistryBlocks
@@ -12040,7 +12040,7 @@ CLASS	fz$a	EnumDirection$EnumAxis
 FIELD	fz$a	Lfz$a;	a	X
 FIELD	fz$a	Lfz$a;	b	Y
 FIELD	fz$a	Lfz$a;	c	Z
-METHOD	fz$a	()Ljava/lang/String;	a	getName
+METHOD	fz$a	()Ljava/lang/String;	a	getKey
 CLASS	fz$b	EnumDirection$EnumAxisDirection
 FIELD	fz$b	Lfz$b;	a	POSITIVE
 FIELD	fz$b	Lfz$b;	b	NEGATIVE
@@ -12062,7 +12062,7 @@ METHOD	fz	()I	k	getAdjacentZ
 METHOD	fz	(I)Lfz;	a	fromType1
 METHOD	fz	(I)Lfz;	b	fromType2
 METHOD	fz	(D)Lfz;	a	fromAngle
-METHOD	fz	()Ljava/lang/String;	a	getName
+METHOD	fz	()Ljava/lang/String;	a	getKey
 CLASS	g	Vector3fa
 CLASS	ga	EnumDirection8
 FIELD	ga	Lga;	a	NORTH
@@ -12086,13 +12086,13 @@ FIELD	gb	Lgb;	i	WEST_UP
 FIELD	gb	Lgb;	j	EAST_UP
 FIELD	gb	Lgb;	k	NORTH_UP
 FIELD	gb	Lgb;	l	SOUTH_UP
-METHOD	gb	()Ljava/lang/String;	a	getName
+METHOD	gb	()Ljava/lang/String;	a	getKey
 CLASS	gc	GlobalPos
 FIELD	gc	Lug;	b	dimensionManager
 FIELD	gc	Lfu;	c	blockPosition
 METHOD	gc	(Lug;Lfu;)Lgc;	a	create
 METHOD	gc	()Lug;	a	getDimensionManager
-METHOD	gc	()Lfu;	b	getBlockPosition
+METHOD	gc	()Lfu;	b	getBlockPosition_b
 CLASS	gd	Registry
 CLASS	ge	RegistryBlockID
 METHOD	ge	(Ljava/lang/Object;)I	a	getId
@@ -12105,13 +12105,13 @@ METHOD	gh	(Ljava/lang/Object;)Luh;	b	getKey
 METHOD	gh	(I)Ljava/lang/Object;	a	fromId
 METHOD	gh	(Luh;)Ljava/lang/Object;	a	get
 METHOD	gh	(Luh;)Ljava/util/Optional;	b	getOptional
-METHOD	gh	()Ljava/util/Set;	b	keySet
+METHOD	gh	()Ljava/util/Set;	b	getOptional
 CLASS	gi	NonNullList
 CLASS	gj	IPosition
 CLASS	gk	Position
-METHOD	gk	()D	a	getX
-METHOD	gk	()D	b	getY
-METHOD	gk	()D	c	getZ
+METHOD	gk	()D	a	getCenterX
+METHOD	gk	()D	b	getBaseValue
+METHOD	gk	()D	c	getY
 CLASS	gl	IRegistry
 FIELD	gl	Lorg/apache/logging/log4j/Logger;	e	LOGGER
 FIELD	gl	Lgl;	ag	SOUND_EVENT
@@ -12164,7 +12164,7 @@ CLASS	gn	Vector3f
 FIELD	gn	F	a	x
 FIELD	gn	F	b	y
 FIELD	gn	F	c	z
-METHOD	gn	()F	b	getX
+METHOD	gn	()F	b	getExperience
 METHOD	gn	()F	c	getY
 METHOD	gn	()F	d	getZ
 CLASS	go$1	SectionPosition$1
@@ -12172,7 +12172,7 @@ CLASS	go	SectionPosition
 CLASS	gp	MinecraftSerializableUUID
 CLASS	gr	BaseBlockPosition
 FIELD	gr	Lgr;	d	ZERO
-METHOD	gr	()I	u	getX
+METHOD	gr	()I	u	getColor_u
 METHOD	gr	()I	v	getY
 METHOD	gr	()I	w	getZ
 METHOD	gr	()Lgr;	n	down
@@ -12181,7 +12181,7 @@ METHOD	gr	(Lfz;I)Lgr;	b	shift
 METHOD	gr	(DDDZ)D	a	distanceSquared
 CLASS	gs	IRegistryWritable
 CLASS	gt	DispenseBehaviorProjectile
-METHOD	gt	()F	b	getPower
+METHOD	gt	()F	b	getExperience
 CLASS	gu	DispenseBehaviorBoat
 CLASS	gv	DispenseBehaviorItem
 CLASS	gw$1	IDispenseBehavior$1
@@ -12199,12 +12199,12 @@ CLASS	gw$2	IDispenseBehavior$2
 CLASS	gw$20	IDispenseBehavior$20
 CLASS	gw$21	IDispenseBehavior$21
 CLASS	gw$22	IDispenseBehavior$22
-METHOD	gw$22	()F	b	getPower
+METHOD	gw$22	()F	b	getExperience
 CLASS	gw$23$1	IDispenseBehavior$23$1
-METHOD	gw$23$1	()F	b	getPower
+METHOD	gw$23$1	()F	b	getExperience
 CLASS	gw$23	IDispenseBehavior$23
 CLASS	gw$24$1	IDispenseBehavior$24$1
-METHOD	gw$24$1	()F	b	getPower
+METHOD	gw$24$1	()F	b	getExperience
 CLASS	gw$24	IDispenseBehavior$24
 CLASS	gw$25	IDispenseBehavior$25
 CLASS	gw$3	IDispenseBehavior$3
@@ -12338,7 +12338,7 @@ FIELD	i	Li;	t	UNDERLINE
 FIELD	i	Li;	u	ITALIC
 FIELD	i	Li;	v	RESET
 FIELD	i	C	z	character
-METHOD	i	()Z	c	isFormat
+METHOD	i	()Z	c	isConvertable
 CLASS	j	CrashReport
 FIELD	j	Lorg/apache/logging/log4j/Logger;	a	LOGGER
 CLASS	jn	DebugReportNBT
@@ -12390,7 +12390,7 @@ CLASS	lc	NBTTagByte
 FIELD	lc	B	h	data
 METHOD	lc	(Ljava/io/DataOutput;)V	a	write
 METHOD	lc	()B	a	getTypeId
-METHOD	lc	()J	e	asLong
+METHOD	lc	()J	e	asLong_e
 METHOD	lc	()I	f	asInt
 METHOD	lc	()S	g	asShort
 METHOD	lc	()B	h	asByte
@@ -12412,7 +12412,7 @@ METHOD	le	(Ljava/lang/String;I)V	b	setInt
 METHOD	le	(Ljava/lang/String;J)V	a	setLong
 METHOD	le	(Ljava/lang/String;F)V	a	setFloat
 METHOD	le	(Ljava/lang/String;D)V	a	setDouble
-METHOD	le	(Ljava/lang/String;Ljava/lang/String;)V	a	setString
+METHOD	le	(Ljava/lang/String;Ljava/lang/String;)V	a	setResourcePack
 METHOD	le	(Ljava/lang/String;[B)V	a	setByteArray
 METHOD	le	(Ljava/lang/String;[I)V	a	setIntArray
 METHOD	le	(Ljava/lang/String;Z)V	a	setBoolean
@@ -12440,7 +12440,7 @@ CLASS	lf	NBTTagDouble
 FIELD	lf	D	c	data
 METHOD	lf	(Ljava/io/DataOutput;)V	a	write
 METHOD	lf	()B	a	getTypeId
-METHOD	lf	()J	e	asLong
+METHOD	lf	()J	e	asLong_e
 METHOD	lf	()I	f	asInt
 METHOD	lf	()S	g	asShort
 METHOD	lf	()B	h	asByte
@@ -12457,7 +12457,7 @@ CLASS	lh	NBTTagFloat
 FIELD	lh	F	c	data
 METHOD	lh	(Ljava/io/DataOutput;)V	a	write
 METHOD	lh	()B	a	getTypeId
-METHOD	lh	()J	e	asLong
+METHOD	lh	()J	e	asLong_e
 METHOD	lh	()I	f	asInt
 METHOD	lh	()S	g	asShort
 METHOD	lh	()B	h	asByte
@@ -12478,7 +12478,7 @@ CLASS	lj	NBTTagInt
 FIELD	lj	I	b	data
 METHOD	lj	(Ljava/io/DataOutput;)V	a	write
 METHOD	lj	()B	a	getTypeId
-METHOD	lj	()J	e	asLong
+METHOD	lj	()J	e	asLong_e
 METHOD	lj	()I	f	asInt
 METHOD	lj	()S	g	asShort
 METHOD	lj	()B	h	asByte
@@ -12509,7 +12509,7 @@ CLASS	lm	NBTTagLong
 FIELD	lm	J	b	data
 METHOD	lm	(Ljava/io/DataOutput;)V	a	write
 METHOD	lm	()B	a	getTypeId
-METHOD	lm	()J	e	asLong
+METHOD	lm	()J	e	asLong_e
 METHOD	lm	()I	f	asInt
 METHOD	lm	()S	g	asShort
 METHOD	lm	()B	h	asByte
@@ -12533,7 +12533,7 @@ CLASS	ls	NBTTagShort
 FIELD	ls	S	b	data
 METHOD	ls	(Ljava/io/DataOutput;)V	a	write
 METHOD	ls	()B	a	getTypeId
-METHOD	ls	()J	e	asLong
+METHOD	ls	()J	e	asLong_e
 METHOD	ls	()I	f	asInt
 METHOD	ls	()S	g	asShort
 METHOD	ls	()B	h	asByte
@@ -12571,14 +12571,14 @@ FIELD	me	Ljava/net/SocketAddress;	k	socketAddress
 FIELD	me	Lmj;	l	packetListener
 METHOD	me	(Lmf;)V	a	setProtocol
 METHOD	me	(Lmj;)V	a	setPacketListener
-METHOD	me	(Lni;)V	a	sendPacket
+METHOD	me	(Lni;)V	a	broadcast
 METHOD	me	(Lni;Lio/netty/util/concurrent/GenericFutureListener;)V	a	sendPacket
 METHOD	me	()Ljava/net/SocketAddress;	b	getSocketAddress
 METHOD	me	(Lmr;)V	a	close
-METHOD	me	()Z	c	isLocal
-METHOD	me	()Z	g	isConnected
-METHOD	me	()V	k	stopReading
-METHOD	me	(I)V	a	setCompressionLevel
+METHOD	me	()Z	c	isConvertable
+METHOD	me	()Z	g	hasBook
+METHOD	me	()V	k	dropContents
+METHOD	me	(I)V	a	addScore
 METHOD	me	()V	l	handleDisconnection
 CLASS	mf$1	EnumProtocol$1
 CLASS	mf$a	EnumProtocol$a
@@ -12600,7 +12600,7 @@ CLASS	mm	PacketPrepender
 CLASS	mn	ChatBaseComponent
 FIELD	mn	Ljava/util/List;	a	siblings
 METHOD	mn	(Lmr;)Lmx;	a	addSibling
-METHOD	mn	()Ljava/lang/String;	a	getText
+METHOD	mn	()Ljava/lang/String;	a	getKey
 METHOD	mn	()Ljava/util/List;	b	getSiblings
 METHOD	mn	(Lnb;)Lmx;	a	setChatModifier
 METHOD	mn	()Lnb;	c	getChatModifier
@@ -12646,7 +12646,7 @@ CLASS	mz	ChatComponentScore
 CLASS	n	ThreadNamedUncaughtExceptionHandler
 CLASS	na	ChatComponentSelector
 FIELD	na	Lorg/apache/logging/log4j/Logger;	d	LOGGER
-METHOD	na	()Ljava/lang/String;	a	getText
+METHOD	na	()Ljava/lang/String;	a	getKey
 CLASS	nb$1	ChatModifier$1
 CLASS	nb$a	ChatModifier$ChatModifierSerializer
 CLASS	nb	ChatModifier
@@ -12661,11 +12661,11 @@ FIELD	nb	Lmv;	j	hoverEvent
 FIELD	nb	Ljava/lang/String;	k	insertion
 FIELD	nb	Luh;	l	font
 METHOD	nb	()Lnc;	a	getColor
-METHOD	nb	()Z	b	isBold
-METHOD	nb	()Z	c	isItalic
-METHOD	nb	()Z	d	isStrikethrough
-METHOD	nb	()Z	e	isUnderlined
-METHOD	nb	()Z	f	isRandom
+METHOD	nb	()Z	b	hasSaddle_b
+METHOD	nb	()Z	c	isConvertable
+METHOD	nb	()Z	d	hasSkyLight
+METHOD	nb	()Z	e	hasCeiling
+METHOD	nb	()Z	f	canBreed
 METHOD	nb	()Lmp;	h	getClickEvent
 METHOD	nb	()Lmv;	i	getHoverEvent
 METHOD	nb	()Ljava/lang/String;	j	getInsertion
@@ -12682,11 +12682,11 @@ CLASS	nc	ChatHexColor
 FIELD	nc	I	c	rgb
 FIELD	nc	Ljava/lang/String;	d	name
 CLASS	nd	ChatComponentText
-METHOD	nd	()Ljava/lang/String;	a	getText
+METHOD	nd	()Ljava/lang/String;	a	getKey
 CLASS	ne	ChatMessage
 FIELD	ne	Ljava/lang/String;	g	key
 FIELD	ne	[Ljava/lang/Object;	h	args
-METHOD	ne	()Ljava/lang/String;	h	getKey
+METHOD	ne	()Ljava/lang/String;	h	getKey_h
 METHOD	ne	()[Ljava/lang/Object;	i	getArgs
 CLASS	net/minecraft/server/Main$1	net/minecraft/server/Main$1
 CLASS	net/minecraft/server/Main	net/minecraft/server/Main
@@ -12737,31 +12737,31 @@ FIELD	net/minecraft/server/MinecraftServer	Ldal;	i	saveData
 METHOD	net/minecraft/server/MinecraftServer	(Ldaa;)V	a	initializeScoreboards
 METHOD	net/minecraft/server/MinecraftServer	(Ldae$a;)V	a	convertWorld
 METHOD	net/minecraft/server/MinecraftServer	()V	l_	loadWorld
-METHOD	net/minecraft/server/MinecraftServer	()V	p	updateWorldSettings
+METHOD	net/minecraft/server/MinecraftServer	()V	p	tickChunks
 METHOD	net/minecraft/server/MinecraftServer	(Lzm;)V	b	loadSpawn
 METHOD	net/minecraft/server/MinecraftServer	()V	q	loadResourcesZip
 METHOD	net/minecraft/server/MinecraftServer	()Lbpy;	r	getGamemode
-METHOD	net/minecraft/server/MinecraftServer	()Z	f	isHardcore
+METHOD	net/minecraft/server/MinecraftServer	()Z	f	canBreed
 METHOD	net/minecraft/server/MinecraftServer	(ZZZ)Z	a	saveChunks
-METHOD	net/minecraft/server/MinecraftServer	()V	s	stop
+METHOD	net/minecraft/server/MinecraftServer	()V	s	invalidateBlockCache
 METHOD	net/minecraft/server/MinecraftServer	()Ljava/lang/String;	t	getServerIp
-METHOD	net/minecraft/server/MinecraftServer	()Z	u	isRunning
+METHOD	net/minecraft/server/MinecraftServer	()Z	u	isEnabled
 METHOD	net/minecraft/server/MinecraftServer	(Z)V	a	safeShutdown
 METHOD	net/minecraft/server/MinecraftServer	()Z	aY	canSleepForTick
-METHOD	net/minecraft/server/MinecraftServer	()V	w	sleepForTick
+METHOD	net/minecraft/server/MinecraftServer	()V	w	addEntities
 METHOD	net/minecraft/server/MinecraftServer	()Z	x	executeNext
-METHOD	net/minecraft/server/MinecraftServer	()V	e	exit
+METHOD	net/minecraft/server/MinecraftServer	()V	e	clearBlocks
 METHOD	net/minecraft/server/MinecraftServer	()Z	B	getAllowNether
 METHOD	net/minecraft/server/MinecraftServer	(Lug;)Lzd;	a	getWorldServer
 METHOD	net/minecraft/server/MinecraftServer	()Ljava/lang/Iterable;	F	getWorlds
 METHOD	net/minecraft/server/MinecraftServer	()Ljava/lang/String;	G	getVersion
 METHOD	net/minecraft/server/MinecraftServer	()I	H	getPlayerCount
-METHOD	net/minecraft/server/MinecraftServer	()I	I	getMaxPlayers
+METHOD	net/minecraft/server/MinecraftServer	()I	I	getBuildHeight
 METHOD	net/minecraft/server/MinecraftServer	()[Ljava/lang/String;	J	getPlayers
 METHOD	net/minecraft/server/MinecraftServer	(Lmr;Ljava/util/UUID;)V	a	sendMessage
 METHOD	net/minecraft/server/MinecraftServer	()Ljava/security/KeyPair;	K	getKeyPair
 METHOD	net/minecraft/server/MinecraftServer	()I	L	getPort
-METHOD	net/minecraft/server/MinecraftServer	(I)V	a	setPort
+METHOD	net/minecraft/server/MinecraftServer	(I)V	a	addScore
 METHOD	net/minecraft/server/MinecraftServer	()Ljava/lang/String;	M	getSinglePlayerName
 METHOD	net/minecraft/server/MinecraftServer	()Z	N	isEmbeddedServer
 METHOD	net/minecraft/server/MinecraftServer	()Z	O	getSpawnMonsters
@@ -12787,7 +12787,7 @@ METHOD	net/minecraft/server/MinecraftServer	()I	ai	getSpawnProtection
 METHOD	net/minecraft/server/MinecraftServer	(Z)V	h	setForceGamemode
 METHOD	net/minecraft/server/MinecraftServer	()Z	aj	getForceGamemode
 METHOD	net/minecraft/server/MinecraftServer	()I	am	getIdleTimeout
-METHOD	net/minecraft/server/MinecraftServer	(I)V	d	setIdleTimeout
+METHOD	net/minecraft/server/MinecraftServer	(I)V	d	giveExp
 METHOD	net/minecraft/server/MinecraftServer	()Lcom/mojang/authlib/minecraft/MinecraftSessionService;	an	getMinecraftSessionService
 METHOD	net/minecraft/server/MinecraftServer	()Lcom/mojang/authlib/GameProfileRepository;	ao	getGameProfileRepository
 METHOD	net/minecraft/server/MinecraftServer	()Labl;	ap	getUserCache
@@ -12801,15 +12801,15 @@ METHOD	net/minecraft/server/MinecraftServer	()Luu;	az	getFunctionData
 METHOD	net/minecraft/server/MinecraftServer	()Laar;	aA	getResourcePackRepository
 METHOD	net/minecraft/server/MinecraftServer	()Lda;	aB	getCommandDispatcher
 METHOD	net/minecraft/server/MinecraftServer	()Lcz;	aC	getServerCommandListener
-METHOD	net/minecraft/server/MinecraftServer	()Z	a	shouldSendSuccess
-METHOD	net/minecraft/server/MinecraftServer	()Z	b	shouldSendFailure
+METHOD	net/minecraft/server/MinecraftServer	()Z	a	isDone
+METHOD	net/minecraft/server/MinecraftServer	()Z	b	hasSaddle_b
 METHOD	net/minecraft/server/MinecraftServer	()Lbmv;	aD	getCraftingManager
 METHOD	net/minecraft/server/MinecraftServer	()Ladh;	aE	getTagRegistry
 METHOD	net/minecraft/server/MinecraftServer	()Lux;	aF	getScoreboard
 METHOD	net/minecraft/server/MinecraftServer	()Ldax;	aH	getLootTableRegistry
-METHOD	net/minecraft/server/MinecraftServer	()Lbpx;	aJ	getGameRules
+METHOD	net/minecraft/server/MinecraftServer	()Lbpx;	aJ	getGameRules_aJ
 METHOD	net/minecraft/server/MinecraftServer	()Lva;	aK	getBossBattleCustomData
-METHOD	net/minecraft/server/MinecraftServer	()Lami;	aO	getMethodProfiler
+METHOD	net/minecraft/server/MinecraftServer	()Lami;	aO	getMethodProfiler_aO
 METHOD	net/minecraft/server/MinecraftServer	()Z	aT	isSyncChunkWrites
 METHOD	net/minecraft/server/MinecraftServer	()Lcva;	aU	getDefinedStructureManager
 METHOD	net/minecraft/server/MinecraftServer	()Ldal;	aV	getSaveData
@@ -12995,7 +12995,7 @@ CLASS	re	PacketPlayInClientCommand
 CLASS	rf	PacketPlayInSettings
 FIELD	rf	Ljava/lang/String;	a	locale
 FIELD	rf	I	b	viewDistance
-METHOD	rf	()Laou;	g	getMainHand
+METHOD	rf	()Laou;	g	getMainHand_g
 CLASS	rg	PacketPlayInTabComplete
 CLASS	rh	PacketPlayInTransaction
 CLASS	ri	PacketPlayInEnchantItem
@@ -13032,16 +13032,16 @@ FIELD	rs	F	e	pitch
 FIELD	rs	Z	g	hasPos
 FIELD	rs	Z	h	hasLook
 CLASS	rt	PacketPlayInVehicleMove
-METHOD	rt	()D	b	getX
+METHOD	rt	()D	b	getBaseValue
 METHOD	rt	()D	c	getY
-METHOD	rt	()D	d	getZ
-METHOD	rt	()F	e	getYaw
-METHOD	rt	()F	f	getPitch
+METHOD	rt	()D	d	getAmount
+METHOD	rt	()F	e	getSaturationLevel
+METHOD	rt	()F	f	getDurability
 CLASS	ru	PacketPlayInBoatMove
 CLASS	rv	PacketPlayInPickItem
 CLASS	rw	PacketPlayInAutoRecipe
 CLASS	rx	PacketPlayInAbilities
-METHOD	rx	()Z	b	isFlying
+METHOD	rx	()Z	b	hasSaddle_b
 CLASS	ry$a	PacketPlayInBlockDig$EnumPlayerDigType
 FIELD	ry$a	Lry$a;	a	START_DESTROY_BLOCK
 FIELD	ry$a	Lry$a;	b	ABORT_DESTROY_BLOCK
@@ -13089,7 +13089,7 @@ CLASS	si	PacketPlayInSetCommandBlock
 CLASS	sj	PacketPlayInSetCommandMinecart
 CLASS	sk	PacketPlayInSetCreativeSlot
 FIELD	sk	I	a	slot
-METHOD	sk	()Lbki;	c	getItemStack
+METHOD	sk	()Lbki;	c	getBuyItem2
 CLASS	sl	PacketPlayInSetJigsaw
 CLASS	sm	PacketPlayInStruct
 CLASS	sn	PacketPlayInUpdateSign
@@ -13120,13 +13120,13 @@ CLASS	tl$a	ServerPing$ServerPingPlayerSample
 CLASS	tl$b	ServerPing$Serializer
 CLASS	tl$c$a	ServerPing$ServerData$Serializer
 CLASS	tl$c	ServerPing$ServerData
-METHOD	tl$c	()I	b	getProtocolVersion
+METHOD	tl$c	()I	b	get
 CLASS	tl	ServerPing
-METHOD	tl	(Lmr;)V	a	setMOTD
+METHOD	tl	(Lmr;)V	a	close
 METHOD	tl	(Ltl$a;)V	a	setPlayerSample
 METHOD	tl	()Ltl$c;	c	getServerData
 METHOD	tl	(Ltl$c;)V	a	setServerInfo
-METHOD	tl	(Ljava/lang/String;)V	a	setFavicon
+METHOD	tl	(Ljava/lang/String;)V	a	enter
 CLASS	tm	PacketStatusInListener
 CLASS	tn	PacketStatusInPing
 CLASS	to	PacketStatusInStart
@@ -13184,11 +13184,11 @@ CLASS	uh	MinecraftKey
 FIELD	uh	Ljava/lang/String;	b	namespace
 FIELD	uh	Ljava/lang/String;	c	key
 METHOD	uh	()Ljava/lang/String;	a	getKey
-METHOD	uh	()Ljava/lang/String;	b	getNamespace
+METHOD	uh	()Ljava/lang/String;	b	getName
 CLASS	uj$1	DispenserRegistry$1
 CLASS	uj	DispenserRegistry
 FIELD	uj	Lorg/apache/logging/log4j/Logger;	c	LOGGER
-METHOD	uj	()V	a	init
+METHOD	uj	()V	a	incrementScore
 CLASS	ul	ServerCommand
 FIELD	ul	Ljava/lang/String;	a	command
 FIELD	ul	Lcz;	b	source
@@ -13218,7 +13218,7 @@ CLASS	uu$a	CustomFunctionData$a
 CLASS	uu	CustomFunctionData
 FIELD	uu	Lnet/minecraft/server/MinecraftServer;	c	server
 METHOD	uu	()Lcom/mojang/brigadier/CommandDispatcher;	c	getCommandDispatcher
-METHOD	uu	()V	d	tick
+METHOD	uu	()V	d	clearMessages
 CLASS	uv	IMinecraftServer
 CLASS	uw	DataPackResources
 FIELD	uw	Lda;	c	commandDispatcher
@@ -13227,7 +13227,7 @@ FIELD	ux$a	Lux$a;	a	CHANGE
 FIELD	ux$a	Lux$a;	b	REMOVE
 CLASS	ux	ScoreboardServer
 METHOD	ux	(Ldfl;)V	a	handleScoreChanged
-METHOD	ux	(Ljava/lang/String;)V	a	handlePlayerRemoved
+METHOD	ux	(Ljava/lang/String;)V	a	enter
 METHOD	ux	(ILdfj;)V	a	setDisplaySlot
 METHOD	ux	(Ljava/lang/String;Ldfk;)Z	a	addPlayerToTeam
 METHOD	ux	(Ljava/lang/String;Ldfk;)V	b	removePlayerFromTeam
@@ -13242,7 +13242,7 @@ CLASS	uy	TickTask
 CLASS	uz	BossBattleCustom
 METHOD	uz	()Luh;	a	getKey
 METHOD	uz	(Lze;)V	a	addPlayer
-METHOD	uz	(Lze;)V	b	removePlayer
+METHOD	uz	(Lze;)V	b	addPlayerPortal
 CLASS	v$1	SystemUtils$1
 CLASS	v$2	SystemUtils$2
 CLASS	v$a	SystemUtils$IdentityHashingStrategy
@@ -13259,7 +13259,7 @@ CLASS	v	SystemUtils
 FIELD	v	Lorg/apache/logging/log4j/Logger;	g	LOGGER
 METHOD	v	()J	b	getMonotonicMillis
 METHOD	v	()J	c	getMonotonicNanos
-METHOD	v	()J	d	getTimeMillis
+METHOD	v	()J	d	getTime_d
 CLASS	va	BossBattleCustomData
 METHOD	va	(Luh;Lmr;)Luz;	a	register
 METHOD	va	(Luz;)V	a	remove
@@ -13410,10 +13410,10 @@ METHOD	y	()Ljava/lang/Iterable;	e	getRemainingCriteria
 METHOD	y	()Ljava/lang/Iterable;	f	getAwardedCriteria
 CLASS	yc	DedicatedPlayerList
 FIELD	yc	Lorg/apache/logging/log4j/Logger;	a	LOGGER
-METHOD	yc	(Z)V	a	setHasWhitelist
+METHOD	yc	(Z)V	a	safeShutdown
 METHOD	yc	(Lcom/mojang/authlib/GameProfile;)V	a	addOp
 METHOD	yc	(Lcom/mojang/authlib/GameProfile;)V	b	removeOp
-METHOD	yc	()V	a	reloadWhitelist
+METHOD	yc	()V	a	incrementScore
 METHOD	yc	(Lcom/mojang/authlib/GameProfile;)Z	e	isWhitelisted
 METHOD	yc	()Lyd;	b	getServer
 METHOD	yc	()Lnet/minecraft/server/MinecraftServer;	c	getServer
@@ -13425,28 +13425,28 @@ FIELD	yd	Lace;	m	remoteStatusListener
 FIELD	yd	Lacb;	n	remoteControlCommandListener
 FIELD	yd	Lacg;	o	remoteControlListener
 FIELD	yd	Lyf;	p	propertyManager
-METHOD	yd	()Z	d	init
+METHOD	yd	()Z	d	hasSkyLight
 METHOD	yd	()Z	V	getSpawnAnimals
 METHOD	yd	()Z	O	getSpawnMonsters
 METHOD	yd	()Z	W	getSpawnNPCs
 METHOD	yd	()Lye;	g_	getDedicatedServerProperties
-METHOD	yd	()V	p	updateWorldSettings
-METHOD	yd	()Z	f	isHardcore
+METHOD	yd	()V	p	tickChunks
+METHOD	yd	()Z	f	canBreed
 METHOD	yd	()Ljava/util/Optional;	n	getModded
-METHOD	yd	()V	e	exit
+METHOD	yd	()V	e	clearBlocks
 METHOD	yd	()Z	B	getAllowNether
 METHOD	yd	(Ljava/lang/String;Lcz;)V	a	issueCommand
 METHOD	yd	()V	aZ	handleCommandQueue
 METHOD	yd	()Z	l	getEnableCommandBlock
 METHOD	yd	()I	ai	getSpawnProtection
-METHOD	yd	(I)V	d	setIdleTimeout
+METHOD	yd	(I)V	d	giveExp
 METHOD	yd	()Z	S_	shouldBroadcastCommands
 METHOD	yd	()Z	bc	convertNames
 METHOD	yd	()J	bd	getMaxTickTime
 METHOD	yd	()Ljava/lang/String;	j_	getPlugins
 METHOD	yd	(Ljava/lang/String;)Ljava/lang/String;	a	executeRemoteCommand
 METHOD	yd	(Z)V	j	setHasWhitelist
-METHOD	yd	()V	s	stop
+METHOD	yd	()V	s	invalidateBlockCache
 METHOD	yd	()Ljava/lang/String;	k_	getWorld
 METHOD	yd	()Z	aT	isSyncChunkWrites
 METHOD	yd	()Labp;	ac	getPlayerList
@@ -13504,7 +13504,7 @@ CLASS	yf	DedicatedServerSettings
 FIELD	yf	Ljava/nio/file/Path;	a	path
 FIELD	yf	Lye;	b	properties
 METHOD	yf	()Lye;	a	getProperties
-METHOD	yf	()V	b	save
+METHOD	yf	()V	b	doTick
 METHOD	yf	(Ljava/util/function/UnaryOperator;)Lyf;	a	setProperty
 CLASS	yg$1	ThreadWatchdog$1
 CLASS	yg	ThreadWatchdog
@@ -13526,7 +13526,7 @@ CLASS	yj$2	ServerGUI$2
 CLASS	yj	ServerGUI
 FIELD	yj	Lorg/apache/logging/log4j/Logger;	b	LOGGER
 CLASS	yk	PlayerListBox
-METHOD	yk	()V	a	tick
+METHOD	yk	()V	a	incrementScore
 CLASS	yl	GuiStatsComponent
 CLASS	yo$1	PlayerChunk$1
 CLASS	yo$a$1	PlayerChunk$Failure$1
@@ -13562,10 +13562,10 @@ FIELD	yo	Z	x	hasBeenLoaded
 METHOD	yo	(Lchc;)Ljava/util/concurrent/CompletableFuture;	a	getStatusFutureUnchecked
 METHOD	yo	()Lchj;	d	getChunk
 METHOD	yo	()Ljava/util/concurrent/CompletableFuture;	g	getChunkSave
-METHOD	yo	()I	j	getTicketLevel
+METHOD	yo	()I	j	getAdjacentY
 METHOD	yo	(I)Lchc;	b	getChunkStatus
 METHOD	yo	(I)Lyo$b;	c	getChunkState
-METHOD	yo	()Z	l	hasBeenLoaded
+METHOD	yo	()Z	l	getEnableCommandBlock
 CLASS	yp$1	PlayerChunkMap$1
 CLASS	yp$2	PlayerChunkMap$2
 CLASS	yp$a	PlayerChunkMap$a
@@ -13576,8 +13576,8 @@ FIELD	yp$b	I	d	trackingDistance
 FIELD	yp$b	Ljava/util/Set;	f	trackedPlayers
 METHOD	yp$b	(Lni;)V	a	broadcast
 METHOD	yp$b	(Lni;)V	b	broadcastIncludingSelf
-METHOD	yp$b	(Lze;)V	a	clear
-METHOD	yp$b	(Lze;)V	b	updatePlayer
+METHOD	yp$b	(Lze;)V	a	addPlayer
+METHOD	yp$b	(Lze;)V	b	addPlayerPortal
 METHOD	yp$b	(Ljava/util/List;)V	a	track
 CLASS	yp	PlayerChunkMap
 FIELD	yp	Lorg/apache/logging/log4j/Logger;	c	LOGGER
@@ -13600,20 +13600,20 @@ FIELD	yp	Lcva;	v	definedStructureManager
 FIELD	yp	Lyx;	x	playerMap
 FIELD	yp	Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;	y	trackedEntities
 FIELD	yp	I	B	viewDistance
-METHOD	yp	(J)Lyo;	a	getUpdatingChunk
+METHOD	yp	(J)Lyo;	a	getChunk
 METHOD	yp	(J)Lyo;	b	getVisibleChunk
-METHOD	yp	(Z)V	a	save
-METHOD	yp	(Ljava/util/function/BooleanSupplier;)V	a	unloadChunks
+METHOD	yp	(Z)V	a	safeShutdown
+METHOD	yp	(Ljava/util/function/BooleanSupplier;)V	a	doTick
 METHOD	yp	(Lcgy;)Z	a	saveChunk
-METHOD	yp	(I)V	a	setViewDistance
+METHOD	yp	(I)V	a	addScore
 METHOD	yp	(Lze;Lbph;[Lni;ZZ)V	a	sendChunk
 METHOD	yp	(Lbph;)Lle;	i	readChunkData
-METHOD	yp	(Lbph;)Z	d	isOutsideOfRange
-METHOD	yp	(Lze;)V	a	movePlayer
+METHOD	yp	(Lbph;)Z	d	chunkExists
+METHOD	yp	(Lze;)V	a	addPlayer
 METHOD	yp	(Laom;)V	a	addEntity
-METHOD	yp	(Laom;)V	b	removeEntity
+METHOD	yp	(Laom;)V	b	chunkCheck
 METHOD	yp	(Laom;Lni;)V	a	broadcast
-METHOD	yp	(Laom;Lni;)V	b	broadcastIncludingSelf
+METHOD	yp	(Laom;Lni;)V	b	broadcast_b
 CLASS	yq	ChunkTaskQueue
 CLASS	yr$1	ChunkTaskQueueSorter$1
 CLASS	yr$a	ChunkTaskQueueSorter$a
@@ -13633,12 +13633,12 @@ FIELD	yv	Lit/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;	d	tickets
 FIELD	yv	Lyv$a;	e	ticketLevelTracker
 FIELD	yv	Ljava/util/Set;	h	pendingChunkUpdates
 FIELD	yv	J	n	currentTick
-METHOD	yv	()V	a	purgeTickets
+METHOD	yv	()V	a	incrementScore
 METHOD	yv	(Laeg;)I	a	getLowestTicketLevel
 METHOD	yv	(JLzh;)V	a	addTicket
 METHOD	yv	(JLzh;)V	b	removeTicket
-METHOD	yv	(Lzi;Lbph;ILjava/lang/Object;)V	c	addTicket
-METHOD	yv	(Lzi;Lbph;ILjava/lang/Object;)V	d	removeTicket
+METHOD	yv	(Lzi;Lbph;ILjava/lang/Object;)V	c	addTicket_c
+METHOD	yv	(Lzi;Lbph;ILjava/lang/Object;)V	d	removeTicket_d
 CLASS	yx	PlayerMap
 CLASS	yy	WorldProviderNormal
 CLASS	yz	LightEngineGraphSection
@@ -13646,15 +13646,15 @@ CLASS	z$a	AdvancementRewards$a
 CLASS	z	AdvancementRewards
 CLASS	za	BossBattleServer
 FIELD	za	Z	j	visible
-METHOD	za	(F)V	a	setProgress
+METHOD	za	(F)V	a	setDamage
 METHOD	za	(Z)Lamw;	a	setDarkenSky
 METHOD	za	(Z)Lamw;	b	setPlayMusic
 METHOD	za	(Z)Lamw;	c	setCreateFog
 METHOD	za	(Lny$a;)V	a	sendUpdate
 METHOD	za	(Lze;)V	a	addPlayer
-METHOD	za	(Lze;)V	b	removePlayer
-METHOD	za	(Z)V	d	setVisible
-METHOD	za	()Ljava/util/Collection;	h	getPlayers
+METHOD	za	(Lze;)V	b	addPlayerPortal
+METHOD	za	(Z)V	d	setOnlineMode
+METHOD	za	()Ljava/util/Collection;	h	getPlayers_h
 CLASS	zb$1	ChunkProviderServer$1
 CLASS	zb$a	ChunkProviderServer$a
 METHOD	zb$a	(Ljava/lang/Runnable;)Ljava/lang/Runnable;	e	postToMainThread
@@ -13680,25 +13680,25 @@ FIELD	zb	[Lchc;	n	cacheStatus
 FIELD	zb	[Lcgy;	o	cacheChunk
 METHOD	zb	(J)Lyo;	a	getChunk
 METHOD	zb	(IILchc;Z)Lcgy;	a	getChunkAt
-METHOD	zb	()V	n	clearCache
+METHOD	zb	()V	n	broadcastCarriedItem
 METHOD	zb	(IILchc;Z)Ljava/util/concurrent/CompletableFuture;	c	getChunkFutureMainThread
-METHOD	zb	(II)Z	b	isLoaded
-METHOD	zb	()Z	d	runTasks
-METHOD	zb	()Z	o	tickDistanceManager
-METHOD	zb	(Z)V	a	save
-METHOD	zb	(Ljava/util/function/BooleanSupplier;)V	a	tick
+METHOD	zb	(II)Z	b	isChunkLoaded
+METHOD	zb	()Z	d	hasSkyLight
+METHOD	zb	()Z	o	getHasWhitelist
+METHOD	zb	(Z)V	a	safeShutdown
+METHOD	zb	(Ljava/util/function/BooleanSupplier;)V	a	doTick
 METHOD	zb	()V	p	tickChunks
-METHOD	zb	()Ljava/lang/String;	e	getName
-METHOD	zb	()Lcha;	g	getChunkGenerator
-METHOD	zb	(Lfu;)V	b	flagDirty
+METHOD	zb	()Ljava/lang/String;	e	getMessages
+METHOD	zb	()Lcha;	g	getChunkGenerator_g
+METHOD	zb	(Lfu;)V	b	entitySleep
 METHOD	zb	(Lzi;Lbph;ILjava/lang/Object;)V	a	addTicket
 METHOD	zb	(Lzi;Lbph;ILjava/lang/Object;)V	b	removeTicket
-METHOD	zb	(Lze;)V	a	movePlayer
-METHOD	zb	(Laom;)V	b	removeEntity
-METHOD	zb	(Laom;)V	c	addEntity
-METHOD	zb	(Laom;Lni;)V	a	broadcastIncludingSelf
-METHOD	zb	(Laom;Lni;)V	b	broadcast
-METHOD	zb	(I)V	a	setViewDistance
+METHOD	zb	(Lze;)V	a	addPlayer
+METHOD	zb	(Laom;)V	b	chunkCheck
+METHOD	zb	(Laom;)V	c	addEntity_c
+METHOD	zb	(Laom;Lni;)V	a	broadcast
+METHOD	zb	(Laom;Lni;)V	b	broadcast_b
+METHOD	zb	(I)V	a	addScore
 METHOD	zb	()Ldaa;	i	getWorldPersistentData
 METHOD	zb	()Lcwr;	l	getLightEngine
 METHOD	zb	()Lbpg;	m	getWorld
@@ -13712,7 +13712,7 @@ FIELD	zc	I	j	yRot
 FIELD	zc	I	k	xRot
 FIELD	zc	I	l	headYaw
 FIELD	zc	I	n	tickCounter
-METHOD	zc	(Lni;)V	a	broadcastIncludingSelf
+METHOD	zc	(Lni;)V	a	broadcast
 CLASS	zd	WorldServer
 FIELD	zd	Lorg/apache/logging/log4j/Logger;	x	LOGGER
 FIELD	zd	Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;	y	entitiesById
@@ -13741,15 +13741,15 @@ METHOD	zd	(J)V	a	setDayTime
 METHOD	zd	(ZZ)V	a	doMobSpawning
 METHOD	zd	()V	ae	wakeupPlayers
 METHOD	zd	()V	n_	everyoneSleeping
-METHOD	zd	()V	af	clearWeather
+METHOD	zd	()V	af	burnFromLava
 METHOD	zd	()V	p_	resetEmptyTime
-METHOD	zd	(Laom;)V	a	entityJoinedWorld
+METHOD	zd	(Laom;)V	a	addEntity
 METHOD	zd	(Laom;)V	b	chunkCheck
 METHOD	zd	(Laed;ZZ)V	a	save
 METHOD	zd	(Laom;)Z	c	addEntity
 METHOD	zd	(Laom;)Z	d	addEntitySerialized
 METHOD	zd	(Laom;)V	e	addEntityTeleport
-METHOD	zd	(Lze;)V	a	addPlayerCommand
+METHOD	zd	(Lze;)V	a	addPlayer
 METHOD	zd	(Lze;)V	b	addPlayerPortal
 METHOD	zd	(Lze;)V	c	addPlayerJoin
 METHOD	zd	(Lze;)V	d	addPlayerRespawn
@@ -13769,18 +13769,18 @@ METHOD	zd	(Lfu;Lcfj;Lcfj;I)V	a	notify
 METHOD	zd	(Laom;B)V	a	broadcastEntityEffect
 METHOD	zd	(Laom;Lanw;Lbpu;DDDFZLbpt$a;)Lbpt;	a	createExplosion
 METHOD	zd	(Lfu;Lbvr;II)V	a	playBlockAction
-METHOD	zd	()Lnet/minecraft/server/MinecraftServer;	l	getMinecraftServer
+METHOD	zd	()Lnet/minecraft/server/MinecraftServer;	l	getMinecraftServer_l
 METHOD	zd	()Lbqm;	q_	getTravelAgent
 METHOD	zd	(I)Laom;	a	getEntity
 METHOD	zd	(Ljava/util/UUID;)Laom;	a	getEntity
-METHOD	zd	()Lbmv;	o	getCraftingManager
-METHOD	zd	()Z	q	isSavingDisabled
-METHOD	zd	()Ldaa;	s	getWorldPersistentData
+METHOD	zd	()Lbmv;	o	getCraftingManager_o
+METHOD	zd	()Z	q	isAlwaysDestroyable
+METHOD	zd	()Ldaa;	s	getWorldPersistentData_s
 METHOD	zd	()I	t	getWorldMapCount
-METHOD	zd	()Lfu;	u	getSpawn
+METHOD	zd	()Lfu;	u	getSpawn_u
 METHOD	zd	()Lit/unimi/dsi/fastutil/longs/LongSet;	v	getForceLoadedChunks
 METHOD	zd	(IIZ)Z	a	setForceLoaded
-METHOD	zd	()Ljava/util/List;	w	getPlayers
+METHOD	zd	()Ljava/util/List;	w	getPlayers_w
 METHOD	zd	()Lbfj;	y	getPersistentRaid
 METHOD	zd	(Lfu;Lbvr;)V	a	update
 METHOD	zd	()Z	A	isFlatWorld
@@ -13818,14 +13818,14 @@ FIELD	ze	Z	ct	spawnForced
 FIELD	ze	I	cu	containerCounter
 FIELD	ze	I	f	ping
 FIELD	ze	Z	g	viewingCredits
-METHOD	ze	(Lle;)V	a	loadData
+METHOD	ze	(Lle;)V	a	load
 METHOD	ze	(Lle;)V	b	saveData
 METHOD	ze	(I)V	c	levelDown
 METHOD	ze	(Lbki;I)V	a	enchantDone
-METHOD	ze	()V	f	syncInventory
+METHOD	ze	()V	f	bind
 METHOD	ze	()V	g	enterCombat
 METHOD	ze	()V	h	exitCombat
-METHOD	ze	()V	j	tick
+METHOD	ze	()V	j	applyEffects
 METHOD	ze	()V	w_	playerTick
 METHOD	ze	(Lanw;)V	a	die
 METHOD	ze	(Lanw;F)Z	a	damageEntity
@@ -13834,8 +13834,8 @@ METHOD	ze	(Lzd;)V	c	triggerDimensionAdvancements
 METHOD	ze	(Laom;I)V	a	receive
 METHOD	ze	(Lfu;)Lcom/mojang/datafixers/util/Either;	a	sleep
 METHOD	ze	(Lfu;)V	b	entitySleep
-METHOD	ze	(ZZ)V	a	wakeup
-METHOD	ze	()V	l	stopRiding
+METHOD	ze	(ZZ)V	a	doMobSpawning
+METHOD	ze	()V	l	handleDisconnection
 METHOD	ze	(Lanw;)Z	b	isInvulnerable
 METHOD	ze	(Lceh;)V	a	openSign
 METHOD	ze	()V	eY	nextContainerCounter
@@ -13845,16 +13845,16 @@ METHOD	ze	(Lazm;Lamz;)V	a	openHorseInventory
 METHOD	ze	(Lbki;Lanf;)V	a	openBook
 METHOD	ze	(Lbgi;)V	a	updateInventory
 METHOD	ze	(Lbgi;II)V	a	setContainerData
-METHOD	ze	()V	m	closeInventory
+METHOD	ze	()V	m	beginSpawnSequence
 METHOD	ze	()V	n	broadcastCarriedItem
 METHOD	ze	(Ljava/util/Collection;)I	a	discoverRecipes
 METHOD	ze	(Ljava/util/Collection;)I	b	undiscoverRecipes
 METHOD	ze	(I)V	d	giveExp
-METHOD	ze	()V	r	triggerHealthUpdate
+METHOD	ze	()V	r	shutdown
 METHOD	ze	(Lze;Z)V	a	copyFrom
 METHOD	ze	(DDD)V	a	enderTeleportTo
 METHOD	ze	(DDD)V	b	teleportAndSync
-METHOD	ze	()V	t	updateAbilities
+METHOD	ze	()V	t	reload
 METHOD	ze	()Lzd;	u	getWorldServer
 METHOD	ze	()Z	a_	isSpectator
 METHOD	ze	()Z	b_	isCreative
@@ -13864,7 +13864,7 @@ METHOD	ze	(Ljava/lang/String;Ljava/lang/String;)V	a	setResourcePack
 METHOD	ze	()V	z	resetIdleTimer
 METHOD	ze	()Lacq;	A	getStatisticManager
 METHOD	ze	()Laom;	D	getSpecatorTarget
-METHOD	ze	(Laom;)V	e	setSpectatorTarget
+METHOD	ze	(Laom;)V	e	addEntityTeleport
 METHOD	ze	(Laom;)V	f	attack
 METHOD	ze	()Lmr;	G	getPlayerListName
 METHOD	ze	(Lanf;)V	a	swingHand
@@ -13882,7 +13882,7 @@ FIELD	zf	I	g	lastDigTick
 FIELD	zf	I	i	currentTick
 METHOD	zf	(Lbpy;)V	a	setGameMode
 METHOD	zf	()Lbpy;	b	getGameMode
-METHOD	zf	()Z	e	isCreative
+METHOD	zf	()Z	e	hasCeiling
 METHOD	zf	(Lfu;)Z	a	breakBlock
 CLASS	zg$a	LightEngineThreaded$Update
 FIELD	zg$a	Lzg$a;	a	PRE_UPDATE
@@ -13920,12 +13920,12 @@ METHOD	zj	()J	B	getSeed
 METHOD	zj	()Lbqr;	G	getBlockTickList
 METHOD	zj	()Lbqr;	F	getFluidTickList
 METHOD	zj	()I	t_	getSeaLevel
-METHOD	zj	()Ljava/util/Random;	v_	getRandom
+METHOD	zj	()Ljava/util/Random;	v_	getRandom_v_
 METHOD	zj	(Lbec;Lfu;Lack;Lacm;FF)V	a	playSound
 METHOD	zj	(Lhf;DDDDDD)V	a	addParticle
 METHOD	zj	()Lcif;	m	getDimensionManager
 METHOD	zj	(Laom;Ldeg;Ljava/util/function/Predicate;)Ljava/util/List;	a	getEntities
-METHOD	zj	()Ljava/util/List;	w	getPlayers
+METHOD	zj	()Ljava/util/List;	w	getPlayers_w
 METHOD	zj	()Lbqb;	n	getMinecraftWorld
 CLASS	zk	TickListWorldGen
 CLASS	zm	WorldLoadListener
@@ -13952,11 +13952,11 @@ FIELD	zv	Ldem;	y	teleportPos
 FIELD	zv	I	z	teleportAwait
 FIELD	zv	I	F	receivedMovePackets
 FIELD	zv	I	G	processedMovePackets
-METHOD	zv	()V	b	tick
-METHOD	zv	()V	c	syncPosition
-METHOD	zv	()Z	d	isExemptPlayer
+METHOD	zv	()V	b	doTick
+METHOD	zv	()V	c	exit
+METHOD	zv	()Z	d	hasSkyLight
 METHOD	zv	(Lmr;)V	b	disconnect
-METHOD	zv	(Lni;)V	a	sendPacket
+METHOD	zv	(Lni;)V	a	broadcast
 METHOD	zv	(Ljava/lang/String;)V	c	handleCommand
 CLASS	zw$1	HandshakeListener$1
 CLASS	zw	HandshakeListener
@@ -13975,7 +13975,7 @@ FIELD	zx	Ljava/util/Random;	d	random
 FIELD	zx	Lnet/minecraft/server/MinecraftServer;	f	server
 FIELD	zx	Lme;	a	networkManager
 FIELD	zx	Ljavax/crypto/SecretKey;	k	loginKey
-METHOD	zx	()V	b	tick
+METHOD	zx	()V	b	doTick
 METHOD	zx	(Lmr;)V	b	disconnect
 CLASS	zy	PacketStatusListener
 FIELD	zy	Lnet/minecraft/server/MinecraftServer;	b	minecraftServer
