@@ -11,3 +11,4 @@ So, consider all the tiny_v1 files here **proprietary**! All files here are
 (c) 2014-2026 SpigotMC Pty. Ltd.
 ```
 
+If anybody from Spigot wants this taken down, make an issue and I will happily do so.
