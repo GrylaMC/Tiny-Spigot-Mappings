@@ -1,3 +1,10 @@
+"""
+Copyright (C) 2026 - PsychedelicPalimpsest
+Feel free to share this within the bounds of 
+CC0 1.0 Universal
+"""
+
+
 import json
 import subprocess
 import os, sys
